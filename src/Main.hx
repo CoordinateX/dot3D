@@ -1,8 +1,6 @@
 package ;
 
 import at.dotpoint.core.MainApplication;
-import at.dotpoint.TestIO;
-import at.dotpoint.TestMath;
 import flash.Lib;
 
 /**
@@ -35,11 +33,7 @@ class Main extends MainApplication
 	 */
 	override private function init():Void
 	{
-		trace("init real good");	
-		
-		var io:TestIO = new TestIO();
-		this.addChild( io );
-		io.test( "../assets/page0_blog_entry18_1.jpg" );
+		trace("init real good");			
 	}	
 	
 
