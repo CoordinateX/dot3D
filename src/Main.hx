@@ -35,7 +35,11 @@ class Main extends MainApplication
 	 */
 	override private function init():Void
 	{
-		trace("init real good");			
+		trace("init real good");	
+		
+		var io:TestIO = new TestIO();
+		this.addChild( io );
+		io.test( "../assets/page0_blog_entry18_1.jpg" );
 	}	
 	
 
