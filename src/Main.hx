@@ -1,5 +1,6 @@
 package ;
 
+import at.dotpoint.dot3d.rendering.ScreenDimension;
 import at.dotpoint.core.MainApplication;
 import flash.Lib;
 
@@ -33,7 +34,8 @@ class Main extends MainApplication
 	 */
 	override private function init():Void
 	{
-		trace("init real good");			
+		trace("init real good");		
+		var test:ScreenDimension = new ScreenDimension();
 	}	
 	
 

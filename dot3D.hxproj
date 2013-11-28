@@ -18,6 +18,8 @@
     <class path="src" />
     <class path="lib\dotCore\src" />
     <class path="lib\hxsl" />
+    <class path="lib\dotMath\src" />
+    <class path="lib\dotLoader\src" />
   </classpaths>
   <!-- Build options -->
   <build>
