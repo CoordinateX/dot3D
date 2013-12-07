@@ -1,12 +1,17 @@
 package at.dotpoint.dot3d.model.register.container;
+
+import at.dotpoint.dot3d.model.register.error.RegisterError;
 import at.dotpoint.dot3d.model.register.RegisterData;
 import at.dotpoint.dot3d.model.register.RegisterType;
+import haxe.PosInfos;
 
 /**
  * ...
  * 
  * @author RK
  */
+@:access( at.dotpoint.dot3d.model.register )
+ //
 class RegisterTable implements IRegisterContainer
 {
 
@@ -29,6 +34,7 @@ class RegisterTable implements IRegisterContainer
 	public function new( numEntries:Int ) 
 	{
 		this.numEntries = numEntries;
+		this.registers = new Array<RegisterData>();
 	}
 	
 	// ************************************************************************ //
@@ -39,11 +45,11 @@ class RegisterTable implements IRegisterContainer
 	 * searches for the given attribute and returns it's data when found, or null
 	 * the data can usually be interpreted as Vector2 or Vector3
 	 */
-	public function getData( type:RegisterType, index:Int ):Array<Float>
+	public function getData( type:RegisterType, index:Int, ?output:Array<Float> ):Array<Float>
 	{
 		var stream:RegisterData = this.getRegisterData( type );
 		
-		if ( stream != null )	return stream.getValues( index );
+		if ( stream != null )	return stream.getValues( index, output );
 		else					return null;
 	}
 	
@@ -52,6 +58,7 @@ class RegisterTable implements IRegisterContainer
 	 */
 	public function setData( type:RegisterType, index:Int, values:Array<Float> ):Void
 	{
+		this.checkBounds( index );
 		var stream:RegisterData = this.getRegisterData( type );
 		
 		if ( stream == null )
@@ -156,9 +163,9 @@ class RegisterTable implements IRegisterContainer
 	// Error-Checks
 	
 	// out of bounds check
-	inline private function checkBounds( index:Int ):Void
+	inline private function checkBounds( index:Int, ?pos:PosInfos ):Void
 	{
-		if ( index < 0 || index > this.numEntries) 
-			throw "given index " + index + " is out of bounds (max: " + this.numEntries + ")";
+		if ( index < 0 || index >= this.numEntries) 
+			throw RegisterError.createBoundsError( index, this.numEntries, pos );
 	}	
 }

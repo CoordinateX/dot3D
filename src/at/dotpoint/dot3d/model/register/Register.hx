@@ -1,5 +1,5 @@
 package at.dotpoint.dot3d.model.register;
-import at.dotpoint.tilezeit.entity.light.LightSpecification;
+
 import hxsl.Data;
 /**
  * ...

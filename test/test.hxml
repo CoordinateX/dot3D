@@ -3,8 +3,12 @@
 -lib munit
 -lib hamcrest
 -cp ../src
-
+-cp ../lib/dotMath/src
+-cp ../lib/dotLoader/src
+-cp ../lib/dotCore/src
+-cp ../lib/hxsl
 -cp src
+-D dotpoint
 -swf-version 11
 -swf build/as3_test.swf
 
@@ -15,8 +19,12 @@
 -lib munit
 -lib hamcrest
 -cp ../src
-
+-cp ../lib/dotMath/src
+-cp ../lib/dotLoader/src
+-cp ../lib/dotCore/src
+-cp ../lib/hxsl
 -cp src
+-D dotpoint
 -swf-version 8
 -swf build/as2_test.swf
 
@@ -27,8 +35,12 @@
 -lib munit
 -lib hamcrest
 -cp ../src
-
+-cp ../lib/dotMath/src
+-cp ../lib/dotLoader/src
+-cp ../lib/dotCore/src
+-cp ../lib/hxsl
 -cp src
+-D dotpoint
 -js build/js_test.js
 
 --next
@@ -38,8 +50,12 @@
 -lib munit
 -lib hamcrest
 -cp ../src
-
+-cp ../lib/dotMath/src
+-cp ../lib/dotLoader/src
+-cp ../lib/dotCore/src
+-cp ../lib/hxsl
 -cp src
+-D dotpoint
 -neko build/neko_test.n
 
 --next
@@ -49,8 +65,12 @@
 -lib munit
 -lib hamcrest
 -cp ../src
-
+-cp ../lib/dotMath/src
+-cp ../lib/dotLoader/src
+-cp ../lib/dotCore/src
+-cp ../lib/hxsl
 -cp src
+-D dotpoint
 #-D HXCPP_M64
 -cpp build/cpp_test
 

@@ -1,9 +1,6 @@
 package at.dotpoint.dot3d.model.mesh;
 
-import at.dotpoint.dot3d.model.register.RegisterContainer;
-import at.dotpoint.ICloneable;
-import at.dotpoint.dot3d.model.register.RegisterData;
-import at.dotpoint.dot3d.model.register.RegisterType;
+import at.dotpoint.dot3d.model.register.container.RegisterTable;
 
 /**
  * generated object including all informations relating to the vertex. this object is not used
@@ -12,7 +9,7 @@ import at.dotpoint.dot3d.model.register.RegisterType;
  * 
  * @author Gerald Hattensauer
  */
-class Vertex extends RegisterContainer
+class Vertex extends RegisterTable
 {
 
 	public var index:Int;		
@@ -23,40 +20,8 @@ class Vertex extends RegisterContainer
 	
 	public function new( ?index:Int ) 
 	{
-		super( 0 );
+		super( 1 );
 		this.index = index;		
 	}	
 
-	// ************************************************************************ //
-	// Methodes
-	// ************************************************************************ //	
-	
-	/**
-	 * searches for the given attribute and returns it's data when found, or null
-	 * the data can usually be interpreted as Vector2 or Vector3
-	 */
-	public function getData( type:RegisterType, ?output:Array<Float> ):Array<Float>
-	{
-		var stream:RegisterData = this.getDataStream( type );
-		
-		if ( stream != null )	return stream.getValues( 0, output );
-		else					return null;
-	}
-	
-	/**
-	 * adds the given AttributeType to the vector and sets its data
-	 */
-	public function setData( type:RegisterType, values:Array<Float> ):Void
-	{
-		var stream:RegisterData = this.getDataStream( type );
-		
-		if ( stream == null )
-		{
-			stream = new RegisterData( type, 0 );
-			this.addDataStream( stream );
-		}
-		
-		stream.setValues( values, 0 );
-	}
-	
 }

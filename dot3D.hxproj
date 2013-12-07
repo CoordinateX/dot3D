@@ -20,6 +20,7 @@
     <class path="lib\hxsl" />
     <class path="lib\dotMath\src" />
     <class path="lib\dotLoader\src" />
+    <class path="test\src" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -31,7 +32,7 @@
   </build>
   <!-- haxelib libraries -->
   <haxelib>
-    <!-- example: <library name="..." /> -->
+    <library name="munit" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

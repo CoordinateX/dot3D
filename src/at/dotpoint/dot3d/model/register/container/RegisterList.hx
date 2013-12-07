@@ -1,8 +1,10 @@
 package at.dotpoint.dot3d.model.register.container;
 
+import at.dotpoint.dot3d.model.register.error.RegisterError;
 import at.dotpoint.dot3d.model.register.RegisterData;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import haxe.ds.Vector;
+import haxe.PosInfos;
 
 /**
  * ...
@@ -35,7 +37,9 @@ class RegisterList implements IRegisterContainer
 	public function new( numEntries:Int ) 
 	{
 		this.numEntries = numEntries;
+		
 		this.entries = new Vector< Array<RegisterData> >( this.numEntries );
+		this.registerTypes = new Array<RegisterType>();
 	}
 	
 	// ************************************************************************ //
@@ -46,14 +50,14 @@ class RegisterList implements IRegisterContainer
 	 * searches for the given attribute and returns it's data when found, or null
 	 * the data can usually be interpreted as Vector2 or Vector3
 	 */
-	public function getData( type:RegisterType, index:Int ):Array<Float>
+	public function getData( type:RegisterType, index:Int, ?output:Array<Float> ):Array<Float>
 	{
 		if( this.hasRegisterType( type ) )
 		{
 			var entry:Array<RegisterData> = this.getEntry( index );
 			
 			if( entry != null ) 
-				return this.getRegisterData( entry, type ).getValues( 0 );
+				return this.getRegisterData( entry, type ).getValues( 0, output );
 		}
 		
 		return null;
@@ -139,7 +143,7 @@ class RegisterList implements IRegisterContainer
 		for( register in entry )
 		{
 			if( register.type == type )
-				return register
+				return register;
 		}		
 		
 		return null;
@@ -174,7 +178,7 @@ class RegisterList implements IRegisterContainer
 	 */
 	private function removeRegisterData( stream:RegisterData ):Bool
 	{
-		return;
+		return false;
 	}	
 	
 	/**
@@ -193,10 +197,10 @@ class RegisterList implements IRegisterContainer
 	// Error-Checks
 	
 	// out of bounds check
-	inline private function checkBounds( index:Int ):Void
+	inline private function checkBounds( index:Int, ?pos:PosInfos ):Void
 	{
-		if ( index < 0 || index > this.numEntries) 
-			throw "given index " + index + " is out of bounds (max: " + this.numEntries + ")";
+		if ( index < 0 || index >= this.numEntries) 
+			throw RegisterError.createBoundsError( index, this.numEntries, pos );
 	}
 	
 }

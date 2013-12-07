@@ -21,7 +21,7 @@ interface IRegisterContainer
 	 * searches for the given attribute and returns it's data when found, or null
 	 * the data can usually be interpreted as Vector2 or Vector3
 	 */
-	public function getData( type:RegisterType, index:Int ):Array<Float>;
+	public function getData( type:RegisterType, index:Int, ?output:Array<Float> ):Array<Float>;
 	
 	/**
 	 * adds the given values to the RegisterData of the given index

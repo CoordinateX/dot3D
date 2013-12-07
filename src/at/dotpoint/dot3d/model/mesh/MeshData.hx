@@ -1,6 +1,7 @@
 package at.dotpoint.dot3d.model.mesh;
 
-import at.dotpoint.dot3d.model.register.RegisterContainer;
+import at.dotpoint.dot3d.model.register.container.IRegisterContainer;
+import at.dotpoint.dot3d.model.register.container.RegisterTable;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.dot3d.model.register.RegisterData;
 
@@ -8,8 +9,6 @@ import at.dotpoint.dot3d.model.register.RegisterData;
  * raw geometry storing data per vertex in a flat manner using RegisterData for each RegisterType;
  * so uv,position,normal,etc has its own RegisterData which stores the values for all vertices in an flat list
  * 
- * position:	v1x, v1y, v1z, 	v2x, v2y, v2z, 	...
- * uv:			v1u, v1v, 		v2u, v2v, 		...
  * 
  * @author Gerald Hattensauer
  */
@@ -19,16 +18,42 @@ class MeshData
 {
 	
 	public var indices(default,null):Array<UInt>;
-	public var vertices:RegisterContainer;
+	public var vertices:IRegisterContainer;
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	private function new( numVertices:Int ) 
+	public function new( verticeContainer:IRegisterContainer ) 
 	{
-		this.numVertices = numVertices;		
-		this.vertices = new RegisterContainer();
+		this.vertices = verticeContainer;
+	}
+	
+	/**
+	 * creates the mesh using the given Vertex informations and saves the index list
+	 * all vertices and its attributes are stored within a vertex stream, not as a
+	 * simple list of Vertex-Objects so any reference is useless. Make sure the set
+	 * index property of each vertex is set.
+	 * 
+	 * @param	vertices
+	 * @param	indices		1 tupple of size 3 defines a face
+	 */
+	// TODO: setVertexList for better performance
+	// TODO: strip/fans
+	//
+	public static function build( vertices:Array<Vertex>, indices:Array<UInt> ):MeshData
+	{
+		var container:IRegisterContainer = new RegisterTable( vertices.length );
+		
+		var mesh:MeshData = new MeshData( container );
+			mesh.indices = indices;
+		
+		for ( vertex in vertices )	 	
+		{
+			mesh.setVertex( vertex );
+		}
+		
+		return mesh;
 	}
 	
 	// ************************************************************************ //
@@ -39,7 +64,7 @@ class MeshData
 	 * returns a list of TriangleFace-Objects defining the whole mesh relying on a correct index-list
 	 * 1 index-tupple of size 3 defines a face; vertices that are shared between faces are the same object
 	 */
-	public function getFaceList():Array<TriangleFace>
+	/*public function getFaceList():Array<TriangleFace>
 	{
 		var vlist:Array<Vertex> = this.getVertexList();
 		var list:Array<TriangleFace> = new Array<TriangleFace>();		
@@ -59,13 +84,13 @@ class MeshData
 		}
 
 		return list;
-	}
+	}*/
 
 	/**
 	 * 1 index-tupple of size 3 defines a face, make sure you start at one, the 3 following vertices
 	 * are saved in the given face. the Vertex-Objects are not used internally.
 	 */
-	public function getFace( findex:Int, ?output:TriangleFace ):TriangleFace
+	/*public function getFace( findex:Int, ?output:TriangleFace ):TriangleFace
 	{	
 		if ( findex % 3 != 0 ) 						throw "index must be a multiple of 3";
 		if ( findex > this.indices.length - 3 ) 	throw "index out of bounds (max: this.indices.length - 3)";
@@ -79,7 +104,7 @@ class MeshData
 		output.vertices[2] = this.getVertex( this.indices[ findex + 2 ] );	
 		
 		return output;
-	}
+	}*/
 	
 	// ----------------------------------------------------------------------- //
 	// ----------------------------------------------------------------------- //
@@ -94,7 +119,7 @@ class MeshData
 	{
 		var list:Array<Vertex> = new Array<Vertex>();
 		
-		for ( v in 0...this.numVertices )
+		for ( v in 0...this.vertices.numEntries )
 		{
 			list.push( this.getVertex( v ) );
 		}
@@ -109,14 +134,20 @@ class MeshData
 	 */
 	public function getVertex( vindex:Int, ?output:Vertex ):Vertex
 	{
-		this.checkBounds( vindex );
-		
 		var vertex:Vertex = output != null ? output : new Vertex();
 			vertex.index = vindex;
 		
-		for ( stream in this.vertices )
+		var typelist:Array<RegisterType> = this.vertices.getRegisterTypes();
+		var value:Array<Float> = new Array<Float>();
+		
+		for ( type in typelist )
 		{
-			vertex.setData( stream.type, stream.getValues( vindex ) );
+			value = this.vertices.getData( type, vertex.index, value );
+			
+			while( value.length > type.size )
+					value.pop();
+			
+			vertex.setData( type, 0, value );
 		}
 		
 		return vertex;
@@ -128,21 +159,17 @@ class MeshData
 	 */
 	public function setVertex( vertex:Vertex ):Void
 	{
-		this.checkBounds( vertex.index );
-		
-		var typelist:Array<RegisterType> = vertex.getDataTypes();
+		var typelist:Array<RegisterType> = vertex.getRegisterTypes();
+		var value:Array<Float> = new Array<Float>();
 		
 		for ( type in typelist )
 		{
-			var stream:RegisterData = this.getDataStream( type );
+			value = vertex.getData( type, 0, value );
 			
-			if ( stream == null )
-			{
-				stream = new RegisterData( type, this.numVertices );
-				this.addDataStream( stream );
-			}
+			while( value.length > type.size )
+					value.pop();
 			
-			stream.setValues( vertex.getData( type ), vertex.index );
+			this.vertices.setData( type, vertex.index, value );
 		}
 	}
 	

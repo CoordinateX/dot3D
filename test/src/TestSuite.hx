@@ -1,7 +1,9 @@
 import massive.munit.TestSuite;
 
-import math.Vector2Test;
-import math.Vector3Test;
+import mesh.MeshListTest;
+import mesh.MeshTableTest;
+import register.RegisterListTest;
+import register.RegisterTableTest;
 
 /**
  * Auto generated Test Suite for MassiveUnit.
@@ -15,7 +17,9 @@ class TestSuite extends massive.munit.TestSuite
 	{
 		super();
 
-		add(math.Vector2Test);
-		add(math.Vector3Test);
+		add(mesh.MeshListTest);
+		add(mesh.MeshTableTest);
+		add(register.RegisterListTest);
+		add(register.RegisterTableTest);
 	}
 }
