@@ -27,7 +27,7 @@ class RegisterData
 	/**
 	 * just a single entry? true - all getValues point to the first (and only) entry
 	 */
-	private var numEntries:Int;
+	public var numEntries(default,null):Int;
 	
 	// ************************************************************************ //
 	// Constructor

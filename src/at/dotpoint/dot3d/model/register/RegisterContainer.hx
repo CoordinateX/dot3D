@@ -1,4 +1,4 @@
-package at.dotpoint.dot3d.model.register.container;
+package at.dotpoint.dot3d.model.register;
 
 import at.dotpoint.dot3d.model.register.error.RegisterError;
 import at.dotpoint.dot3d.model.register.RegisterData;
@@ -11,10 +11,8 @@ import haxe.PosInfos;
  * @author RK
  */
 @:access( at.dotpoint.dot3d.model.register )
- //
- // TODO: index everything! ala *obj. to make the ds more compact
- //
-class RegisterTable implements IRegisterContainer
+//
+class RegisterContainer
 {
 
 	/**
@@ -24,23 +22,47 @@ class RegisterTable implements IRegisterContainer
 	 */
 	private var registers(default, null):Array<RegisterData>;	
 	
-	/**
-	 * number of entries data can be get from and set to
-	 */
-	public var numEntries(default, null):Int;
-	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( numEntries:Int ) 
+	public function new() 
 	{
-		this.numEntries = numEntries;
 		this.registers = new Array<RegisterData>();
 	}
 	
 	// ************************************************************************ //
 	// Methodes
+	// ************************************************************************ //	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public function getNumEntries():Int
+	{
+		var max:Int = 0;
+		
+		for( register in this.registers )
+		{
+			if( register.numEntries > max )
+				max = register.numEntries;
+		}
+		
+		return max;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public function getNumTypes():Int
+	{
+		return this.registers.length;
+	}
+	
+	// ************************************************************************ //
+	// get/set
 	// ************************************************************************ //	
 	
 	/**
@@ -60,14 +82,10 @@ class RegisterTable implements IRegisterContainer
 	 */
 	public function setData( type:RegisterType, index:Int, values:Array<Float> ):Void
 	{
-		this.checkBounds( index );
 		var stream:RegisterData = this.getRegisterData( type );
 		
 		if ( stream == null )
-		{
-			stream = new RegisterData( type, this.numEntries );
-			this.addRegisterData( stream );
-		}
+			throw "must add a RegisterData Object first";
 		
 		stream.setValues( values, index );
 	}
@@ -107,7 +125,7 @@ class RegisterTable implements IRegisterContainer
 	/**
 	 * searches for the given RegisterType and returns the corresponding RegisterData in case it exists or null
 	 */
-	private function getRegisterData( type:RegisterType ):RegisterData
+	public function getRegisterData( type:RegisterType ):RegisterData
 	{
 		for ( stream in this.registers )
 		{
@@ -122,13 +140,10 @@ class RegisterTable implements IRegisterContainer
 	 * adds the DataStream to the register stream. throws errors in case it 
 	 * does exist already or the given stream has not the right size for the amount of registers
 	 */
-	private function addRegisterData( stream:RegisterData ):Void
+	public function addRegisterData( stream:RegisterData ):Void
 	{
 		if ( this.hasRegisterType( stream.type ) ) 
 			throw "DataType " + stream.type + " already exists";
-			
-		if ( stream.stream.length != stream.type.size * this.numEntries )
-			throw "DataStream must allocate space for exactly " + this.numEntries + " registers";
 		
 		// ------------- //			
 		
@@ -139,7 +154,7 @@ class RegisterTable implements IRegisterContainer
 	/**
 	 * removes an DataStream and returns true in case it worked
 	 */
-	private function removeRegisterData( stream:RegisterData ):Bool
+	public function removeRegisterData( stream:RegisterData ):Bool
 	{
 		#if debug
 		if ( !this.hasRegisterType( stream.type ) ) 
@@ -160,14 +175,4 @@ class RegisterTable implements IRegisterContainer
 		return stream1.type.priority - stream2.type.priority;
 	}
 	
-	// ----------------------------------------------------------------------- //
-	// ----------------------------------------------------------------------- //
-	// Error-Checks
-	
-	// out of bounds check
-	inline private function checkBounds( index:Int, ?pos:PosInfos ):Void
-	{
-		if ( index < 0 || index >= this.numEntries) 
-			throw RegisterError.createBoundsError( index, this.numEntries, pos );
-	}	
 }

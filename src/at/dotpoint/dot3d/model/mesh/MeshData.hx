@@ -1,9 +1,9 @@
 package at.dotpoint.dot3d.model.mesh;
 
-import at.dotpoint.dot3d.model.register.container.IRegisterContainer;
-import at.dotpoint.dot3d.model.register.container.RegisterTable;
+import at.dotpoint.dot3d.model.register.RegisterContainer;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.dot3d.model.register.RegisterData;
+import haxe.ds.StringMap;
 
 /**
  * raw geometry storing data per vertex in a flat manner using RegisterData for each RegisterType;
@@ -12,133 +12,122 @@ import at.dotpoint.dot3d.model.register.RegisterData;
  * 
  * @author Gerald Hattensauer
  */
-@:access( at.dotpoint.dot3d.model.register.RegisterData )
- //
 class MeshData
 {
 	
-	public var indices(default,null):Array<UInt>;
-	public var vertices(default,null):IRegisterContainer;
+	/**
+	 * triangle:	   0		   1					...
+	 * 
+	 * position: 	0, 1, 2,	2, 3, 0,				...
+	 * normal:		0, 0, 0,	0, 0, 0,	1, 1, 1, 	...
+	 * uv:			0, 1, 2,	2, 3, 0,				...
+	 * 					  ^		^
+	 * 				   equal vertices
+	 * 
+	 * each value is an index to the vertex data: pos[0] = v1x, v1y, v1z
+	 * each tuple of 3 makes a face/triangle
+	 * each column is a vertrex
+	 */
+	private var indices(default, null):Array< Array<UInt> >;
+	
+	/**
+	 * index:			  0				  1			...			  n
+	 * 
+	 * position:	v1x, v1y, v1z, 	v2x, v2y, v2z, 	...,	vnx, vny, vnz
+	 * color:		v1r, v1g, v1b, 	v2r, v2g, v2b, 	...,	vnr, vng, vnb
+	 * uv:			v1u, v1v, 		v2u, v2v, 		...,	vnu, vnv
+	 */
+	private var vertices(default, null):RegisterContainer;
 	
 	// ------------------------------ //
 	
 	public var numVertices(get, null):Int;
-	public var numIndices(get, null):Int;
+	
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( verticeContainer:IRegisterContainer ) 
+	public function new() 
 	{
-		this.vertices = verticeContainer;
-		this.indices = new Array<UInt>();
+		this.vertices = new RegisterContainer();
+		this.indices = new Array< Array<UInt> >();
 	}
-	
-	/**
-	 * creates the mesh using the given Vertex informations and saves the index list
-	 * all vertices and its attributes are stored within a vertex stream, not as a
-	 * simple list of Vertex-Objects so any reference is useless. Make sure the set
-	 * index property of each vertex is set.
-	 * 
-	 * @param	vertices
-	 * @param	indices		1 tupple of size 3 defines a face
-	 */
-	public static function build( vertices:Array<Vertex>, indices:Array<UInt> ):MeshData
-	{
-		var container:IRegisterContainer = new RegisterTable( vertices.length );
-		
-		var mesh:MeshData = new MeshData( container );
-			mesh.indices = indices;
-		
-		for ( vertex in vertices )	 	
-		{
-			mesh.setVertex( vertex );
-		}
-		
-		return mesh;
-	}
-	
+
 	// ************************************************************************ //
 	// Methodes
 	// ************************************************************************ //	
 	
 	public function get_numVertices():Int
 	{
-		return this.vertices.numEntries;
-	}
-	
-	public function get_numIndices():Int
-	{
-		return this.indices.length;
+		return this.indices[0] == null ? 0 : this.indices[0].length;
 	}
 	
 	// ************************************************************************ //
 	// Methodes
-	// ************************************************************************ //	
+	// ************************************************************************ //
 	
 	/**
-	 * creates for each vertex stored in the mesh an vertex object and fills it with all the data it has
-	 * like uv, normal, position etc; each vertex is an object that is not associated with the geometry
-	 * and any change in the vertex will not reflect on the mesh unless the vertex is set again via setVertex
+	 * 
+	 * @param	index
+	 * @param	?output
+	 * @return
 	 */
-	public function getVertexList():Array<Vertex>
+	public function getVertexData( index:Int, ?output:Array<Float> ):Array<Float>
 	{
-		var list:Array<Vertex> = new Array<Vertex>();
+		output = output != null ? output : new Array<Float>();
 		
-		for ( v in 0...this.vertices.numEntries )
+		// ----------- //
+		
+		var types:Array<RegisterType> = this.vertices.getRegisterTypes();
+		var length:Int = this.vertices.getNumTypes();
+		
+		for( t in 0...length )
 		{
-			list.push( this.getVertex( v ) );
+			var type:RegisterType = types[t];
+			var tlist:Array<UInt> = this.indices[t];
+			
+			var data:Array<Float> = this.vertices.getData( type, tlist[index] );
+			
+			for( i in 0...data.length )
+				output.push( data[i] );
 		}
 		
-		return list;
+		return output;
 	}
 	
 	/**
-	 * creates and assembles an Vertex-Object out of all the registered attributes like uv, normal, etc
-	 * for the vertex on the index position given in the argument. the vertex is an object that is not associated
-	 * with the geometry and any change in the vertex will not reflect on the mesh unless the vertex is set again via setVertex
+	 * beware to send the data in the right order!
+	 * index list own ds?
+	 * 
+	 * @param	faceIndex
+	 * @param	dataIndices	[v1p, v1n, 	v2p, v2n, 	v3p, v3n]
 	 */
-	public function getVertex( vindex:Int, ?output:Vertex ):Vertex
-	{
-		var vertex:Vertex = output != null ? output : new Vertex();
-			vertex.index = vindex;
+	public function setFaceIndices( faceIndex:Int, input:Array<UInt> ):Void
+	{			
+		var length:Int = this.vertices.getNumTypes();
 		
-		var typelist:Array<RegisterType> = this.vertices.getRegisterTypes();
-		var value:Array<Float> = new Array<Float>();
+		if( input.length != 3 * length )
+			throw "must provide exactly 3 vertices * " + length;		
 		
-		for ( type in typelist )
+		for( v in 0...3 )
 		{
-			value = this.vertices.getData( type, vertex.index, value );
-			
-			while( value.length > type.size )
-					value.pop();
-			
-			vertex.setData( type, 0, value );
-		}
-		
-		return vertex;
-	}
-	
-	/**
-	 * copies each attribute value of the vertex into the corresponding RegisterData. in case the RegisterType does not exist
-	 * a new RegisterData will be created and stored in the mesh. Use this methode to change the mesh and its vertex-attributes
-	 */
-	public function setVertex( vertex:Vertex ):Void
-	{
-		var typelist:Array<RegisterType> = vertex.getRegisterTypes();
-		var value:Array<Float> = new Array<Float>();
-		
-		for ( type in typelist )
-		{
-			value = vertex.getData( type, 0, value );
-			
-			while( value.length > type.size )
-					value.pop();
-			
-			this.vertices.setData( type, vertex.index, value );
+			for( t in 0...length )
+			{
+				var tlist:Array<UInt> = this.indices[t]; 		// position, normal, ...
+				
+				if( tlist == null )
+				{
+					tlist = new Array<UInt>();
+					this.indices[t] = tlist;
+				}
+				
+				tlist[ faceIndex * 3 + v ] = input[ v * length + t ];
+				
+				// möglich aus input signatur + lookup table doppelte vertices zu filtern
+				// vertex-input.join("/") und dann hashmap ... ist simple
+			}
 		}
 	}
-	
-	
+		
 }

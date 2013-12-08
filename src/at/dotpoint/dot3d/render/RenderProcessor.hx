@@ -1,7 +1,6 @@
 package at.dotpoint.dot3d.render;
 
 import at.dotpoint.dot3d.model.material.ContextSettings;
-import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.mesh.MeshBuffer;
@@ -11,14 +10,16 @@ import flash.display3D.Context3DProgramType;
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import hxsl.Shader;
-import haxe.io.BytesData;
 import flash.utils.Endian;
+import haxe.io.BytesData;
+import hxsl.Shader;
 
 /**
  * ...
  * @author RK
  */
+@:access(at.dotpoint.dot3d.model.mesh)
+ //
 class RenderProcessor extends EventDispatcher
 {
 

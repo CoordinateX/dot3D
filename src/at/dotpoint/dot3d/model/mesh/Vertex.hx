@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.model.mesh;
 
-import at.dotpoint.dot3d.model.register.container.RegisterTable;
+import at.dotpoint.dot3d.model.register.RegisterContainer;
 
 /**
  * generated object including all informations relating to the vertex. this object is not used
@@ -9,7 +9,7 @@ import at.dotpoint.dot3d.model.register.container.RegisterTable;
  * 
  * @author Gerald Hattensauer
  */
-class Vertex extends RegisterTable
+class Vertex extends RegisterContainer
 {
 
 	public var index:Int;		

@@ -27,8 +27,8 @@ class Register
 	// --------------------------------------------------- //
 	
 	public static var VERTEX_POSITION:RegisterType 		= new RegisterType( "pos", 				VarType.TFloat3, 0 );
-	public static var VERTEX_NORMAL:RegisterType 		= new RegisterType( "normal", 			VarType.TFloat3, 1 );
-	public static var VERTEX_UV:RegisterType 			= new RegisterType( "uv", 				VarType.TFloat2, 2 );
+	public static var VERTEX_NORMAL:RegisterType 		= new RegisterType( "normal", 			VarType.TFloat3, 2 );
+	public static var VERTEX_UV:RegisterType 			= new RegisterType( "uv", 				VarType.TFloat2, 1 );
 	public static var VERTEX_BARYCENTRIC:RegisterType 	= new RegisterType( "barycentric", 		VarType.TFloat3,  3 ); // wireframe
 	
 	// --------------------------------------------------- //

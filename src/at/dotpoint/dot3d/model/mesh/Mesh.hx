@@ -24,30 +24,15 @@ class Mesh
 	// Constructor
 	// ************************************************************************ //
 	
-	public function new( data:MeshData ) 
+	public function new() 
 	{
-		this.data = data;
+		this.data = new MeshData();
 		this.buffer = new MeshBuffer();
 	}
 	
 	// ************************************************************************ //
 	// Methodes
 	// ************************************************************************ //	
-	
-	/**
-	 * 
-	 * @param	faceIndex
-	 * @param	normals
-	 */
-	inline private function setFaceData( type:RegisterType, index:Int, values:Array<Float> ):Void
-	{
-		for( j in 0...3 )
-		{
-			var vertexIndex:Int = this.data.indices[ index + j ];
-			this.data.vertices.setData( type, vertexIndex, values );
-		}
-		
-	}
 	
 	/**
 	 * 
@@ -66,10 +51,8 @@ class Mesh
 	 * @param	v2
 	 * @param	v3
 	 */
-	inline private function setIndexData( v1:Int, v2:Int, v3:Int ):Void
+	inline private function setFaceIndices( faceIndex:Int, input:Array<UInt> ):Void
 	{
-		this.data.indices.push( v1 );
-		this.data.indices.push( v2 );
-		this.data.indices.push( v3 );
+		this.data.setFaceIndices( faceIndex, input );
 	}
 }

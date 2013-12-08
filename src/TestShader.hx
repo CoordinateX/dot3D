@@ -28,8 +28,8 @@ private class TShader extends Shader
 		var input: 
 		{
 			pos:Float3,
-			normal:Float3,
 			uv:Float2,
+			normal:Float3,			
 		};	
 		
 		var tuv:Float2;

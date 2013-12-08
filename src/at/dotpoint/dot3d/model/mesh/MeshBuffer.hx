@@ -1,6 +1,5 @@
 package at.dotpoint.dot3d.model.mesh;
 
-import at.dotpoint.dot3d.model.register.container.IRegisterContainer;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import flash.display3D.Context3D;
 import flash.display3D.IndexBuffer3D;
@@ -12,6 +11,8 @@ import flash.display3D.VertexBuffer3D;
  * Stores the Attribute-Values for all vertices of a given mesh. Position, Normals, UV's etc.
  * Specifies pure geometry only, no materials
  */
+@:access(at.dotpoint.dot3d.model.mesh)
+ //
 class MeshBuffer
 {
 
@@ -66,7 +67,11 @@ class MeshBuffer
 	 */
 	private function allocateIndexBuffer( context:Context3D, data:MeshData ):Void
 	{
-		var indices:Array<UInt> = data.indices;		
+		var numVertices:Int = data.numVertices;		
+		var indices:Array<UInt> = new Array<UInt>();		
+		
+		for( i in 0...numVertices )
+			indices.push( i );
 		
 		this.indexBuffer = context.createIndexBuffer( indices.length );
 		this.indexBuffer.uploadFromVector( flash.Vector.ofArray( indices ), 0, indices.length );	
@@ -79,27 +84,17 @@ class MeshBuffer
 	 */
 	private function allocateVertexBuffer( context:Context3D, data:MeshData ):Void
 	{
-		var vertices:IRegisterContainer = data.vertices;
-		
-		var numVertices:Int = vertices.numEntries;
-		var typeList:Array<RegisterType> = vertices.getRegisterTypes();
-		
+		var numVertices:Int = data.numVertices;		
 		var vlist:Array<Float> = new Array<Float>();			
-		var tmp:Array<Float> = new Array<Float>();				
 		
-		for ( k in 0...numVertices )
+		for ( v in 0...numVertices )
 		{
-			for ( type in typeList )
-			{
-				tmp = vertices.getData( type, k, tmp );
-				
-				for ( j in 0...type.size )
-					vlist.push( tmp[j] );
-			}
+			vlist = data.getVertexData( v, vlist );
 		}
 		
 		// ------------- //
 		
+		var typeList:Array<RegisterType> = data.vertices.getRegisterTypes();
 		var numVData:Int = 0;
 		
 		for ( type in typeList )
