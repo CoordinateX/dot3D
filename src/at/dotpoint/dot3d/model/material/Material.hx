@@ -1,7 +1,5 @@
 package at.dotpoint.dot3d.model.material;
 
-import at.dotpoint.dot3d.model.material.ShaderInput;
-import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import hxsl.Data;
 import hxsl.Shader;
@@ -18,19 +16,24 @@ import hxsl.Shader;
 class Material 
 {
 
-	public var name:String;
+	/**
+	 * hxsl shader
+	 */
 	public var shader:Shader;	
 	
-	public var context:ContextSettings;
+	/**
+	 * settings applied before rendering the material
+	 */
+	public var contextSetting:ContextSettings;
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( shader:Shader, ?context:ContextSettings ) 
+	public function new( shader:Shader, ?contextSetting:ContextSettings ) 
 	{		
 		this.shader = shader;
-		this.context = context != null ? context : new ContextSettings();
+		this.contextSetting = contextSetting != null ? contextSetting : new ContextSettings();
 	}
 	
 	// ************************************************************************ //
@@ -53,7 +56,7 @@ class Material
 	/**
 	 * this.shader.globals.data VInput
 	 */
-  	public function getVertexBuffer():Array<RegisterType>
+  	public function reflectVertexBuffer():Array<RegisterType>
 	{
 		var global:ShaderGlobals = this.shader.globals;		
 		var data:Data = global.data;
@@ -84,7 +87,7 @@ class Material
 	/**
 	 *  data.fragment.args
 	 */
-	public function getVertexArguments():Array<RegisterType>
+	public function reflectVertexArguments():Array<RegisterType>
 	{		
 		return null;
 	}

@@ -1,11 +1,8 @@
 package at.dotpoint.dot3d.model.material;
 
-import at.dotpoint.tilezeit.IAllocate3D;
-import at.dotpoint.tilezeit.IUniqueID;
 import flash.display.BitmapData;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DTextureFormat;
-import flash.display3D.textures.TextureBase;
 
 /**
  * ...

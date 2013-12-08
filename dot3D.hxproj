@@ -28,11 +28,12 @@
     <option flashStrict="False" />
     <option mainClass="Main" />
     <option enabledebug="True" />
-    <option additional="" />
+    <option additional="-D dotpoint" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
     <library name="munit" />
+    <library name="format" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

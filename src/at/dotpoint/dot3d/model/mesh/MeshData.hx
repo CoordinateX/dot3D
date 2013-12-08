@@ -18,7 +18,12 @@ class MeshData
 {
 	
 	public var indices(default,null):Array<UInt>;
-	public var vertices:IRegisterContainer;
+	public var vertices(default,null):IRegisterContainer;
+	
+	// ------------------------------ //
+	
+	public var numVertices(get, null):Int;
+	public var numIndices(get, null):Int;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -27,6 +32,7 @@ class MeshData
 	public function new( verticeContainer:IRegisterContainer ) 
 	{
 		this.vertices = verticeContainer;
+		this.indices = new Array<UInt>();
 	}
 	
 	/**
@@ -38,9 +44,6 @@ class MeshData
 	 * @param	vertices
 	 * @param	indices		1 tupple of size 3 defines a face
 	 */
-	// TODO: setVertexList for better performance
-	// TODO: strip/fans
-	//
 	public static function build( vertices:Array<Vertex>, indices:Array<UInt> ):MeshData
 	{
 		var container:IRegisterContainer = new RegisterTable( vertices.length );
@@ -60,55 +63,19 @@ class MeshData
 	// Methodes
 	// ************************************************************************ //	
 	
-	/**
-	 * returns a list of TriangleFace-Objects defining the whole mesh relying on a correct index-list
-	 * 1 index-tupple of size 3 defines a face; vertices that are shared between faces are the same object
-	 */
-	/*public function getFaceList():Array<TriangleFace>
+	public function get_numVertices():Int
 	{
-		var vlist:Array<Vertex> = this.getVertexList();
-		var list:Array<TriangleFace> = new Array<TriangleFace>();		
-
-		var length:Int = this.indices.length;
-		var findex:Int = 0;		
-
-		while ( findex < length )
-		{
-			var face:TriangleFace = new TriangleFace( findex );
-				face.vertices[0] = vlist[ this.indices[ findex + 0 ] ];
-				face.vertices[1] = vlist[ this.indices[ findex + 1 ] ];
-				face.vertices[2] = vlist[ this.indices[ findex + 2 ] ];
-
-			list.push( face );
-			findex += 3;
-		}
-
-		return list;
-	}*/
-
-	/**
-	 * 1 index-tupple of size 3 defines a face, make sure you start at one, the 3 following vertices
-	 * are saved in the given face. the Vertex-Objects are not used internally.
-	 */
-	/*public function getFace( findex:Int, ?output:TriangleFace ):TriangleFace
-	{	
-		if ( findex % 3 != 0 ) 						throw "index must be a multiple of 3";
-		if ( findex > this.indices.length - 3 ) 	throw "index out of bounds (max: this.indices.length - 3)";
-		
-		if ( output == null ) 
-			output = new TriangleFace( findex );
-		
-		output.index = findex;
-		output.vertices[0] = this.getVertex( this.indices[ findex + 0 ] );
-		output.vertices[1] = this.getVertex( this.indices[ findex + 1 ] );
-		output.vertices[2] = this.getVertex( this.indices[ findex + 2 ] );	
-		
-		return output;
-	}*/
+		return this.vertices.numEntries;
+	}
 	
-	// ----------------------------------------------------------------------- //
-	// ----------------------------------------------------------------------- //
-	// Vertex:
+	public function get_numIndices():Int
+	{
+		return this.indices.length;
+	}
+	
+	// ************************************************************************ //
+	// Methodes
+	// ************************************************************************ //	
 	
 	/**
 	 * creates for each vertex stored in the mesh an vertex object and fills it with all the data it has

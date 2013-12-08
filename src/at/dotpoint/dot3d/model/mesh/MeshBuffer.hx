@@ -1,5 +1,6 @@
 package at.dotpoint.dot3d.model.mesh;
 
+import at.dotpoint.dot3d.model.register.container.IRegisterContainer;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import flash.display3D.Context3D;
 import flash.display3D.IndexBuffer3D;
@@ -23,9 +24,9 @@ class MeshBuffer
 	// Constructor
 	// ************************************************************************ //	
 	
-	private function new( numVertices:Int ) 
+	private function new() 
 	{
-		super( numVertices );
+		
 	}
 	
 	// ************************************************************************ //
@@ -34,15 +35,19 @@ class MeshBuffer
 	
 	private function get_isAllocated():Bool
 	{
-		return this.indexBuffer != null && this.vertexBuffer != null;
+		return this.indexBuffer != null || this.vertexBuffer != null;
 	}
+	
+	// ----------------------------------------------------------------------- //
+	// ----------------------------------------------------------------------- //
+	//allocate
 	
 	/**
 	 * 
 	 * @param	context
 	 * @param	mesh
 	 */
-	public function allocate( context:Context3D ):Void
+	public function allocate( context:Context3D, data:MeshData ):Void
 	{
 		if ( this.isAllocated ) 
 		{
@@ -50,36 +55,48 @@ class MeshBuffer
 			this.dispose();
 		}
 		
-		// ------------- //
-		
-		var indices::Array<UInt> = data.indices;		
+		this.allocateIndexBuffer( context, data );
+		this.allocateVertexBuffer( context, data );
+	}	
+	
+	/**
+	 * 
+	 * @param	context
+	 * @param	data
+	 */
+	private function allocateIndexBuffer( context:Context3D, data:MeshData ):Void
+	{
+		var indices:Array<UInt> = data.indices;		
 		
 		this.indexBuffer = context.createIndexBuffer( indices.length );
 		this.indexBuffer.uploadFromVector( flash.Vector.ofArray( indices ), 0, indices.length );	
+	}
+	
+	/**
+	 * 
+	 * @param	context
+	 * @param	data
+	 */
+	private function allocateVertexBuffer( context:Context3D, data:MeshData ):Void
+	{
+		var vertices:IRegisterContainer = data.vertices;
 		
-		// ------------- //
-		// TODO: optimize
-		
-		var numVertices:Int = data.numVertices;
-		var typeList:Array<RegisterType> = data.getDataTypes();
+		var numVertices:Int = vertices.numEntries;
+		var typeList:Array<RegisterType> = vertices.getRegisterTypes();
 		
 		var vlist:Array<Float> = new Array<Float>();			
-		var vertex:Vertex = new Vertex();				
+		var tmp:Array<Float> = new Array<Float>();				
 		
 		for ( k in 0...numVertices )
 		{
-			vertex = data.getVertex( k, vertex );
-			
 			for ( type in typeList )
 			{
-				var data:Array<Float> = vertex.getData( type );
+				tmp = vertices.getData( type, k, tmp );
 				
-				for ( value in data )
-				{
-					vlist.push( value );
-				}			
+				for ( j in 0...type.size )
+					vlist.push( tmp[j] );
 			}
-		}	
+		}
 		
 		// ------------- //
 		
@@ -94,7 +111,11 @@ class MeshBuffer
 		
 		this.vertexBuffer = context.createVertexBuffer( numVertices, numVData );
 		this.vertexBuffer.uploadFromVector( flash.Vector.ofArray( vlist ), 0, numVertices );
-	}	
+	}
+	
+	// ----------------------------------------------------------------------- //
+	// ----------------------------------------------------------------------- //
+	// dispose
 	
 	/**
 	 * 

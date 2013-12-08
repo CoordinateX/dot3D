@@ -3,6 +3,7 @@ package at.dotpoint.dot3d.transform;
 import at.dotpoint.core.event.EvaluateEvent;
 import at.dotpoint.math.vector.IVector3;
 import at.dotpoint.math.vector.Matrix44;
+import at.dotpoint.math.vector.Vector3;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 
@@ -72,7 +73,7 @@ class Transform extends EventDispatcher
 	 * 
 	 * column-matrix; 
 	 */
-	public function setMatrix( matrix:Matrix44, ?scale:IVector3 ):Void
+	public function setMatrix( matrix:Matrix44, ?scale:Vector3 ):Void
 	{
 		if ( !Matrix44.isEqual( this.matrix, matrix ) )
 		{

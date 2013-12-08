@@ -12,6 +12,8 @@ import haxe.PosInfos;
  */
 @:access( at.dotpoint.dot3d.model.register )
  //
+ // TODO: index everything! ala *obj. to make the ds more compact
+ //
 class RegisterTable implements IRegisterContainer
 {
 

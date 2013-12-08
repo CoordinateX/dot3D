@@ -1,6 +1,5 @@
 package at.dotpoint.dot3d.model.material;
 
-import at.dotpoint.ICloneable;
 import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DCompareMode;
 import flash.display3D.Context3DTriangleFace;

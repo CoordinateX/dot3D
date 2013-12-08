@@ -1,8 +1,9 @@
 package at.dotpoint.dot3d.model;
 
+import at.dotpoint.dot3d.EntityContainer;
 import at.dotpoint.dot3d.model.material.Material;
-import at.dotpoint.dot3d.model.material.ShaderSpecification;
 import at.dotpoint.dot3d.model.mesh.Mesh;
+import at.dotpoint.dot3d.transform.Transform;
 
 /**
  * Model is a combination of pure geometry (Mesh) and a collection of Materials applied to specific regions of the Mesh
@@ -15,7 +16,7 @@ import at.dotpoint.dot3d.model.mesh.Mesh;
  * 
  * @author Gerald Hattensauer
  */
-class Model
+class Model extends EntityContainer
 {
 	
 	/**
@@ -26,16 +27,18 @@ class Model
 	/**
 	 * material, shader, textures - can also be applied to mesh sub regions only 
 	 */
-	public var materials:Array<MeshMaterial>;
+	public var material:Material;	
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
 	
-	public function new( ?mesh:Mesh ) 
+	public function new( ?mesh:Mesh, ?material:Material ) 
 	{
+		super();
+		
 		this.mesh = mesh;
-		this.materials = new Array<MeshMaterial>();
+		this.material = material;
 	}	
 	
 

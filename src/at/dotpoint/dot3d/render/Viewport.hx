@@ -1,5 +1,6 @@
 package at.dotpoint.dot3d.render;
 
+import flash.display.DisplayObject;
 import flash.display.Stage3D;
 import flash.display3D.Context3D;
 import flash.events.ErrorEvent;
@@ -40,6 +41,29 @@ class Viewport extends ScreenDimension
 		super( w, h );	
 		this.stage3D = stage;	
 	}		
+	
+	/**
+	 * 
+	 * @param	view
+	 * @param	useStageDimensions
+	 * @return
+	 */
+	public static function create( view:DisplayObject, useStageDimensions:Bool ):Viewport
+	{
+		if( view.stage == null )
+			throw "must be added to the displaylist";
+		
+		var w:Int = Std.int( view.width );
+		var h:Int = Std.int( view.height );
+		
+		if( useStageDimensions )
+		{
+			w = view.stage.stageWidth;
+			h = view.stage.stageHeight;
+		}
+		
+		return new Viewport( view.stage.stage3Ds[0], w, h );
+	}
 	
 	// ************************************************************************ //
 	// getter / setter

@@ -44,7 +44,7 @@ class LazyVector3 extends EventDispatcher
 	/**
 	 * calls setComponents with the values of the given vector
 	 */
-	public function setVector( vector:IVector3 ):Void
+	public function setVector( vector:Vector3 ):Void
 	{
 		this.setComponents( vector.x, vector.y, vector.z );
 	}
