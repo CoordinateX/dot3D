@@ -1,8 +1,8 @@
 package at.dotpoint.dot3d.model.register;
 
-import at.dotpoint.dot3d.model.register.error.RegisterError;
 import at.dotpoint.dot3d.model.register.RegisterData;
 import at.dotpoint.dot3d.model.register.RegisterType;
+import haxe.ds.Vector;
 import haxe.PosInfos;
 
 /**
@@ -10,9 +10,7 @@ import haxe.PosInfos;
  * 
  * @author RK
  */
-@:access( at.dotpoint.dot3d.model.register )
-//
-class RegisterContainer
+class RegisterContainer<T:Dynamic> 
 {
 
 	/**
@@ -20,15 +18,21 @@ class RegisterContainer
 	 * color:		v1r, v1g, v1b, 	v2r, v2g, v2b, 	...,	vnr, vng, vnb
 	 * uv:			v1u, v1v, 		v2u, v2v, 		...,	vnu, vnv
 	 */
-	private var registers(default, null):Array<RegisterData>;	
+	private var registers(default, null):Vector<RegisterData<T>>;	
+	
+	/**
+	 * list with RegisterTypes
+	 */
+	private var signature(default, null):RegisterSignature;
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new() 
+	public function new( signature:RegisterSignature ) 
 	{
-		this.registers = new Array<RegisterData>();
+		this.signature = signature;		
+		this.registers = new Vector<RegisterData<T>>( this.signature.size() );
 	}
 	
 	// ************************************************************************ //
@@ -36,42 +40,12 @@ class RegisterContainer
 	// ************************************************************************ //	
 	
 	/**
-	 * 
-	 * @return
-	 */
-	public function getNumEntries():Int
-	{
-		var max:Int = 0;
-		
-		for( register in this.registers )
-		{
-			if( register.numEntries > max )
-				max = register.numEntries;
-		}
-		
-		return max;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public function getNumTypes():Int
-	{
-		return this.registers.length;
-	}
-	
-	// ************************************************************************ //
-	// get/set
-	// ************************************************************************ //	
-	
-	/**
 	 * searches for the given attribute and returns it's data when found, or null
 	 * the data can usually be interpreted as Vector2 or Vector3
 	 */
-	public function getData( type:RegisterType, index:Int, ?output:Array<Float> ):Array<Float>
+	public function getData( type:RegisterType, index:Int, ?output:Array<T> ):Array<T>
 	{
-		var stream:RegisterData = this.getRegisterData( type );
+		var stream:RegisterData<T> = this.getRegisterData( type );
 		
 		if ( stream != null )	return stream.getValues( index, output );
 		else					return null;
@@ -80,99 +54,53 @@ class RegisterContainer
 	/**
 	 * adds the given values to the RegisterData of the given index
 	 */
-	public function setData( type:RegisterType, index:Int, values:Array<Float> ):Void
+	public function setData( type:RegisterType, index:Int, values:Array<T> ):Void
 	{
-		var stream:RegisterData = this.getRegisterData( type );
+		var stream:RegisterData<T> = this.getRegisterData( type );
 		
-		if ( stream == null )
-			throw "must add a RegisterData Object first";
+		if ( stream == null && this.signature.hasType( type ) )
+		{
+			stream = new RegisterData<T>( type, this.signature.getNumEntries( type ) );
+			this.setRegisterData( stream );
+		}
 		
 		stream.setValues( values, index );
 	}
 	
-	// ----------------------------------------------------------------------- //
-	// ----------------------------------------------------------------------- //
-	// DataTypes:
-	
-	/**
-	 * creates a list of all existing RegisterType saved for this mesh therefore
-	 * lists all register-attribute-types that are avaible
-	 */
-	public function getRegisterTypes():Array<RegisterType>
-	{	
-		var list:Array<RegisterType> = new Array<RegisterType>();
-		
-		for ( stream in this.registers )
-		{
-			list.push( stream.type );
-		}
-		
-		return list;
-	}
-	
+	// ------------------------------------------------------------------ //
+	// ------------------------------------------------------------------ //
+
 	/**
 	 * checks if the given RegisterType exists already in form of a RegisterData
 	 */
-	public function hasRegisterType( type:RegisterType ):Bool
+	public function hasRegisterData( type:RegisterType ):Bool
 	{
 		return this.getRegisterData( type ) != null;
 	}
 	
-	// ************************************************************************ //
-	// Stream
-	// ************************************************************************ //	
-	
 	/**
 	 * searches for the given RegisterType and returns the corresponding RegisterData in case it exists or null
 	 */
-	public function getRegisterData( type:RegisterType ):RegisterData
+	public function getRegisterData( type:RegisterType ):RegisterData<T>
 	{
-		for ( stream in this.registers )
-		{
-			if ( stream.type.ID == type.ID )
-				return stream;
-		}
+		var index:Int = this.signature.indexOf( type );	
 		
-		return null;
+		if ( index < 0 ) 	return null;
+		else 				return this.registers[ index ];	
 	}
 	
 	/**
 	 * adds the DataStream to the register stream. throws errors in case it 
 	 * does exist already or the given stream has not the right size for the amount of registers
 	 */
-	public function addRegisterData( stream:RegisterData ):Void
+	public function setRegisterData( stream:RegisterData<T> ):Void
 	{
-		if ( this.hasRegisterType( stream.type ) ) 
-			throw "DataType " + stream.type + " already exists";
+		var index:Int = this.signature.indexOf( stream.type );	
 		
-		// ------------- //			
+		if ( index < 0 ) 
+			throw "RegisterData for type: " + stream.type + " is not allowed in this RegisterContainer";
 		
-		this.registers.push( stream );
-		this.registers.sort( this.sortStream );
+		this.registers[ index ] = stream;
 	}	
-	
-	/**
-	 * removes an DataStream and returns true in case it worked
-	 */
-	public function removeRegisterData( stream:RegisterData ):Bool
-	{
-		#if debug
-		if ( !this.hasRegisterType( stream.type ) ) 
-			trace( "DataStream " + stream.type + " does not exist" );
-		#end	
-		
-		return this.registers.remove( stream );
-	}	
-	
-	/**
-	 * 
-	 * @param	stream1
-	 * @param	stream2
-	 * @return
-	 */
-	private function sortStream( stream1:RegisterData, stream2:RegisterData ):Int
-	{
-		return stream1.type.priority - stream2.type.priority;
-	}
 	
 }

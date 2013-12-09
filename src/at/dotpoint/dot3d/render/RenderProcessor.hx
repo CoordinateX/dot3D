@@ -4,6 +4,7 @@ import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.mesh.MeshBuffer;
+import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
@@ -248,13 +249,14 @@ class RenderProcessor extends EventDispatcher
 	 */
 	private function setVertexBuffer( mesh:Mesh ):Void
 	{
-		var types:Array<RegisterType> = mesh.data.vertices.getRegisterTypes();
+		var signature:MeshSignature = mesh.data.signature;
 		
 		var pos:Int 	= 0;
 		var offset:Int 	= 0;
 		
-		for ( register in types )
+		for ( t in 0...signature.size() )
 		{
+			var register:RegisterType = signature.getTypeByIndex( t );
 			var index:Int = this.indexOfVertexBuffer( register.ID );
 			
 			if ( index != -1 )

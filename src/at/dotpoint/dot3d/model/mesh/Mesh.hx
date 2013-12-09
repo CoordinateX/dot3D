@@ -1,4 +1,5 @@
 package at.dotpoint.dot3d.model.mesh;
+import at.dotpoint.dot3d.model.register.RegisterSignature;
 import at.dotpoint.dot3d.model.register.RegisterType;
 
 /**
@@ -24,35 +25,11 @@ class Mesh
 	// Constructor
 	// ************************************************************************ //
 	
-	public function new() 
+	public function new( signature:MeshSignature ) 
 	{
-		this.data = new MeshData();
+		this.data = new MeshData( signature );
 		this.buffer = new MeshBuffer();
 	}
 	
-	// ************************************************************************ //
-	// Methodes
-	// ************************************************************************ //	
 	
-	/**
-	 * 
-	 * @param	type
-	 * @param	index
-	 * @param	values
-	 */
-	inline private function setVertexData( type:RegisterType, index:Int, values:Array<Float> ):Void
-	{
-		this.data.vertices.setData( type, index, values );
-	}
-	
-	/**
-	 * 
-	 * @param	v1
-	 * @param	v2
-	 * @param	v3
-	 */
-	inline private function setFaceIndices( faceIndex:Int, input:Array<UInt> ):Void
-	{
-		this.data.setFaceIndices( faceIndex, input );
-	}
 }

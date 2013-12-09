@@ -11,7 +11,7 @@ import haxe.ds.Vector;
  * stream:	v1x, v1y, v1z, 	v2x, v2y, v2z, 	...
  * 
  */
-class RegisterData 
+class RegisterData<T:Dynamic> 
 {
 
 	/**
@@ -22,7 +22,7 @@ class RegisterData
 	/**
 	 * values as a flat float list - might be for more vertices/entries
 	 */
-	private var stream:Vector<Float>;
+	private var stream:Vector<T>;
 	
 	/**
 	 * just a single entry? true - all getValues point to the first (and only) entry
@@ -38,7 +38,7 @@ class RegisterData
 		this.type = type;			
 		this.numEntries = numEntries;
 		
-		this.stream = new Vector<Float>( this.numEntries * this.type.size );
+		this.stream = new Vector<T>( this.numEntries * this.type.size );
 	}
 	
 	// ************************************************************************ //
@@ -48,14 +48,14 @@ class RegisterData
 	/**
 	 * creates and fills a vector with the attribute data of the vertex with the given index
 	 */
-	public function getValues( vindex:Int = 0, ?output:Array<Float> ):Array<Float>
+	public function getValues( vindex:Int = 0, ?output:Array<T> ):Array<T>
 	{
 		vindex = vindex * this.type.size;	
 		
 		var size:Int = this.type.size;		
 		
 		if( output == null )
-			output = new Array<Float>(); 
+			output = new Array<T>(); 
 		
 		for ( i in 0...size )
 		{
@@ -69,7 +69,7 @@ class RegisterData
 	/**
 	 * overwrites the attribute data of the vertex with the given index with the data provided in the argument
 	 */
-	public function setValues( values:Array<Float>, vindex:Int = 0 ):Void
+	public function setValues( values:Array<T>, vindex:Int = 0 ):Void
 	{
 		vindex = vindex * this.type.size;		
 		
