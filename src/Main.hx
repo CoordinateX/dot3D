@@ -4,8 +4,8 @@ import at.dotpoint.core.MainApplication;
 import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
-import at.dotpoint.dot3d.model.primitives.Cube;
 import at.dotpoint.dot3d.model.register.Register;
+import at.dotpoint.dot3d.primitives.Cube;
 import at.dotpoint.dot3d.render.RenderProcessor;
 import at.dotpoint.dot3d.render.RenderUnit;
 import at.dotpoint.dot3d.render.Viewport;
@@ -28,6 +28,9 @@ class Main extends MainApplication
 	
 	private var model:Model;
 	private var camera:Camera;
+	private var light:Vector3;
+	
+	private var t:Float;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -59,6 +62,8 @@ class Main extends MainApplication
 		
 		this.controller = new ModelController();
 		this.controller.moveSpeed = 10;
+		
+		this.t = 0;
 	}	
 	
 	/**
@@ -82,7 +87,20 @@ class Main extends MainApplication
 	private function onEnterFrame( event:Event ):Void
 	{
 		this.controller.update( this.model );
+		this.updateLight();
+		
 		this.render();
+	}
+	
+	/**
+	 * 
+	 */
+	private function updateLight():Void
+	{
+		this.t += 0.0001;	
+		
+		this.light = new Vector3( Math.cos(t * 10) * 1, Math.sin(t * 5) * 2, Math.sin(t) * Math.cos(t) * 2);
+		this.light.normalize();
 	}
 	
 	/**
@@ -95,6 +113,7 @@ class Main extends MainApplication
 		
 		Reflect.setProperty( this.model.material.shader, Register.MODEL_WORLD.ID, m2w );
 		Reflect.setProperty( this.model.material.shader, Register.WORLD_CAMERA.ID, w2c );
+		Reflect.setProperty( this.model.material.shader, "light", this.light );
 		
 		var unit:RenderUnit = new RenderUnit();
 			unit.context 	= this.model.material.contextSetting;

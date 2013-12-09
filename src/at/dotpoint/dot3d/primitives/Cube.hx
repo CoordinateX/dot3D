@@ -1,4 +1,4 @@
-package at.dotpoint.dot3d.model.primitives;
+package at.dotpoint.dot3d.primitives;
 
 import at.dotpoint.dot3d.model.mesh.EditableMesh;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;

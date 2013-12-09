@@ -33,17 +33,18 @@ private class TShader extends Shader
 		};	
 		
 		var tuv:Float2;
+		var lpow:Float;
 		
 		// ------------------------------------------------------------------ //
 		// ------------------------------------------------------------------ //
 		// Vertex:
 		
-		function vertex( mpos:M44, mproj:M44 /*light:Float3*/ ) 
+		function vertex( mpos:M44, mproj:M44, light:Float3 ) 
 		{
 			out = input.pos.xyzw * mpos * mproj;
 			
-			//var tnorm = (input.norm * mpos).normalize();
-			//lpow = light.dot(tnorm).max(0);
+			var tnorm = (input.normal * mpos).normalize();
+			lpow = light.dot(tnorm).max(0);
 			
 			tuv = input.uv;
 		}
@@ -60,7 +61,7 @@ private class TShader extends Shader
 			}
 			else
 			{
-				out = diffuseColor;
+				out = diffuseColor * (lpow * 0.8 + 0.2);
 			}
 		}
 	};
