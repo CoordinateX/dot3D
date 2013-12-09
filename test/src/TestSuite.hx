@@ -1,5 +1,7 @@
 import massive.munit.TestSuite;
 
+import dot3d.MeshSignaturTest;
+import ExampleTest;
 
 /**
  * Auto generated Test Suite for MassiveUnit.
@@ -13,5 +15,7 @@ class TestSuite extends massive.munit.TestSuite
 	{
 		super();
 
+		add(dot3d.MeshSignaturTest);
+		add(ExampleTest);
 	}
 }
