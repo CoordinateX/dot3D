@@ -135,4 +135,13 @@ class LazyQuaternion extends EventDispatcher
 		if( this.hasEventListener( EvaluateEvent.CHANGED ) )
 			this.dispatchEvent( new EvaluateEvent( EvaluateEvent.CHANGED, propertyID ) );
 	}	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	override public function toString():String
+	{
+		return this.value.toString();
+	}
 }

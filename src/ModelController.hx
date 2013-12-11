@@ -6,6 +6,8 @@ import at.dotpoint.dot3d.transform.Rotation;
 import at.dotpoint.dot3d.transform.Scale;
 import at.dotpoint.dot3d.transform.Transform;
 import at.dotpoint.dot3d.Space;
+import flash.events.KeyboardEvent;
+import flash.Lib;
 import flash.ui.Keyboard;
 
 /**
@@ -18,10 +20,19 @@ class ModelController
 	public var moveSpeed:Float = 1.;
 	public var rotateSpeed:Float = 0.025;
 	
+	public var isKeyDown:Bool;
 	
 	public function new() 
 	{
 		KeyInput.initialize();
+		
+		Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKey );
+        Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKey );
+	}
+	
+	private function onKey( event:KeyboardEvent ):Void
+	{
+		this.isKeyDown = event.type == KeyboardEvent.KEY_DOWN;
 	}
 	
 	/**
@@ -82,7 +93,6 @@ class ModelController
 			if ( KeyInput.isDown( Keyboard.F ) )
 				rotation.yaw( -this.rotateSpeed );
 		}
-		
-		// ---------------------------- //			
+
 	}
 }

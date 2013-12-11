@@ -135,54 +135,8 @@ class Rotation extends EventDispatcher
 		this.invalidEuler = false;										// set quaternion as old, euler represents it now
 	}
 	
-	// ___________________________________________________________________________ 
-	//															  # user methodes
-	
-	/**
-	 * 
-	 * @param	radians
-	 */
-	public function pitch( radians:Float ):Void 
-	{
-		this.setAxisAngle( new Vector3( 1, 0, 0 ), radians );
-	}
-	
-	/**
-	 * 
-	 * @param	radians
-	 */
-	public function yaw( radians:Float ):Void 
-	{
-		this.setAxisAngle( new Vector3( 0, 1, 0 ), radians );
-	}
-	
-	/**
-	 * 
-	 * @param	radians
-	 */
-	public function roll( radians:Float ):Void 
-	{
-		this.setAxisAngle(  new Vector3( 0, 0, 1 ), radians );
-	}
-	
-	/**
-	 * 
-	 * @param	axis
-	 * @param	radians
-	 */
-	public function setAxisAngle( axis:Vector3, radians:Float ):Void
-	{
-		var rotation:Quaternion = Quaternion.setAxisAngle( axis, radians, new Quaternion() );
-		
-		var new_rotation:Quaternion = Quaternion.multiply( this.quaternion.value, rotation, new Quaternion() );
-			new_rotation.normalize();
-		
-		this.quaternion.setQuaternion( new_rotation ); // dispatches on change
-	}
-	
 	// ----------------------------------------------------------------------- //
 	// ----------------------------------------------------------------------- //
-	/* INTERFACE at.dotpoint.tilezeit.ITransformComponent */
 	
 	/**
 	 * returns a clone of the internal rotation matrix; updating it in case the quaternion representation has changed
@@ -248,5 +202,73 @@ class Rotation extends EventDispatcher
 		if( this.hasEventListener( EvaluateEvent.CHANGED ) )
 			this.dispatchEvent( new EvaluateEvent( EvaluateEvent.CHANGED, propertyID ) );
 	}	
+	
+	// ************************************************************************ //
+	// USER METHODES
+	// ************************************************************************ //
+	
+	/**
+	 * X
+	 * @param	radians
+	 */
+	public function pitch( radians:Float ):Void 
+	{
+		this.setAxisAngle( new Vector3( 1, 0, 0 ), radians );
+	}
+	
+	/**
+	 * Y
+	 * @param	radians
+	 */
+	public function yaw( radians:Float ):Void 
+	{
+		this.setAxisAngle( new Vector3( 0, 1, 0 ), radians );
+	}
+	
+	/**
+	 * Z
+	 * @param	radians
+	 */
+	public function roll( radians:Float ):Void 
+	{
+		this.setAxisAngle(  new Vector3( 0, 0, 1 ), radians );
+	}
+	
+	/**
+	 * 
+	 * @param	axis
+	 * @param	radians
+	 */
+	public function setAxisAngle( axis:Vector3, radians:Float ):Void
+	{
+		var rotation:Quaternion = Quaternion.setAxisAngle( axis, radians, new Quaternion() );
+		
+		var new_rotation:Quaternion = Quaternion.multiply( this.quaternion.value, rotation, new Quaternion() );
+			new_rotation.normalize();
+		
+		this.quaternion.setQuaternion( new_rotation ); // dispatches on change
+	}
+	
+	public function lookAt( target:Vector3, ?up:Vector3 ):Void
+	{
+		up = up != null ? up : new Vector3( 0, 1, 0 );
+		//up = this.quaternion.value.getAxisY();
+		
+		this.quaternion.value.lookAt( target, up  );
+		
+		this.invalidEuler = true;
+		this.invalidMatrix = true;
+		
+		this.setDirty();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	override public function toString():String
+	{
+		return "[euler: " + this.euler + "; quaternion: " + this.quaternion + "]";
+	}
 
 }

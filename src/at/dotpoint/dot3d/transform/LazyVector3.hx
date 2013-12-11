@@ -122,4 +122,13 @@ class LazyVector3 extends EventDispatcher
 			this.dispatchEvent( new EvaluateEvent( EvaluateEvent.CHANGED, propertyID ) );
 	}	
 	
+	/**
+	 * 
+	 * @return
+	 */
+	override public function toString():String
+	{
+		return this.value.toString();
+	}
+	
 }

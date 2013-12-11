@@ -81,6 +81,5 @@ class Camera extends EntityContainer
 		Matrix44.multiply( this.lense.getProjectionMatrix(), this.getTransform( Space.WorldSpace ).getMatrix(), this.projectionMatrix );		
 		this.invalidMatrix = false;
 	}
-	
-	
+		
 }

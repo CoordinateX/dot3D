@@ -6,10 +6,12 @@ import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.dot3d.primitives.Cube;
+import at.dotpoint.dot3d.primitives.Plane;
 import at.dotpoint.dot3d.render.RenderProcessor;
 import at.dotpoint.dot3d.render.RenderUnit;
 import at.dotpoint.dot3d.render.Viewport;
 import at.dotpoint.dot3d.Space;
+import at.dotpoint.dot3d.transform.Transform;
 import at.dotpoint.math.vector.Matrix44;
 import at.dotpoint.math.vector.Vector3;
 import flash.events.Event;
@@ -29,6 +31,8 @@ class Main extends MainApplication
 	private var model:Model;
 	private var camera:Camera;
 	private var light:Vector3;
+	
+	private var modelList:Array<Model>;
 	
 	private var t:Float;
 	
@@ -61,7 +65,7 @@ class Main extends MainApplication
 		this.renderer.init( this.onRenderInitComplete );
 		
 		this.controller = new ModelController();
-		this.controller.moveSpeed = 10;
+		this.controller.moveSpeed = 1;
 		
 		this.t = 0;
 	}	
@@ -74,8 +78,15 @@ class Main extends MainApplication
 	{
 		this.camera = Camera.createDefault( this.renderer.viewport );
 		
-		this.model = this.createCube( 200 );		
-		this.model.getTransform( Space.WorldSpace ).position.z += 800;
+		this.model = this.createCube( 10 ); // this.createCube( 200 );		
+		this.model.getTransform( Space.WorldSpace ).position.z += 25;
+		
+		var m2:Model = this.createPlane( 800 ); // this.createCube( 200 );		
+			m2.getTransform( Space.WorldSpace ).position.z += 1900;
+		
+		this.modelList = new Array<Model>();
+		this.modelList.push( this.model );
+		this.modelList.push( m2 );
 		
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
 	}
@@ -87,9 +98,27 @@ class Main extends MainApplication
 	private function onEnterFrame( event:Event ):Void
 	{
 		this.controller.update( this.model );
-		this.updateLight();
+		
+		this.updateLight();	
+		
+		if( this.controller.isKeyDown )
+			this.updateCamera();
 		
 		this.render();
+	}
+	
+	/**
+	 * 
+	 */
+	private function updateCamera():Void
+	{
+		var camera:Transform = this.camera.getTransform( Space.WorldSpace );
+		var model:Transform = this.model.getTransform( Space.WorldSpace );
+		
+		/*var sec:Transform = this.modelList[1].getTransform( Space.WorldSpace );
+			sec.rotation.lookAt( model.position.getVector() );*/	
+			
+		camera.rotation.lookAt( model.position.getVector() );
 	}
 	
 	/**
@@ -103,27 +132,40 @@ class Main extends MainApplication
 		this.light.normalize();
 	}
 	
+	// ************************************************************************ //
+	// RENDER
+	// ************************************************************************ //
+	
 	/**
 	 * 
 	 */
 	private function render():Void
 	{
-		var m2w:Matrix44 = this.model.getTransform( Space.WorldSpace ).getMatrix();
-		var w2c:Matrix44 = this.camera.getProjectionMatrix();
+		var unitList:Array<RenderUnit> = new Array<RenderUnit>();
 		
-		Reflect.setProperty( this.model.material.shader, Register.MODEL_WORLD.ID, m2w );
-		Reflect.setProperty( this.model.material.shader, Register.WORLD_CAMERA.ID, w2c );
-		Reflect.setProperty( this.model.material.shader, "light", this.light );
-		
-		var unit:RenderUnit = new RenderUnit();
-			unit.context 	= this.model.material.contextSetting;
-			unit.shader 	= this.model.material.getInstance();
-			unit.mesh 		= this.model.mesh;
-		
-		// ----------------------- //			
-		
-		this.renderer.render( [unit] );
+		for( model in this.modelList )
+		{			
+			var m2w:Matrix44 = model.getTransform( Space.WorldSpace ).getMatrix();
+			var w2c:Matrix44 = this.camera.getProjectionMatrix();
+			
+			Reflect.setProperty( model.material.shader, Register.MODEL_WORLD.ID, m2w );
+			Reflect.setProperty( model.material.shader, Register.WORLD_CAMERA.ID, w2c );
+			Reflect.setProperty( model.material.shader, "light", this.light );
+			
+			var unit:RenderUnit = new RenderUnit();
+				unit.context 	= model.material.contextSetting;
+				unit.shader 	= model.material.getInstance();
+				unit.mesh 		= model.mesh;
+				
+			unitList.push( unit );
+		}
+	
+		this.renderer.render( unitList );
 	}
+	
+	// ************************************************************************ //
+	// Create
+	// ************************************************************************ //
 
 	/**
 	 * 
@@ -143,4 +185,16 @@ class Main extends MainApplication
 		return new Model( mesh, shader ); 
 	}
 	
+	private function createPlane( scale:Float = 1. ):Model
+	{
+		var w:Float = 1 * scale;
+		var h:Float = 1 * scale;
+		
+		var mesh:Mesh = new Plane( w, h );
+		
+		var shader:PointShader = new PointShader();
+			shader.diffuseColor = new Vector3( 0.25, 1, 0.25 );		
+		
+		return new Model( mesh, shader ); 
+	}
 }
