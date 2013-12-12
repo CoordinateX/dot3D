@@ -115,12 +115,12 @@ class RenderProcessor extends EventDispatcher
 	 */
 	public function render( list:Iterable<RenderUnit> ):Void
 	{
+		trace("");
 		this.context.clear( 0.1, 0.1, 0.1 );
 		
 		for ( unit in list )
 		{
-			if ( this.currentShader != unit.shader )
-				this.selectShader( unit.shader );		
+			this.selectShader( unit.shader );		
 			
 			// ------------------- //
 			
@@ -151,14 +151,19 @@ class RenderProcessor extends EventDispatcher
 	 * 
 	 * @param	material
 	 */
-	private function selectShader( shader:ShaderInstance ):Void
+	private function selectShader( shader:Shader ):Void
 	{
-		this.setProgram( shader );
+		var instance:ShaderInstance = shader.getInstance(); // call only once before drawing!
 		
-		this.currentShader = shader;			
-		this.currentShader.varsChanged = true;
-		
-		this.currentMesh = null; // new shader must be filled with new vertex buffer
+		if ( this.currentShader != instance )
+		{
+			this.setProgram( instance );
+			
+			this.currentShader = instance;			
+			this.currentShader.varsChanged = true;
+			
+			this.currentMesh = null; // new shader must be filled with new vertex buffer
+		}		
 	}	
 	
 	/**
@@ -169,6 +174,7 @@ class RenderProcessor extends EventDispatcher
 	{
 		if ( shader.program == null ) 
 		{
+			trace("program");
 			shader.program = this.context.createProgram();
 			
 			var vdata:BytesData = shader.vertexBytes.getData();
@@ -188,6 +194,8 @@ class RenderProcessor extends EventDispatcher
 	 */
 	private function updateShaderVars():Void
 	{		
+		trace("updateVars");
+		
 		this.currentShader.varsChanged = false;
 		
 		this.context.setProgramConstantsFromVector( Context3DProgramType.VERTEX, 0, this.currentShader.vertexVars.toData() );
@@ -236,6 +244,8 @@ class RenderProcessor extends EventDispatcher
 	 */
 	private function selectMesh( mesh:Mesh ):Void
 	{
+		trace("selectMesh: " + mesh.ID );
+		
 		if ( !mesh.buffer.isAllocated )
 			mesh.buffer.allocate( this.context, mesh.data );
 		

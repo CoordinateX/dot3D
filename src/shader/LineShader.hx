@@ -37,20 +37,20 @@ private class LShader extends Shader
 		
 		function vertex( mpos:M44, mproj:M44, cam:Float3 ) 
 		{
-			var v = input.pos.xyzw * mpos;			
-			var p = input.dir.xyzw * mpos;
+			var v = input.pos.xyzw * mpos * mproj;			
+			var p = input.dir.xyzw * mpos * mproj;
 			
 			var d = p.xyz;
-			var c = [0,0,1];	
+			var c = [0,0,-1] * mproj;	
 			
 			var n = norm( cross( c, d ) );
-			
+				
 			var k = [0, 0, 0, 0];
 			k.xyz = n.xyz * input.sign * thickness;
 			
 			vcolor = input.color;	
-				
-			out = (v  +  k) * mproj;
+			
+			out = (v  +  k) ;
 		}
 		
 		/*function vertex( mpos:M44, mproj:M44, cam:Float3 ) 

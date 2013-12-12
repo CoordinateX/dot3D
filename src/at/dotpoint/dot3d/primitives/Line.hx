@@ -58,8 +58,7 @@ class Line extends EditableMesh
 			var r:Float = 0.1 + sr + step * (2-sr);
 			var g:Float = 0.1 + sg + step * (2-sg);
 			var b:Float = 0.1 + sb + step * (2-sb);
-			
-			trace( [r, g, b] );
+
 			this.addVertexData( [r, g, b] );  
 		}
 	}

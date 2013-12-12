@@ -84,23 +84,31 @@ class Main extends MainApplication
 		
 		// ----------------- //
 		
-		var m1:Model = this.createCube( 1 ); // this.createCube( 200 );		
-			m1.getTransform( Space.WorldSpace ).position.z += 50;
+		var m0:Model = this.createCube( 5 ); // this.createCube( 200 );		
+			m0.getTransform( Space.WorldSpace ).position.z += 50;
 		
-		var m2:Model = this.createPlane( 2 ); // this.createCube( 200 );		
-			m2.getTransform( Space.WorldSpace ).position.z += 100;
+		var m1:Model = this.createCube( 1 ); // this.createCube( 200 );		
+			m1.getTransform( Space.WorldSpace ).position.x += 10;	
+			m1.getTransform( Space.WorldSpace ).position.z += 25;	
+			
+		var m2:Model = this.createLine(); // this.createCube( 200 );		
+			m2.getTransform( Space.WorldSpace ).position.z += 10;
+			m2.getTransform( Space.WorldSpace ).position.x += 2;
 		
 		var m3:Model = this.createLine(); // this.createCube( 200 );		
 			m3.getTransform( Space.WorldSpace ).position.z += 10;	
+			m3.getTransform( Space.WorldSpace ).position.x -= 2;	
+			m3.getTransform( Space.WorldSpace ).rotation.pitch( 1 );
 			
 		// ----------------- //	
-			
-		this.modelList = new Array<Model>();
-		//this.modelList.push( this.model );
-		//this.modelList.push( m2 );
-		this.modelList.push( m3 );
 		
-		this.model = m3;
+		this.modelList = new Array<Model>();
+		this.modelList.push( m2 );
+		this.modelList.push( m3 );
+		//this.modelList.push( m2 );
+		//this.modelList.push( m3 );
+		
+		this.model = m2;
 		
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
 	}
@@ -119,7 +127,7 @@ class Main extends MainApplication
 			this.updateCamera();*/
 		
 		if( !this.controller.isKeyDown )	
-			this.model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 2 );
+		//	this.model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
 			
 		this.render();
 	}
@@ -166,6 +174,8 @@ class Main extends MainApplication
 	/**
 	 * 
 	 */
+	@:access(hxsl.Shader)
+//
 	private function render():Void
 	{
 		var unitList:Array<RenderUnit> = new Array<RenderUnit>();
@@ -173,18 +183,15 @@ class Main extends MainApplication
 		for( model in this.modelList )
 		{			
 			var m2w:Matrix44 = model.getTransform( Space.WorldSpace ).getMatrix();
-			var w2c:Matrix44 = this.camera.getProjectionMatrix();
+			var w2c:Matrix44 = this.camera.getProjectionMatrix();			
 			
 			Reflect.setProperty( model.material.shader, Register.MODEL_WORLD.ID, m2w );
 			Reflect.setProperty( model.material.shader, Register.WORLD_CAMERA.ID, w2c );
 			//Reflect.setProperty( model.material.shader, "light", this.light );
 			
-			var campos:Vector3 = this.camera.getTransform( Space.WorldSpace ).position.getVector();
-			Reflect.setProperty( model.material.shader, "cam", campos );
-			
 			var unit:RenderUnit = new RenderUnit();
 				unit.context 	= model.material.contextSetting;
-				unit.shader 	= model.material.getInstance();
+				unit.shader 	= model.material.shader;
 				unit.mesh 		= model.mesh;
 				
 			unitList.push( unit );
@@ -197,6 +204,8 @@ class Main extends MainApplication
 	// Create
 	// ************************************************************************ //
 
+	private var test:TestShader;
+	
 	/**
 	 * 
 	 * @return
@@ -228,25 +237,27 @@ class Main extends MainApplication
 		return new Model( mesh, shader ); 
 	}
 	
-	private function createLine( size:Float = 5., thickness:Float = 1, segments:Int = 256 ):Model
+	private function createLine( size:Float = 5., thickness:Float = 1, segments:Int = 15 ):Model
 	{
-		trace("----------------");
-		
 		var mesh:Line = new Line( segments );
 		
 		// --------------- //	
 		
 		var current:Vector3 = new Vector3();
 		
+		var p1:Float = 1;
+		var p2:Float = 3;
+		var p3:Float = 10;
+		
 		for( i in 0...segments )
 		{
-			var t:Float = i / 4;
+			var t:Float = i / p1;
 			
-			var s:Float = Math.cos(i * 3 / segments) * size;
+			var s:Float = Math.sin(i * p2 / segments) * size;
 			
 			current.x = Math.sin( t ) * s;
 			current.y = Math.cos( t ) * s;
-			current.z = (i / segments) * 10;
+			current.z = (i / segments) * p3;
 			
 			mesh.line( current.toArray() );
 		}
@@ -257,10 +268,10 @@ class Main extends MainApplication
 			shader.diffuseColor = new Vector3( 0.25, 0.25, 1 );		
 			shader.thickness = thickness;		
 		
-		var model:Model = new Model( mesh, shader ); 
-			model.getTransform( Space.WorldSpace ).rotation.pitch( 0.95 );
-			model.getTransform( Space.WorldSpace ).rotation.yaw( 0.25 );
-			model.getTransform( Space.WorldSpace ).position.y += 5;
+		var model:Model = new Model( mesh, shader ); 			
+			//model.getTransform( Space.WorldSpace ).rotation.yaw( 0.25 );
+			//model.getTransform( Space.WorldSpace ).position.y += 5;
+			//model.getTransform( Space.WorldSpace ).position.z += 5;
 			
 		return model;
 	}
