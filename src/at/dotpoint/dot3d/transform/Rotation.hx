@@ -249,13 +249,16 @@ class Rotation extends EventDispatcher
 		this.quaternion.setQuaternion( new_rotation ); // dispatches on change
 	}
 	
-	public function lookAt( target:Vector3, ?up:Vector3 ):Void
+	public function lookAt( target:Vector3, ?up:Vector3, ?isCamera:Bool = false ):Void
 	{
 		up = up != null ? up : new Vector3( 0, 1, 0 );
 		//up = this.quaternion.value.getAxisY();
 		
 		this.quaternion.value.lookAt( target, up  );
 		
+		if( !isCamera )
+			this.quaternion.value.invert();
+
 		this.invalidEuler = true;
 		this.invalidMatrix = true;
 		

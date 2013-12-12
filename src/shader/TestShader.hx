@@ -1,4 +1,4 @@
-package ;
+package shader;
 
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.material.Texture;

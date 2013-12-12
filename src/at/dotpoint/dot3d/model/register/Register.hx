@@ -31,6 +31,10 @@ class Register
 	public static var VERTEX_UV:RegisterType 			= new RegisterType( "uv", 				VarType.TFloat2, 1 );
 	public static var VERTEX_BARYCENTRIC:RegisterType 	= new RegisterType( "barycentric", 		VarType.TFloat3,  3 ); // wireframe
 	
+	public static var VERTEX_DIRECTION:RegisterType 	= new RegisterType( "dir", 			VarType.TFloat3, 1 );
+	public static var VERTEX_SIGN:RegisterType 			= new RegisterType( "sign", 		VarType.TFloat, 2 );
+	public static var VERTEX_COLOR:RegisterType 		= new RegisterType( "color", 		VarType.TFloat3, 3 );
+	
 	// --------------------------------------------------- //
 	// --------------------------------------------------- //
 	// Light	

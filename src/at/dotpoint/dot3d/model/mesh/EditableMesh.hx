@@ -11,12 +11,12 @@ class EditableMesh extends Mesh
 {
 
 	private var vertexLookup:StringMap<Int>;
+	private var typeLookup:StringMap<Int>;
 	
 	private var numSetVertices:Int;
 	private var numSetFaces:Int;
 	
 	private var currentType:RegisterType;
-	private var currentNumData:Int;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -27,6 +27,7 @@ class EditableMesh extends Mesh
 		super( signature );	
 		
 		this.vertexLookup = new StringMap<Int>();
+		this.typeLookup = new StringMap<Int>();
 	}
 	
 	// ************************************************************************ //
@@ -111,7 +112,9 @@ class EditableMesh extends Mesh
 	public function startVertexData( type:RegisterType ):Void
 	{
 		this.currentType = type;
-		this.currentNumData = 0;
+		
+		if( !this.typeLookup.exists( this.currentType.ID ) )
+			this.typeLookup.set( this.currentType.ID, 0 );
 	}
 	
 	/**
@@ -119,13 +122,18 @@ class EditableMesh extends Mesh
 	 * @param	type
 	 * @param	data
 	 */
-	public function addVertexData( data:Array<Float> ):Void
+	public function addVertexData( data:Array<Float>, ?type:RegisterType ):Void
 	{
+		if( type != null )
+			this.startVertexData( type );
+		
 		if( this.currentType == null )
 			throw "must call startVertexData first";
 		
-		this.data.setVertexData( this.currentType, this.currentNumData, data );
-		this.currentNumData++;
+		var index:Int = this.typeLookup.get( this.currentType.ID );
+		this.typeLookup.set( this.currentType.ID, index + 1 );
+		
+		this.data.setVertexData( this.currentType, index, data );
 	}
 	
 	// -------------------------------- //
@@ -137,6 +145,8 @@ class EditableMesh extends Mesh
 	public function finalize():Void
 	{
 		this.vertexLookup = null;
+		this.typeLookup   = null;
+		
 		this.currentType  = null;
 	}
 }
