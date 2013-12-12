@@ -80,7 +80,7 @@ class Line extends EditableMesh
 		{
 			var direction:Vector3 = new Vector3( pos[0], pos[1], pos[2] );
 				direction = Vector3.subtract( direction, this.previous, direction );
-			//	direction.normalize();
+			///	direction.normalize();
 				
 			this.addVertexData( direction.toArray(), Register.VERTEX_DIRECTION  );
 			

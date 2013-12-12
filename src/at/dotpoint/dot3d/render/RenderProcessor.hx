@@ -115,7 +115,6 @@ class RenderProcessor extends EventDispatcher
 	 */
 	public function render( list:Iterable<RenderUnit> ):Void
 	{
-		trace("");
 		this.context.clear( 0.1, 0.1, 0.1 );
 		
 		for ( unit in list )
@@ -174,7 +173,6 @@ class RenderProcessor extends EventDispatcher
 	{
 		if ( shader.program == null ) 
 		{
-			trace("program");
 			shader.program = this.context.createProgram();
 			
 			var vdata:BytesData = shader.vertexBytes.getData();
@@ -194,8 +192,6 @@ class RenderProcessor extends EventDispatcher
 	 */
 	private function updateShaderVars():Void
 	{		
-		trace("updateVars");
-		
 		this.currentShader.varsChanged = false;
 		
 		this.context.setProgramConstantsFromVector( Context3DProgramType.VERTEX, 0, this.currentShader.vertexVars.toData() );
@@ -244,8 +240,6 @@ class RenderProcessor extends EventDispatcher
 	 */
 	private function selectMesh( mesh:Mesh ):Void
 	{
-		trace("selectMesh: " + mesh.ID );
-		
 		if ( !mesh.buffer.isAllocated )
 			mesh.buffer.allocate( this.context, mesh.data );
 		

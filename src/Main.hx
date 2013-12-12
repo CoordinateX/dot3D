@@ -2,6 +2,7 @@ package ;
 
 import at.dotpoint.core.MainApplication;
 import at.dotpoint.dot3d.camera.Camera;
+import at.dotpoint.dot3d.camera.OrtographicLens;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
@@ -10,6 +11,7 @@ import at.dotpoint.dot3d.primitives.Line;
 import at.dotpoint.dot3d.primitives.Plane;
 import at.dotpoint.dot3d.render.RenderProcessor;
 import at.dotpoint.dot3d.render.RenderUnit;
+import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.dot3d.render.Viewport;
 import at.dotpoint.dot3d.Space;
 import at.dotpoint.dot3d.transform.Transform;
@@ -80,32 +82,42 @@ class Main extends MainApplication
 	 */
 	private function onRenderInitComplete( event:Event ):Void
 	{
-		this.camera = Camera.createDefault( this.renderer.viewport );
+		var ratio:Float = this.renderer.viewport.ratio;
+		
+		var h:Int = 2;
+		var w:Int = Std.int( h * ratio );
+		
+		var dimension:ScreenDimension = new ScreenDimension( w, h );
+		
+		//this.camera = Camera.createDefault( this.renderer.viewport );
+		this.camera = new Camera( new OrtographicLens(  dimension ) );
 		
 		// ----------------- //
 		
 		var m0:Model = this.createCube( 5 ); // this.createCube( 200 );		
 			m0.getTransform( Space.WorldSpace ).position.z += 50;
 		
-		var m1:Model = this.createCube( 1 ); // this.createCube( 200 );		
-			m1.getTransform( Space.WorldSpace ).position.x += 10;	
-			m1.getTransform( Space.WorldSpace ).position.z += 25;	
+		var m1:Model = this.createCube( 5 ); // this.createCube( 200 );		
+			m1.getTransform( Space.WorldSpace ).position.x += 0;	
+			m1.getTransform( Space.WorldSpace ).position.z -= 18;	
+			m1.getTransform( Space.WorldSpace ).position.y -= 8;
 			
 		var m2:Model = this.createLine(); // this.createCube( 200 );		
-			m2.getTransform( Space.WorldSpace ).position.z += 10;
-			m2.getTransform( Space.WorldSpace ).position.x += 2;
+			m2.getTransform( Space.WorldSpace ).position.z -= 10;
+			m2.getTransform( Space.WorldSpace ).position.x += 8;
 		
 		var m3:Model = this.createLine(); // this.createCube( 200 );		
-			m3.getTransform( Space.WorldSpace ).position.z += 10;	
-			m3.getTransform( Space.WorldSpace ).position.x -= 2;	
-			m3.getTransform( Space.WorldSpace ).rotation.pitch( 1 );
+			m3.getTransform( Space.WorldSpace ).position.z -= 10;	
+			m3.getTransform( Space.WorldSpace ).position.x -= 4;	
+			m3.getTransform( Space.WorldSpace ).position.y += 5;	
+			m3.getTransform( Space.WorldSpace ).rotation.pitch( 1.5 );
 			
 		// ----------------- //	
 		
 		this.modelList = new Array<Model>();
+		this.modelList.push( m1 );
 		this.modelList.push( m2 );
-		this.modelList.push( m3 );
-		//this.modelList.push( m2 );
+		this.modelList.push( m3 );		
 		//this.modelList.push( m3 );
 		
 		this.model = m2;
@@ -126,7 +138,7 @@ class Main extends MainApplication
 		/*if( this.controller.isKeyDown )
 			this.updateCamera();*/
 		
-		if( !this.controller.isKeyDown )	
+		//if( !this.controller.isKeyDown )	
 		//	this.model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
 			
 		this.render();
@@ -183,7 +195,9 @@ class Main extends MainApplication
 		for( model in this.modelList )
 		{			
 			var m2w:Matrix44 = model.getTransform( Space.WorldSpace ).getMatrix();
-			var w2c:Matrix44 = this.camera.getProjectionMatrix();			
+			var w2c:Matrix44 = this.camera.getProjectionMatrix();		
+			
+			var cam:Matrix44 = this.camera.getTransform( Space.WorldSpace ).getMatrix();			
 			
 			Reflect.setProperty( model.material.shader, Register.MODEL_WORLD.ID, m2w );
 			Reflect.setProperty( model.material.shader, Register.WORLD_CAMERA.ID, w2c );
@@ -237,7 +251,7 @@ class Main extends MainApplication
 		return new Model( mesh, shader ); 
 	}
 	
-	private function createLine( size:Float = 5., thickness:Float = 1, segments:Int = 15 ):Model
+	private function createLine( size:Float = 5., thickness:Float = 1, segments:Int = 5 ):Model
 	{
 		var mesh:Line = new Line( segments );
 		

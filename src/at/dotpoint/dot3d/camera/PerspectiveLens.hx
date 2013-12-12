@@ -21,7 +21,7 @@ class PerspectiveLens extends Lens
 	public function new( screen:ScreenDimension, ?yFOV:Float ) 
 	{
 		super( screen );
-		this.yFOV = yFOV != null ? yFOV : 45 * MathUtil.DEG_RAD;
+		this.yFOV = yFOV != null ? yFOV : 60 * MathUtil.DEG_RAD;
 	}
 	
 	// ************************************************************************ //
@@ -45,10 +45,8 @@ class PerspectiveLens extends Lens
 	 */
 	override private function validateMatrix():Void 
 	{
-		var cotan:Float = 1 / Math.tan( this.yFOV * 0.5 );		
-		
-		var depth:Float = this.zFar - this.zNear;
-		var	depth_ratio:Float = this.zFar / depth;	
+		var cotan:Float = 1 / Math.tan( this.yFOV * 0.5 );				
+		var depth:Float = this.zNear - this.zFar;
 		
 		// -------------------- //
 		
