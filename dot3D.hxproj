@@ -6,8 +6,8 @@
     <movie input="" />
     <movie path="bin\dot3D.swf" />
     <movie fps="30" />
-    <movie width="1280" />
-    <movie height="720" />
+    <movie width="800" />
+    <movie height="600" />
     <movie version="11" />
     <movie minorVersion="7" />
     <movie platform="Flash Player" />

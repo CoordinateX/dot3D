@@ -21,7 +21,7 @@ class Line extends EditableMesh
 	
 	public function new( segments:Int ) 
 	{
-		var numVertices:Int = 4 * segments;
+		var numVertices:Int = 5 * segments;
 		var numFaces:Int 	= 2 * segments;		
 		var numRegister:Int = 3;		
 		
@@ -73,27 +73,29 @@ class Line extends EditableMesh
 			throw "already set max amount of segments";
 		
 		this.addVertexData( pos, Register.VERTEX_POSITION );
+		this.addVertexData( pos, Register.VERTEX_DIRECTION  );
 		
 		// -------------- //
 		
 		if( this.previous != null )
 		{
+			/*
 			var direction:Vector3 = new Vector3( pos[0], pos[1], pos[2] );
 				direction = Vector3.subtract( direction, this.previous, direction );
-			///	direction.normalize();
-				
-			this.addVertexData( direction.toArray(), Register.VERTEX_DIRECTION  );
+				direction.normalize();
 			
+			this.addVertexData( direction.toArray(), Register.VERTEX_DIRECTION  );
+			*/
 			// ----------------------- //
 			
 			var c:Int = this.numSet;
 			var p:Int = this.numSet - 1;			
 			
-			/*this.createFace( [p,p,0, c,p,0, c,p,1] );	// pos, dir, sign	
-			this.createFace( [c, p, 1, p, p, 1, p, p, 0] );*/
+			//this.createFace( [p,p,0,p, c,p,0,c, c,p,1,c] );	// pos, dir, sign, color	
+			//this.createFace( [c,p,1,c, p,p,1,p, p,p,0,p] );
 			
-			this.createFace( [p,p,0,p, c,p,0,c, c,p,1,c] );	// pos, dir, sign, color	
-			this.createFace( [c,p,1,c, p,p,1,p, p,p,0,p] );
+			this.createFace( [p,c,1,p, c,p,0,c, c,p,1,c] );	// pos, dir, sign, color	
+			this.createFace( [c,p,1,c, p,c,1,p, p,c,0,p] );
 		}
 		
 		// -------------- //

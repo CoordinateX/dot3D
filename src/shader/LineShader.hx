@@ -35,61 +35,26 @@ private class LShader extends Shader
 		// ------------------------------------------------------------------ //
 		// Vertex:
 		
-		function vertex( mpos:M44, mproj:M44, cam:M44 ) 
+		function vertex( mpos:M44, mproj:M44, cam:Float3 ) 
 		{
-			var v = input.pos.xyzw * mpos;			
+			var v = input.pos.xyzw * mpos;
 			var p = input.dir.xyzw * mpos;
 			
 			// ----------- //
 			
-			var d = p.xyz;
-			var c = [0,0,1];	
+			var c = v.xyz - cam.xyz;		
+			var d = v.xyz - p.xyz;
 			
-			var n = norm( cross( c, d ) );
+			var n = norm( cross( c.xyz, d ) );
 			
-			// ----------- //
+			var k = [0, 0, 0, 0];
+				k.xyz = n.xyz * input.sign * thickness * 0.1;
 			
-			var k = [0, 0, 0, 1];
-			k.xyz = n.xyz * input.sign * thickness;
-			
-			// ----------- //
+			// ----------- //	
 			
 			vcolor = input.color;			
-			out = (v + k) * mproj;
-		}
-		
-		/*function vertex( mpos:M44, mproj:M44, cam:Float3 ) 
-		{
-			var v = input.pos.xyzw * mpos * mproj;			
-			var p = input.dir.xyzw * mpos * mproj;
-			
-			var d = p.xyz;
-			var c = [0,0,-1] * mproj;	
-			
-			var n = norm( cross( c, d ) );
-				
-			var k = [0, 0, 0, 0];
-			k.xyz = n.xyz * input.sign * thickness;
-			
-			vcolor = input.color;	
-			
-			out = (v  +  k) ;
-		}*/
-		
-		/*function vertex( mpos:M44, mproj:M44, cam:Float3 ) 
-		{
-			var v = input.pos.xyzw * mpos;
-			
-			var c = v.xyz - cam;		
-			var d = input.dir.xyz * mpos;
-			
-			var n = norm( cross( c, d ) );
-			
-			var k = [0, 0, 0, 0];
-				k.xyz = n.xyz * input.sign * 10;
-				
 			out = (v  +  k) * mproj;
-		}*/
+		}
 		
 		// ------------------------------------------------------------------ //
 		// ------------------------------------------------------------------ //

@@ -21,7 +21,7 @@ class PerspectiveLens extends Lens
 	public function new( screen:ScreenDimension, ?yFOV:Float ) 
 	{
 		super( screen );
-		this.yFOV = yFOV != null ? yFOV : 60 * MathUtil.DEG_RAD;
+		this.yFOV = yFOV != null ? yFOV : 45 * MathUtil.DEG_RAD;
 	}
 	
 	// ************************************************************************ //

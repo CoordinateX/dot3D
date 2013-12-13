@@ -89,8 +89,8 @@ class Main extends MainApplication
 		
 		var dimension:ScreenDimension = new ScreenDimension( w, h );
 		
-		//this.camera = Camera.createDefault( this.renderer.viewport );
-		this.camera = new Camera( new OrtographicLens(  dimension ) );
+		this.camera = Camera.createDefault( this.renderer.viewport );
+		//this.camera = new Camera( new OrtographicLens(  dimension ) );
 		
 		// ----------------- //
 		
@@ -102,25 +102,23 @@ class Main extends MainApplication
 			m1.getTransform( Space.WorldSpace ).position.z -= 18;	
 			m1.getTransform( Space.WorldSpace ).position.y -= 8;
 			
-		var m2:Model = this.createLine(); // this.createCube( 200 );		
-			m2.getTransform( Space.WorldSpace ).position.z -= 10;
-			m2.getTransform( Space.WorldSpace ).position.x += 8;
+		var m2:Model = this.createAxis(); // this.createCube( 200 );		
+			m2.getTransform( Space.WorldSpace ).position.z -= 30;
+			m2.getTransform( Space.WorldSpace ).position.x += 0;
 		
-		var m3:Model = this.createLine(); // this.createCube( 200 );		
+		var m3:Model = this.createLine(5,1,256); // this.createCube( 200 );		
 			m3.getTransform( Space.WorldSpace ).position.z -= 10;	
-			m3.getTransform( Space.WorldSpace ).position.x -= 4;	
-			m3.getTransform( Space.WorldSpace ).position.y += 5;	
 			m3.getTransform( Space.WorldSpace ).rotation.pitch( 1.5 );
 			
 		// ----------------- //	
 		
 		this.modelList = new Array<Model>();
-		this.modelList.push( m1 );
-		this.modelList.push( m2 );
+		//this.modelList.push( m1 );
+		//this.modelList.push( m2 );
 		this.modelList.push( m3 );		
 		//this.modelList.push( m3 );
 		
-		this.model = m2;
+		this.model = m3;
 		
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
 	}
@@ -141,6 +139,9 @@ class Main extends MainApplication
 		//if( !this.controller.isKeyDown )	
 		//	this.model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
 			
+		this.modelList[0].getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
+		this.modelList[0].getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );
+		
 		this.render();
 	}
 	
@@ -203,6 +204,10 @@ class Main extends MainApplication
 			Reflect.setProperty( model.material.shader, Register.WORLD_CAMERA.ID, w2c );
 			//Reflect.setProperty( model.material.shader, "light", this.light );
 			
+			//var pos:Vector3 = model.getTransform( Space.WorldSpace ).position.getVector();
+			var pos:Vector3 = this.camera.getTransform( Space.WorldSpace ).position.getVector();
+			Reflect.setProperty( model.material.shader, "cam", pos );
+			
 			var unit:RenderUnit = new RenderUnit();
 				unit.context 	= model.material.contextSetting;
 				unit.shader 	= model.material.shader;
@@ -259,9 +264,9 @@ class Main extends MainApplication
 		
 		var current:Vector3 = new Vector3();
 		
-		var p1:Float = 1;
-		var p2:Float = 3;
-		var p3:Float = 10;
+		var p1:Float = 1 + Math.random() * 10;
+		var p2:Float = 2 + Math.random() * 5;
+		var p3:Float = 2 + Math.random() * 8;
 		
 		for( i in 0...segments )
 		{
@@ -269,9 +274,9 @@ class Main extends MainApplication
 			
 			var s:Float = Math.sin(i * p2 / segments) * size;
 			
-			current.x = Math.sin( t ) * s;
-			current.y = Math.cos( t ) * s;
-			current.z = (i / segments) * p3;
+			current.x = -size * 0.5 + Math.sin( t ) * s;
+			current.y = -size * 0.5 + Math.cos( t ) * s;
+			current.z = -size * 0.5 + (i / segments) * p3;
 			
 			mesh.line( current.toArray() );
 		}
@@ -288,5 +293,26 @@ class Main extends MainApplication
 			//model.getTransform( Space.WorldSpace ).position.z += 5;
 			
 		return model;
+	}
+	
+	private function createAxis( thickness:Float = 1 ):Model
+	{
+		var s:Float = 10;
+		
+		var mesh:Line = new Line( 5 );
+			mesh.line( [0, 0, 0] );
+			mesh.line( [s, 0, 0] );
+			
+			mesh.line( [0, 0, 0] );
+			mesh.line( [0, s, 0] );
+			
+			mesh.line( [0, 0, 0] );
+			mesh.line( [0, 0, s] );
+			
+		var shader:LineShader = new LineShader();
+			shader.diffuseColor = new Vector3( 0.25, 0.25, 1 );		
+			shader.thickness = thickness;		
+			
+		return new Model( mesh, shader ); 
 	}
 }
