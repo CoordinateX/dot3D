@@ -114,11 +114,11 @@ class Main extends MainApplication
 		
 		this.modelList = new Array<Model>();
 		//this.modelList.push( m1 );
-		//this.modelList.push( m2 );
 		this.modelList.push( m3 );		
+		this.modelList.push( m2 );
 		//this.modelList.push( m3 );
 		
-		this.model = m3;
+		this.model = m2;
 		
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
 	}
@@ -258,11 +258,15 @@ class Main extends MainApplication
 	
 	private function createLine( size:Float = 5., thickness:Float = 1, segments:Int = 5 ):Model
 	{
-		var mesh:Line = new Line( segments );
-		
+		var mesh:Line = new Line( segments );			
+			
 		// --------------- //	
 		
 		var current:Vector3 = new Vector3();
+		
+		var c1:Float = Math.random();
+		var c2:Float = Math.random();
+		var c3:Float = Math.random();
 		
 		var p1:Float = 1 + Math.random() * 10;
 		var p2:Float = 2 + Math.random() * 5;
@@ -278,7 +282,10 @@ class Main extends MainApplication
 			current.y = -size * 0.5 + Math.cos( t ) * s;
 			current.z = -size * 0.5 + (i / segments) * p3;
 			
-			mesh.line( current.toArray() );
+			if( i != 0 )
+				mesh.lineTo( current.toArray(), [c1,c2,c3] );
+			else
+				mesh.moveTo( current.toArray(), [c1,c2,c3] );
 		}
 		
 		// --------------- //
@@ -295,19 +302,19 @@ class Main extends MainApplication
 		return model;
 	}
 	
-	private function createAxis( thickness:Float = 1 ):Model
+	private function createAxis( thickness:Float = 2 ):Model
 	{
 		var s:Float = 10;
 		
-		var mesh:Line = new Line( 5 );
-			mesh.line( [0, 0, 0] );
-			mesh.line( [s, 0, 0] );
+		var mesh:Line = new Line( 3, 3 );
+			mesh.moveTo( [0, 0, 0], [1,0,0] );
+			mesh.lineTo( [s, 0, 0], [1,0,0] );
 			
-			mesh.line( [0, 0, 0] );
-			mesh.line( [0, s, 0] );
+			mesh.moveTo( [0, 0, 0], [0,1,0] );
+			mesh.lineTo( [0, s, 0], [0,1,0] );
 			
-			mesh.line( [0, 0, 0] );
-			mesh.line( [0, 0, s] );
+			mesh.moveTo( [0, 0, 0], [0,0,1] );
+			mesh.lineTo( [0, 0, s], [0,0,1] );
 			
 		var shader:LineShader = new LineShader();
 			shader.diffuseColor = new Vector3( 0.25, 0.25, 1 );		

@@ -13,20 +13,26 @@ class Line extends EditableMesh
 {
 
 	private var previous:Vector3;
-	private var numSet:Int;
+	private var numDrawn:Int;
+	
+	private var numSegments:Int;
+	private var numSets:Int;
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
 	
-	public function new( segments:Int ) 
+	public function new( segments:Int, sets:Int = 1 ) 
 	{
+		this.numSegments = segments;
+		this.numSets = sets;
+		
 		var numVertices:Int = 5 * segments;
 		var numFaces:Int 	= 2 * segments;		
 		var numRegister:Int = 3;		
 		
-		var numUniquePos:Int   = segments + 1;
-		var numUniqueDirs:Int  = segments + 1;		
+		var numUniquePos:Int   = segments + sets;
+		var numUniqueDirs:Int  = segments + sets;		
 		var numUniqueSigns:Int = 2;				// 1, -1
 		
 		var signature:MeshSignature = new MeshSignature( numVertices, numFaces, numRegister );		
@@ -45,7 +51,7 @@ class Line extends EditableMesh
 		this.addVertexData( [ 0.5], Register.VERTEX_SIGN  );
 		this.addVertexData( [-0.5], Register.VERTEX_SIGN );
 		
-		this.startVertexData( Register.VERTEX_COLOR );
+		/*this.startVertexData( Register.VERTEX_COLOR );
 		
 		var sr:Float = Math.random() * 0.9;
 		var sg:Float = Math.random() * 0.4;
@@ -60,47 +66,50 @@ class Line extends EditableMesh
 			var b:Float = 0.1 + sb + step * (2-sb);
 
 			this.addVertexData( [r, g, b] );  
-		}
+		}*/
 	}
 	
 	// ************************************************************************ //
 	// Methodes
 	// ************************************************************************ //
 	
-	public function line( pos:Array<Float> ):Void
+	/**
+	 * 
+	 * @param	pos
+	 */
+	public function moveTo( pos:Array<Float>, color:Array<Float> ):Void
 	{
-		if( this.numSet * 2 > this.data.signature.numFaces )
+		this.previous = new Vector3( pos[0], pos[1], pos[2] );	
+		
+		this.addVertexData( pos, Register.VERTEX_POSITION 	);
+		this.addVertexData( pos, Register.VERTEX_DIRECTION  );		
+		this.addVertexData( color, Register.VERTEX_COLOR 	);		// could check if unique ... 
+		
+		this.numDrawn++;
+	}
+	
+	/**
+	 * 
+	 * @param	pos
+	 */
+	public function lineTo( pos:Array<Float>, color:Array<Float> ):Void
+	{
+		if( (this.numDrawn-this.numSets) * 2 > this.data.signature.numFaces )
 			throw "already set max amount of segments";
-		
-		this.addVertexData( pos, Register.VERTEX_POSITION );
-		this.addVertexData( pos, Register.VERTEX_DIRECTION  );
+			
+		if( this.previous == null )
+			throw "must call moveTo first";
 		
 		// -------------- //
 		
-		if( this.previous != null )
-		{
-			/*
-			var direction:Vector3 = new Vector3( pos[0], pos[1], pos[2] );
-				direction = Vector3.subtract( direction, this.previous, direction );
-				direction.normalize();
+		var c:Int = this.numDrawn;
+		var p:Int = this.numDrawn - 1;			
 			
-			this.addVertexData( direction.toArray(), Register.VERTEX_DIRECTION  );
-			*/
-			// ----------------------- //
-			
-			var c:Int = this.numSet;
-			var p:Int = this.numSet - 1;			
-			
-			//this.createFace( [p,p,0,p, c,p,0,c, c,p,1,c] );	// pos, dir, sign, color	
-			//this.createFace( [c,p,1,c, p,p,1,p, p,p,0,p] );
-			
-			this.createFace( [p,c,1,p, c,p,0,c, c,p,1,c] );	// pos, dir, sign, color	
-			this.createFace( [c,p,1,c, p,c,1,p, p,c,0,p] );
-		}
+		this.createFace( [p,c,1,p, c,p,0,c, c,p,1,c] );	// pos, dir, sign, color	
+		this.createFace( [c,p,1,c, p,c,1,p, p,c,0,p] );		
 		
 		// -------------- //
 		
-		this.previous = new Vector3( pos[0], pos[1], pos[2] );
-		this.numSet++;
+		this.moveTo( pos, color );
 	}
 }
