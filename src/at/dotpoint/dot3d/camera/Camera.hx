@@ -37,6 +37,14 @@ class Camera extends EntityContainer
 		return new Camera( new PerspectiveLens( viewport ) );
 	}
 	
+	public static function createOrthographic( ratio:Float ):Camera
+	{
+		var h:Int = 2;
+		var w:Int = Std.int( h * ratio );
+		
+		return new Camera( new OrtographicLens(  new ScreenDimension( w, h ) ) );
+	}
+	
 	// ************************************************************************ //
 	// Methode
 	// ************************************************************************ //	

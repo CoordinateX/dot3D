@@ -82,43 +82,8 @@ class Main extends MainApplication
 	 */
 	private function onRenderInitComplete( event:Event ):Void
 	{
-		var ratio:Float = this.renderer.viewport.ratio;
-		
-		var h:Int = 2;
-		var w:Int = Std.int( h * ratio );
-		
-		var dimension:ScreenDimension = new ScreenDimension( w, h );
-		
-		this.camera = Camera.createDefault( this.renderer.viewport );
-		//this.camera = new Camera( new OrtographicLens(  dimension ) );
-		
-		// ----------------- //
-		
-		var m0:Model = this.createCube( 5 ); // this.createCube( 200 );		
-			m0.getTransform( Space.WorldSpace ).position.z += 50;
-		
-		var m1:Model = this.createCube( 5 ); // this.createCube( 200 );		
-			m1.getTransform( Space.WorldSpace ).position.x += 0;	
-			m1.getTransform( Space.WorldSpace ).position.z -= 18;	
-			m1.getTransform( Space.WorldSpace ).position.y -= 8;
-			
-		var m2:Model = this.createAxis(); // this.createCube( 200 );		
-			m2.getTransform( Space.WorldSpace ).position.z -= 30;
-			m2.getTransform( Space.WorldSpace ).position.x += 0;
-		
-		var m3:Model = this.createLine(5,1,256); // this.createCube( 200 );		
-			m3.getTransform( Space.WorldSpace ).position.z -= 10;	
-			m3.getTransform( Space.WorldSpace ).rotation.pitch( 1.5 );
-			
-		// ----------------- //	
-		
-		this.modelList = new Array<Model>();
-		//this.modelList.push( m1 );
-		this.modelList.push( m3 );		
-		this.modelList.push( m2 );
-		//this.modelList.push( m3 );
-		
-		this.model = m2;
+		this.camera = Camera.createDefault( this.renderer.viewport );		
+		this.createScene();
 		
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
 	}
@@ -129,45 +94,15 @@ class Main extends MainApplication
 	 */
 	private function onEnterFrame( event:Event ):Void
 	{
-		this.controller.update( this.model );
-		
-		this.updateLight();	
-		
-		/*if( this.controller.isKeyDown )
-			this.updateCamera();*/
-		
-		//if( !this.controller.isKeyDown )	
-		//	this.model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
-			
-		this.modelList[0].getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
-		this.modelList[0].getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );
+		this.updateScene();	
+		this.updateLight();				
 		
 		this.render();
 	}
 	
-	/**
-	 * 
-	 */
-	private function updateCamera():Void
-	{
-		var camera:Transform = this.camera.getTransform( Space.WorldSpace );		
-		var model:Transform = this.model.getTransform( Space.WorldSpace );
-		
-		var target:Vector3 = Vector3.subtract( model.position.getVector(), camera.position.getVector() );
-			target.x *= 1;
-			target.y *= 1;
-			target.z *= 1;
-			
-		model.rotation.lookAt( target );	
-		
-		trace( camera.position.getVector() );	
-		trace( model.rotation );	
-			
-		/*var sec:Transform = this.modelList[1].getTransform( Space.WorldSpace );
-			sec.rotation.lookAt( camera.position.getVector() );	*/
-			
-		//camera.rotation.lookAt( model.position.getVector() );
-	}
+	// ************************************************************************ //
+	// UPDATE
+	// ************************************************************************ //
 	
 	/**
 	 * 
@@ -178,6 +113,20 @@ class Main extends MainApplication
 		
 		this.light = new Vector3( Math.cos(t * 10) * 1, Math.sin(t * 5) * 2, Math.sin(t) * Math.cos(t) * 2);
 		this.light.normalize();
+	}
+	
+	private function updateScene():Void
+	{
+		this.controller.update( this.model );	
+		
+		for( model in this.modelList )
+		{
+			if( model != this.model )
+			{
+				model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
+				model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );
+			}
+		}
 	}
 	
 	// ************************************************************************ //
@@ -198,16 +147,18 @@ class Main extends MainApplication
 			var m2w:Matrix44 = model.getTransform( Space.WorldSpace ).getMatrix();
 			var w2c:Matrix44 = this.camera.getProjectionMatrix();		
 			
-			var cam:Matrix44 = this.camera.getTransform( Space.WorldSpace ).getMatrix();			
-			
 			Reflect.setProperty( model.material.shader, Register.MODEL_WORLD.ID, m2w );
 			Reflect.setProperty( model.material.shader, Register.WORLD_CAMERA.ID, w2c );
-			//Reflect.setProperty( model.material.shader, "light", this.light );
 			
-			//var pos:Vector3 = model.getTransform( Space.WorldSpace ).position.getVector();
+			// --------------- //
+			
 			var pos:Vector3 = this.camera.getTransform( Space.WorldSpace ).position.getVector();
-			Reflect.setProperty( model.material.shader, "cam", pos );
 			
+			if( Reflect.hasField( model.material.shader, "cam" ) )
+				Reflect.setProperty( model.material.shader, "cam", pos );
+			
+			// --------------- //	
+				
 			var unit:RenderUnit = new RenderUnit();
 				unit.context 	= model.material.contextSetting;
 				unit.shader 	= model.material.shader;
@@ -223,7 +174,23 @@ class Main extends MainApplication
 	// Create
 	// ************************************************************************ //
 
-	private var test:TestShader;
+	private function createScene():Void
+	{
+		var m0:Model = this.createCube( 5 );	
+			m0.getTransform( Space.WorldSpace ).position.z -= 30;
+			
+		var m1:Model = DrawHelper.createAxis( 5 ); 		
+			m1.getTransform( Space.WorldSpace ).position.z -= 30;
+			m1.getTransform( Space.WorldSpace ).position.x += 0;		
+			
+		// ----------------- //	
+		
+		this.modelList = new Array<Model>();		
+		this.modelList.push( m0 );		
+		this.modelList.push( m1 );
+		
+		this.model = m1;
+	}
 	
 	/**
 	 * 
@@ -256,70 +223,7 @@ class Main extends MainApplication
 		return new Model( mesh, shader ); 
 	}
 	
-	private function createLine( size:Float = 5., thickness:Float = 1, segments:Int = 5 ):Model
-	{
-		var mesh:Line = new Line( segments );			
-			
-		// --------------- //	
-		
-		var current:Vector3 = new Vector3();
-		
-		var c1:Float = Math.random();
-		var c2:Float = Math.random();
-		var c3:Float = Math.random();
-		
-		var p1:Float = 1 + Math.random() * 10;
-		var p2:Float = 2 + Math.random() * 5;
-		var p3:Float = 2 + Math.random() * 8;
-		
-		for( i in 0...segments )
-		{
-			var t:Float = i / p1;
-			
-			var s:Float = Math.sin(i * p2 / segments) * size;
-			
-			current.x = -size * 0.5 + Math.sin( t ) * s;
-			current.y = -size * 0.5 + Math.cos( t ) * s;
-			current.z = -size * 0.5 + (i / segments) * p3;
-			
-			if( i != 0 )
-				mesh.lineTo( current.toArray(), [c1,c2,c3] );
-			else
-				mesh.moveTo( current.toArray(), [c1,c2,c3] );
-		}
-		
-		// --------------- //
-		
-		var shader:LineShader = new LineShader();
-			shader.diffuseColor = new Vector3( 0.25, 0.25, 1 );		
-			shader.thickness = thickness;		
-		
-		var model:Model = new Model( mesh, shader ); 			
-			//model.getTransform( Space.WorldSpace ).rotation.yaw( 0.25 );
-			//model.getTransform( Space.WorldSpace ).position.y += 5;
-			//model.getTransform( Space.WorldSpace ).position.z += 5;
-			
-		return model;
-	}
 	
-	private function createAxis( thickness:Float = 2 ):Model
-	{
-		var s:Float = 10;
-		
-		var mesh:Line = new Line( 3, 3 );
-			mesh.moveTo( [0, 0, 0], [1,0,0] );
-			mesh.lineTo( [s, 0, 0], [1,0,0] );
-			
-			mesh.moveTo( [0, 0, 0], [0,1,0] );
-			mesh.lineTo( [0, s, 0], [0,1,0] );
-			
-			mesh.moveTo( [0, 0, 0], [0,0,1] );
-			mesh.lineTo( [0, 0, s], [0,0,1] );
-			
-		var shader:LineShader = new LineShader();
-			shader.diffuseColor = new Vector3( 0.25, 0.25, 1 );		
-			shader.thickness = thickness;		
-			
-		return new Model( mesh, shader ); 
-	}
+	
+	
 }

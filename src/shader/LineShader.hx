@@ -15,7 +15,6 @@ private class LShader extends Shader
 {
 	static var SRC = 
 	{
-		var diffuseColor:Float4;
 		var thickness:Float;
 		
 		// ------------------------------------------------------------------ //
@@ -77,7 +76,6 @@ class LineShader extends Material
 {
 	private var cast_shader:LShader;
 	
-	public var diffuseColor(get, set):Vector3;	
 	public var thickness(get, set):Float;	
 	
 	// ************************************************************************ //
@@ -98,17 +96,6 @@ class LineShader extends Material
 	// Methodes
 	// ************************************************************************ //
 
-	/**
-	 * 
-	 * @return
-	 */
-	private function get_diffuseColor():Vector3 { return this.cast_shader.diffuseColor; }
-	
-	private function set_diffuseColor( value:Vector3 ):Vector3
-	{
-		return this.cast_shader.diffuseColor = value;
-	}
-	
 	/**
 	 * 
 	 * @return

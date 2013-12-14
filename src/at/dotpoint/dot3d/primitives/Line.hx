@@ -27,7 +27,7 @@ class Line extends EditableMesh
 		this.numSegments = segments;
 		this.numSets = sets;
 		
-		var numVertices:Int = 5 * segments;
+		var numVertices:Int = 5 * segments; // one of the 4 has to have a different sign
 		var numFaces:Int 	= 2 * segments;		
 		var numRegister:Int = 3;		
 		
@@ -50,23 +50,6 @@ class Line extends EditableMesh
 	{
 		this.addVertexData( [ 0.5], Register.VERTEX_SIGN  );
 		this.addVertexData( [-0.5], Register.VERTEX_SIGN );
-		
-		/*this.startVertexData( Register.VERTEX_COLOR );
-		
-		var sr:Float = Math.random() * 0.9;
-		var sg:Float = Math.random() * 0.4;
-		var sb:Float = Math.random() * 0.5;
-		
-		for( s in 0...(segments + 1) )
-		{
-			var step:Float = 1 -( s / segments );
-			
-			var r:Float = 0.1 + sr + step * (2-sr);
-			var g:Float = 0.1 + sg + step * (2-sg);
-			var b:Float = 0.1 + sb + step * (2-sb);
-
-			this.addVertexData( [r, g, b] );  
-		}*/
 	}
 	
 	// ************************************************************************ //
@@ -82,7 +65,7 @@ class Line extends EditableMesh
 		this.previous = new Vector3( pos[0], pos[1], pos[2] );	
 		
 		this.addVertexData( pos, Register.VERTEX_POSITION 	);
-		this.addVertexData( pos, Register.VERTEX_DIRECTION  );		
+		this.addVertexData( pos, Register.VERTEX_DIRECTION  );		// could link to pos? ... 
 		this.addVertexData( color, Register.VERTEX_COLOR 	);		// could check if unique ... 
 		
 		this.numDrawn++;
@@ -104,7 +87,7 @@ class Line extends EditableMesh
 		
 		var c:Int = this.numDrawn;
 		var p:Int = this.numDrawn - 1;			
-			
+		
 		this.createFace( [p,c,1,p, c,p,0,c, c,p,1,c] );	// pos, dir, sign, color	
 		this.createFace( [c,p,1,c, p,c,1,p, p,c,0,p] );		
 		
