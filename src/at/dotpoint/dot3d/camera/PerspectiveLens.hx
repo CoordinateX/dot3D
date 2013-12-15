@@ -8,7 +8,6 @@ import at.dotpoint.math.MathUtil;
  * This projection allows a natural visual presentation of objects, mimicking 3D perspective
  * @author Gerald Hattensauer
  */
-
 class PerspectiveLens extends Lens
 {
 	

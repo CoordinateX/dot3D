@@ -8,8 +8,7 @@ import flash.Vector;
 
 
 /**
- * Stores the Attribute-Values for all vertices of a given mesh. Position, Normals, UV's etc.
- * Specifies pure geometry only, no materials
+ * allocates and deallocates the GPU vertex and index buffer data using MeshData and Context3D
  */
 class MeshBuffer
 {
@@ -23,7 +22,7 @@ class MeshBuffer
 	// Constructor
 	// ************************************************************************ //	
 	
-	private function new(){		
+	public function new(){		
 	}
 	
 	// ************************************************************************ //

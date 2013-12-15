@@ -3,10 +3,9 @@ package at.dotpoint.dot3d.camera;
 import at.dotpoint.dot3d.render.ScreenDimension;
 
 /**
- * ...
+ * this projection does not affect the depth and can be used for an isometric effect
  * @author Gerald Hattensauer
  */
-
 class OrtographicLens extends Lens
 {
 

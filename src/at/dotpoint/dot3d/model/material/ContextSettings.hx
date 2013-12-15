@@ -5,7 +5,10 @@ import flash.display3D.Context3DCompareMode;
 import flash.display3D.Context3DTriangleFace;
 
 /**
- * ...
+ * specifies Context3D render settings for a material. You can create some interessting 
+ * effects disabeling depthTests, changing blendModes or simply changing how triangles
+ * should be culled. take a look into the corresbonding flash docs
+ *
  * @author Gerald Hattensauer
  */
 class ContextSettings
@@ -17,6 +20,9 @@ class ContextSettings
 	public var depthTest:Bool;
 	public var depthTestMode:Context3DCompareMode;
 	
+	/**
+	 * which side of the triangle should be rendered?, both? none?
+	 */
 	public var culling:Context3DTriangleFace;
 	
 	// ************************************************************************ //

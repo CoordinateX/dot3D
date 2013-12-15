@@ -2,7 +2,10 @@ package at.dotpoint.dot3d.model.register;
 
 import hxsl.Data;
 /**
- * ...
+ * List of avaible RegisterType each acting somewhat like an enum augmented with additional data.
+ * RegisterTypes are used for vertex data aswell as materials/shaders. Each type must specify
+ * a priority as it defines the order in which it is stored and possible accessed.
+ * 
  * @author Gerald Hattensauer
  */
 class Register

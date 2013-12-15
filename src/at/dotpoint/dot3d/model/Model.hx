@@ -7,9 +7,8 @@ import at.dotpoint.dot3d.transform.Transform;
 
 /**
  * Model is a combination of pure geometry (Mesh) and a collection of Materials applied to specific regions of the Mesh
- * The Mesh maybe shared between many different Models. Like Mesh, the Model is unique for each instance in the scene and
- * exists only once. Any Model in your scene is a ModelInstance refering to a Model. 
- * 
+ * The Mesh maybe shared between many different Models. 
+ * <br/><br/>
  * Models with the same geometry might have different materials. For example a character might be as any other character, 
  * but has a different Material. In this case the Mesh is the same, but the MeshMaterial is different. The MeshMaterial 
  * might be very similar like any other character but might has a different diffuse Texture. 

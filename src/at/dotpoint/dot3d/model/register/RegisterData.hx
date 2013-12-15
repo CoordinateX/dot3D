@@ -6,7 +6,7 @@ import haxe.ds.Vector;
  * Stores specific data like UV coordinates, normals, transformations, etc of vertices and shader; 
  * The data is stored continously as float/int values in an array. Complex Data like a Matrix, Array
  * or Object must be flattend into a single float/int array.
- * 
+ * <br/><br/>
  * type:	position
  * stream:	v1x, v1y, v1z, 	v2x, v2y, v2z, 	...
  */

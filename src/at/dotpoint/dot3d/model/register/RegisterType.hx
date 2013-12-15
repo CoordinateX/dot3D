@@ -4,7 +4,11 @@ import flash.display3D.Context3DVertexBufferFormat;
 import hxsl.Data;
 
 /**
- * ...
+ * used to uniquely identify RegisterData, specify the size a single entry consumes (amount of floats/ints/bytes)
+ * and in which order they should be stored (importend for shaders). Use the Register class to store new RegisterTypes
+ * and reference them instead of creating new Types all over again. Types might be referenced and compared directly
+ * without using ID. Make sure each RegisterType is unique ...
+ * 
  * @author Gerald Hattensauer
  */
 class RegisterType

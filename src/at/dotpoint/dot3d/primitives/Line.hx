@@ -6,7 +6,10 @@ import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.math.vector.Vector3;
 
 /**
- * ...
+ * a set of lines can be created using this class. the amount of segments (connected lines) and sets (disjointed lines)
+ * must be specified first in the constructor. afterwards you can use moveTo and lineTo to create the mesh. has to be
+ * plugged into a model aswell and requires the LineShader to work.
+ * 
  * @author RK
  */
 class Line extends EditableMesh
@@ -57,8 +60,8 @@ class Line extends EditableMesh
 	// ************************************************************************ //
 	
 	/**
-	 * 
-	 * @param	pos
+	 * start a new set without drawing a line similar to flash.graphics.moveTo
+	 * position must be 3 values (x,y,z) and color aswell (r,g,b)
 	 */
 	public function moveTo( pos:Array<Float>, color:Array<Float> ):Void
 	{
@@ -72,8 +75,8 @@ class Line extends EditableMesh
 	}
 	
 	/**
-	 * 
-	 * @param	pos
+	 * creates a line from the previous position to the given one similar to flash.graphics.lineTo
+	 * position must be 3 values (x,y,z) and color aswell (r,g,b)
 	 */
 	public function lineTo( pos:Array<Float>, color:Array<Float> ):Void
 	{

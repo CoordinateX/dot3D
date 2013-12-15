@@ -6,18 +6,32 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 
 /**
- * ...
+ * abstract class defining the projection algorithm and providing
+ * common lense data like the screen dimension and projection matrix
+ * 
  * @author Gerald Hattensauer
  */
-
 class Lens extends EventDispatcher
 {
 
+	/**
+	 * dimension of the screen the scene shall be rendered on
+	 */
 	public var screen(default, set):ScreenDimension;	
 	
+	/**
+	 * nearest visible distance in world units
+	 */
 	public var zNear(default, set):Float;
+	
+	/**
+	 * farthest visible distance in world units
+	 */
 	public var zFar(default, set):Float;
 	
+	/**
+	 * 
+	 */
 	private var projectionMatrix:Matrix44;
 	private var invalidProjection:Bool;	
 	

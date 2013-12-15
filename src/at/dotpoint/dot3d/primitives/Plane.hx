@@ -5,7 +5,9 @@ import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.register.Register;
 
 /**
- * ...
+ * ordinary plane, but has to be plugged into a Model as this is just a mesh.
+ * has position information.
+ * 
  * @author RK
  */
 class Plane extends EditableMesh

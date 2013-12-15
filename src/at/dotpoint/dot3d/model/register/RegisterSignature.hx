@@ -8,7 +8,11 @@ import at.dotpoint.math.Limit;
 using at.dotpoint.core.ds.VectorUtil;
 
 /**
- * ...
+ * Lists the allowed RegisterTypes that can be stored in a RegisterContainer. Also saves 
+ * the amount of entries that are expected for each type. Those informations are used to
+ * allocate the right amount of space and initialisations. RegisterContainer also uses
+ * the signature to map and lookup its data to the allowed RegisterTypes.
+ * 
  * @author RK
  */
 @:access( at.dotpoint.core.ds.VectorSet )
@@ -17,7 +21,7 @@ class RegisterSignature
 {	
 	
 	/**
-	 * 
+	 * internal list, does make sure its values are unique
 	 */
 	private var registers:VectorSet<RegisterDataSignature>;
 	
@@ -25,6 +29,9 @@ class RegisterSignature
 	// Constructor
 	// ************************************************************************ //	
 	
+	/**
+	 * 
+	 */
 	public function new( numRegisters:Int ) 
 	{
 		this.registers = new VectorSet<RegisterDataSignature>( numRegisters );
@@ -35,7 +42,7 @@ class RegisterSignature
 	// ************************************************************************ //
 	
 	/**
-	 * 
+	 * amount of different RegisterTypes
 	 */
 	public function size():Int
 	{
@@ -56,7 +63,8 @@ class RegisterSignature
 	}	
 	
 	/**
-	 * 
+	 * adds the given type in case it hasn't been stored already and also saves
+	 * the expected amount of entries used to allocate the correct amount of memory
 	 * @param	type
 	 * @return
 	 */
@@ -91,9 +99,10 @@ class RegisterSignature
 	// ------------------------------------------------------------------ //	
 	
 	/**
+	 * how many entries are expected to be stored for the given RegisterType
 	 * 
 	 * @param	type
-	 * @return
+	 * @return -1 in case the given type is invalid, 0 default
 	 */
 	public function getNumEntries( type:RegisterType ):Int
 	{
@@ -108,6 +117,9 @@ class RegisterSignature
 	}
 	
 	/**
+	 * reverse function of indexOf() so you can get the RegisterType
+	 * in case you know its index where it is saved. used for quick lookup
+	 * without any searches. 
 	 * 
 	 * @param	index
 	 * @return
@@ -123,6 +135,9 @@ class RegisterSignature
 	}
 	
 	/**
+	 * calculates the total number of float/int entries all RegisterTypes of the signature 
+	 * would take up for a single vertex for example. is in fact a simple loop through the 
+	 * types and add the size together.
 	 * 
 	 * @return
 	 */
@@ -139,6 +154,10 @@ class RegisterSignature
 	}
 	
 	/**
+	 * searches for the givne RegisterType and returns the index position at which 
+	 * it is internally stored. this index can (and is) be used to quickly map and
+	 * lookup register types. e.g.: register container uses the same order for its
+	 * data and uses the signature to map and lookup RegisterTypes
 	 * 
 	 * @param	type
 	 * @return
@@ -192,7 +211,7 @@ class RegisterSignature
 }
  
 /**
- * Helper Container
+ * Helper Container and actual internal representation
  */
 private class RegisterDataSignature
 {

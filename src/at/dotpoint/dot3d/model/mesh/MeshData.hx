@@ -10,12 +10,12 @@ import haxe.ds.Vector;
 /**
  * Defines raw geometry (no materials) by storing vertex data via RegisterContainers and several Indices describing
  * faces (each pointing to 3 vertices) but also the vertex itself (pointing to each unique vertex data).
- * 
+ * <br/><br/>
  * Internally uv,position,normal,etc has its own RegisterData which stores the values for all vertices in an flat list.
  * Faces are build up in tuples of 3 indices each pointing to a vertex (which might be shared with other faces)
  * Vertices are build up of indices each pointing to each data-tuple (position is a tuple of 3), the tuple length of a 
  * vertex depends on the amount of different vertex data types stored (uv,position,etc).
- * 
+ * <br/><br/>
  * Vertices are defined with indices pointing to each data in the RegisterContainer, this way only unique data is required
  * to be saved even if the data is reused several times on other vertices. e.g.: a cube has 8 unique vertex positions, but 
  * requires different normals for each of the 6 sides, normally you would need to create 4*6 vertices but here vertices
@@ -66,6 +66,10 @@ class MeshData
 	// Constructor
 	// ************************************************************************ //	
 	
+	/**
+	 * uses the signature to allocate the required space for the mesh and defining which
+	 * types of vertex data are allowed to store and access. 
+	 */
 	public function new( signature:MeshSignature ) 
 	{
 		this.signature 		= signature;
@@ -80,9 +84,14 @@ class MeshData
 	// ************************************************************************ //
 
 	/**
+	 * adds or overrides the given values to the RegisterData of the given type at the given index.
+	 * <br/><br/>
+	 * e.g.: position has 3 values, setting the first position data you have to use 0 as index, 
+	 * the second position 1, etc. so no need to compensate for the way it is stored internally
 	 * 
-	 * @param	type
-	 * @param	data
+	 * @param	type type (ID) of which RegisterData you want the data from
+	 * @param	index offset pointing to data just like in an array
+	 * @param	values tuple you want to store; make sure it has the exact size of the type you store
 	 */
 	public function setVertexData( type:RegisterType, index:Int, data:Array<Float> ):Void
 	{
@@ -90,9 +99,12 @@ class MeshData
 	}
 	
 	/**
+	 * adds or overrides a unique vertex by using the given registerIndices array
+	 * where each value is an index pointing to the register data used for the vertex. the order
+	 * is determined by the signature and you must provide an index for all RegisterTypes
 	 * 
-	 * @param	vertex
-	 * @param	registerIndices	order of signature
+	 * @param	vertex unique vertex index
+	 * @param	registerIndices	indices to data of registerType in the order of signature
 	 */
 	public function setVertexIndices( index:Int, registerIndices:Array<Int> ):Void
 	{
@@ -117,6 +129,8 @@ class MeshData
 	}
 	
 	/**
+	 * adds or overrides a face using the given vertexIndices array where each value is an index
+	 * pointing to a unique vertex. (set via setVertexIndices). 
 	 * 
 	 * @param	index
 	 * @param	vertexIndices
@@ -137,7 +151,7 @@ class MeshData
 	// ************************************************************************ //
 	
 	/**
-	 * 
+	 * converts internal representation
 	 */
 	public function createIndexStream():flash.Vector<UInt>
 	{
@@ -153,8 +167,7 @@ class MeshData
 	}
 	
 	/**
-	 * 
-	 * @return
+	 *  converts internal representation
 	 */
 	public function createVertexStream():flash.Vector<Float>
 	{

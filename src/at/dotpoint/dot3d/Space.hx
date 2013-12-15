@@ -1,10 +1,9 @@
 package at.dotpoint.dot3d;
 
 /**
- * ...
- * @author Gerald Hattensauer
+ * used to differenciate between coordination systems
+ * @author RK
  */
-
 enum Space 
 {
 	WorldSpace;
