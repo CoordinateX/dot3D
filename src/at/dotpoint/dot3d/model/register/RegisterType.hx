@@ -21,7 +21,7 @@ class RegisterType
 	public var format:VarType;
 	
 	/**
-	 * amount of individual components the data is composed of
+	 * amount of individual components the data is composed of. e.g. position: 3
 	 */
 	public var size(get, null):Int;
 	
@@ -46,7 +46,7 @@ class RegisterType
 	// ************************************************************************ //
 
 	/**
-	 * @return num of values (byteSize) of the used format
+	 * @return num of values (byteSize) of the used format. e.g. position: 3
 	 */
 	private function get_size():Int
 	{
@@ -66,6 +66,7 @@ class RegisterType
 	// ----------------------------------------------------------------------- //
 	
 	/**
+	 * translates the type to the flash format
 	 * 
 	 * @param	format
 	 * @return
@@ -88,6 +89,8 @@ class RegisterType
 	}
 	
 	/**
+	 * used to calculate the size checking the type
+	 * e.g.: Float3 = 3; Int = 1; etc
 	 * 
 	 * @param	format
 	 * @return

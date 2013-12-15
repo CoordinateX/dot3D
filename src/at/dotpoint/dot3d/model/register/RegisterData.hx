@@ -4,12 +4,11 @@ import haxe.ds.Vector;
 
 /**
  * Stores specific data like UV coordinates, normals, transformations, etc of vertices and shader; 
- * The data is stored continously as float values in an array. Complex Data like a Matrix, Array
- * or Object must be flattend into a single float array.
+ * The data is stored continously as float/int values in an array. Complex Data like a Matrix, Array
+ * or Object must be flattend into a single float/int array.
  * 
  * type:	position
  * stream:	v1x, v1y, v1z, 	v2x, v2y, v2z, 	...
- * 
  */
 class RegisterData<T:Dynamic> 
 {
@@ -25,7 +24,7 @@ class RegisterData<T:Dynamic>
 	private var stream:Vector<T>;
 	
 	/**
-	 * just a single entry? true - all getValues point to the first (and only) entry
+	 * used to alloate the required space and bounding check
 	 */
 	public var numEntries(default,null):Int;
 	

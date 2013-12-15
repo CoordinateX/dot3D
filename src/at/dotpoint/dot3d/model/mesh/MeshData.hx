@@ -8,9 +8,20 @@ import haxe.ds.StringMap;
 import haxe.ds.Vector;
 
 /**
- * raw geometry storing data per vertex in a flat manner using RegisterData for each RegisterType;
- * so uv,position,normal,etc has its own RegisterData which stores the values for all vertices in an flat list
+ * Defines raw geometry (no materials) by storing vertex data via RegisterContainers and several Indices describing
+ * faces (each pointing to 3 vertices) but also the vertex itself (pointing to each unique vertex data).
  * 
+ * Internally uv,position,normal,etc has its own RegisterData which stores the values for all vertices in an flat list.
+ * Faces are build up in tuples of 3 indices each pointing to a vertex (which might be shared with other faces)
+ * Vertices are build up of indices each pointing to each data-tuple (position is a tuple of 3), the tuple length of a 
+ * vertex depends on the amount of different vertex data types stored (uv,position,etc).
+ * 
+ * Vertices are defined with indices pointing to each data in the RegisterContainer, this way only unique data is required
+ * to be saved even if the data is reused several times on other vertices. e.g.: a cube has 8 unique vertex positions, but 
+ * requires different normals for each of the 6 sides, normally you would need to create 4*6 vertices but here vertices
+ * are build indirectly using indices to point to unique data. this way only 8 positions and 6 normals have to be stored
+ * but 24 vertex indices. The mesh is build using face indices each face pointing to 3 vertex indices 
+ * (which in turn point to their data).
  * 
  * @author Gerald Hattensauer
  */
@@ -27,7 +38,7 @@ class MeshData
 	 * normal:		0, 0, 0,	0, 0, 0,	1, 1, 1, 	...
 	 * uv:			0, 1, 2,	2, 3, 0,				...
 	 * 					  ^		^
-	 * 				   equal vertices are removed
+	 * 				   equal vertices can be removed
 	 * 
 	 * each value is an index to the vertex data: pos[0] = v1x, v1y, v1z
 	 * each column is a vertrex; key is registerType.priority
@@ -46,7 +57,8 @@ class MeshData
 	// --------------------------------- //
 	
 	/**
-	 * 
+	 * used to allocate the required space for the mesh and defining which
+	 * types of vertex data are allowed to store and access. 
 	 */
 	public var signature(default,null):MeshSignature;
 	

@@ -1,6 +1,5 @@
 import massive.munit.TestSuite;
 
-import dot3d.MeshSignaturTest;
 import ExampleTest;
 
 /**
@@ -15,7 +14,6 @@ class TestSuite extends massive.munit.TestSuite
 	{
 		super();
 
-		add(dot3d.MeshSignaturTest);
 		add(ExampleTest);
 	}
 }

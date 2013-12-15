@@ -118,13 +118,13 @@ class Main extends MainDot3D
 	{
 		var m0:Model = this.createCube( 5 );	
 			m0.getTransform( Space.WorldSpace ).position.z -= 30;
-			
+		
 		var m1:Model = DrawHelper.createAxis( 5 ); 		
 			m1.getTransform( Space.WorldSpace ).position.z -= 30;
 			m1.getTransform( Space.WorldSpace ).position.x += 0;		
-			
+		
 		// ----------------- //			
-			
+		
 		this.scene.modelList.push( m0 );		
 		this.scene.modelList.push( m1 );
 		
@@ -133,6 +133,7 @@ class Main extends MainDot3D
 	
 	/**
 	 * 
+	 * @param	scale
 	 * @return
 	 */
 	private function createCube( scale:Float = 1. ):Model
