@@ -2,24 +2,17 @@ package ;
 
 import at.dotpoint.core.MainApplication;
 import at.dotpoint.dot3d.camera.Camera;
-import at.dotpoint.dot3d.camera.OrtographicLens;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
-import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.dot3d.primitives.Cube;
-import at.dotpoint.dot3d.primitives.Line;
 import at.dotpoint.dot3d.primitives.Plane;
 import at.dotpoint.dot3d.render.RenderProcessor;
-import at.dotpoint.dot3d.render.RenderUnit;
-import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.dot3d.render.Viewport;
+import at.dotpoint.dot3d.scene.Scene;
 import at.dotpoint.dot3d.Space;
-import at.dotpoint.dot3d.transform.Transform;
-import at.dotpoint.math.vector.Matrix44;
 import at.dotpoint.math.vector.Vector3;
 import flash.events.Event;
 import flash.Lib;
-import shader.LineShader;
 import shader.PointShader;
 import shader.TestShader;
 
@@ -33,13 +26,9 @@ class Main extends MainApplication
 	
 	private var renderer:RenderProcessor;
 	private var controller:ModelController;
+	private var scene:Scene;
 	
 	private var model:Model;
-	private var camera:Camera;
-	private var light:Vector3;
-	
-	private var modelList:Array<Model>;
-	
 	private var t:Float;
 	
 	// ************************************************************************ //
@@ -71,7 +60,11 @@ class Main extends MainApplication
 		this.renderer.init( this.onRenderInitComplete );
 		
 		this.controller = new ModelController();
-		this.controller.moveSpeed = 0.25;
+		this.controller.moveSpeed = 0.25;	
+		
+		this.scene = new Scene();
+		this.scene.camera = Camera.createDefault( this.renderer.viewport );	
+		this.createScene();	
 		
 		this.t = 0;
 	}	
@@ -81,12 +74,13 @@ class Main extends MainApplication
 	 * @param	event
 	 */
 	private function onRenderInitComplete( event:Event ):Void
-	{
-		this.camera = Camera.createDefault( this.renderer.viewport );		
-		this.createScene();
-		
+	{					
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
 	}
+	
+	// ************************************************************************ //
+	// UPDATE
+	// ************************************************************************ //
 	
 	/**
 	 * 
@@ -97,12 +91,8 @@ class Main extends MainApplication
 		this.updateScene();	
 		this.updateLight();				
 		
-		this.render();
+		this.renderer.render( this.scene.gatherRenderUnits() );
 	}
-	
-	// ************************************************************************ //
-	// UPDATE
-	// ************************************************************************ //
 	
 	/**
 	 * 
@@ -111,15 +101,15 @@ class Main extends MainApplication
 	{
 		this.t += 0.0001;	
 		
-		this.light = new Vector3( Math.cos(t * 10) * 1, Math.sin(t * 5) * 2, Math.sin(t) * Math.cos(t) * 2);
-		this.light.normalize();
+		this.scene.light = new Vector3( Math.cos(t * 10) * 1, Math.sin(t * 5) * 2, Math.sin(t) * Math.cos(t) * 2);
+		this.scene.light.normalize();
 	}
 	
 	private function updateScene():Void
 	{
 		this.controller.update( this.model );	
 		
-		for( model in this.modelList )
+		for( model in this.scene.modelList )
 		{
 			if( model != this.model )
 			{
@@ -127,47 +117,6 @@ class Main extends MainApplication
 				model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );
 			}
 		}
-	}
-	
-	// ************************************************************************ //
-	// RENDER
-	// ************************************************************************ //
-	
-	/**
-	 * 
-	 */
-	@:access(hxsl.Shader)
-//
-	private function render():Void
-	{
-		var unitList:Array<RenderUnit> = new Array<RenderUnit>();
-		
-		for( model in this.modelList )
-		{			
-			var m2w:Matrix44 = model.getTransform( Space.WorldSpace ).getMatrix();
-			var w2c:Matrix44 = this.camera.getProjectionMatrix();		
-			
-			Reflect.setProperty( model.material.shader, Register.MODEL_WORLD.ID, m2w );
-			Reflect.setProperty( model.material.shader, Register.WORLD_CAMERA.ID, w2c );
-			
-			// --------------- //
-			
-			var pos:Vector3 = this.camera.getTransform( Space.WorldSpace ).position.getVector();
-			
-			if( Reflect.hasField( model.material.shader, "cam" ) )
-				Reflect.setProperty( model.material.shader, "cam", pos );
-			
-			// --------------- //	
-				
-			var unit:RenderUnit = new RenderUnit();
-				unit.context 	= model.material.contextSetting;
-				unit.shader 	= model.material.shader;
-				unit.mesh 		= model.mesh;
-				
-			unitList.push( unit );
-		}
-	
-		this.renderer.render( unitList );
 	}
 	
 	// ************************************************************************ //
@@ -183,11 +132,10 @@ class Main extends MainApplication
 			m1.getTransform( Space.WorldSpace ).position.z -= 30;
 			m1.getTransform( Space.WorldSpace ).position.x += 0;		
 			
-		// ----------------- //	
-		
-		this.modelList = new Array<Model>();		
-		this.modelList.push( m0 );		
-		this.modelList.push( m1 );
+		// ----------------- //			
+			
+		this.scene.modelList.push( m0 );		
+		this.scene.modelList.push( m1 );
 		
 		this.model = m1;
 	}
@@ -210,6 +158,11 @@ class Main extends MainApplication
 		return new Model( mesh, shader ); 
 	}
 	
+	/**
+	 * 
+	 * @param	scale
+	 * @return
+	 */
 	private function createPlane( scale:Float = 1. ):Model
 	{
 		var w:Float = 1 * scale;
@@ -222,8 +175,5 @@ class Main extends MainApplication
 		
 		return new Model( mesh, shader ); 
 	}
-	
-	
-	
 	
 }
