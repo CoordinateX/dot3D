@@ -1,21 +1,19 @@
-package shader;
+package at.dotpoint.dot3d.shader;
 
-import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.math.vector.Vector3;
 import hxsl.Shader;
-import flash.display3D.Context3DTriangleFace;
 
 /**
  * ...
  * @author Gerald Hattensauer
  */
-private class LShader extends Shader
+private class PShader extends Shader
 {
 	static var SRC = 
 	{
-		var thickness:Float;
+		var diffuseColor:Float4;
 		
 		// ------------------------------------------------------------------ //
 		// ------------------------------------------------------------------ //
@@ -23,36 +21,18 @@ private class LShader extends Shader
 		var input: 
 		{
 			pos:Float3,
-			dir:Float3,
-			sign:Float,
-			color:Float3,
 		};	
-		
-		var vcolor:Float3;
 		
 		// ------------------------------------------------------------------ //
 		// ------------------------------------------------------------------ //
 		// Vertex:
 		
-		function vertex( mpos:M44, mproj:M44, cam:Float3 ) 
+		function vertex( mpos:M44, mproj:M44, light:Float3 ) 
 		{
-			var v = input.pos.xyzw * mpos;
-			var p = input.dir.xyzw * mpos;
+			/*var clip = input.pos.xyzw * mpos * mproj;			
+			out = clip + mproj * input.pos;*/
 			
-			// ----------- //
-			
-			var c = v.xyz - cam.xyz;		
-			var d = v.xyz - p.xyz;
-			
-			var n = norm( cross( c.xyz, d ) );
-			
-			var k = [0, 0, 0, 0];
-				k.xyz = n.xyz * input.sign * thickness * 0.1;
-			
-			// ----------- //	
-			
-			vcolor = input.color;			
-			out = (v  +  k) * mproj;
+			out = input.pos.xyzw * mpos * mproj;
 		}
 		
 		// ------------------------------------------------------------------ //
@@ -60,11 +40,8 @@ private class LShader extends Shader
 		// Fragment:
 		
 		function fragment() 
-		{		
-			var c = [0, 0, 0, 0];
-				c.xyz = vcolor.xyz;
-			
-			out = c; // diffuseColor;
+		{
+			out = diffuseColor;
 		}
 	};
 }
@@ -72,11 +49,10 @@ private class LShader extends Shader
 /**
  * 
  */
-class LineShader extends Material
+class PointShader extends Material
 {
-	private var cast_shader:LShader;
-	
-	public var thickness(get, set):Float;	
+	private var cast_shader:PShader;
+	public var diffuseColor(get, set):Vector3;	
 	
 	// ************************************************************************ //
 	// Constructor
@@ -84,12 +60,8 @@ class LineShader extends Material
 	
 	public function new()
 	{
-		this.cast_shader = new LShader();
-		
-		var settings:ContextSettings = new ContextSettings();
-			settings.culling = Context3DTriangleFace.NONE;
-		
-		super( this.cast_shader, settings );	
+		this.cast_shader = new PShader();			
+		super( this.cast_shader );	
 	}
 	
 	// ************************************************************************ //
@@ -100,11 +72,11 @@ class LineShader extends Material
 	 * 
 	 * @return
 	 */
-	private function get_thickness():Float { return this.cast_shader.thickness; }
+	private function get_diffuseColor():Vector3 { return this.cast_shader.diffuseColor; }
 	
-	private function set_thickness( value:Float ):Float
+	private function set_diffuseColor( value:Vector3 ):Vector3
 	{
-		return this.cast_shader.thickness = value;
+		return this.cast_shader.diffuseColor = value;
 	}
 
 }

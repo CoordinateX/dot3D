@@ -1,7 +1,9 @@
-package ;
+package at.dotpoint.dot3d;
+
+import at.dotpoint.dot3d.shader.LineShader;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.primitives.Line;
-import shader.LineShader;
+
 
 /**
  * ...

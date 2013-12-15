@@ -1,15 +1,17 @@
 package ;
 
+import at.dotpoint.dot3d.DrawHelper;
+import at.dotpoint.dot3d.MainDot3D;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.primitives.Cube;
 import at.dotpoint.dot3d.primitives.Plane;
+import at.dotpoint.dot3d.shader.PointShader;
+import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.dot3d.Space;
 import at.dotpoint.math.vector.Vector3;
 import flash.events.Event;
 import flash.Lib;
-import shader.PointShader;
-import shader.TestShader;
 
 
 /**

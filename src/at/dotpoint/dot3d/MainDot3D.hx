@@ -1,4 +1,5 @@
-package ;
+package at.dotpoint.dot3d;
+
 import at.dotpoint.core.MainApplication;
 import flash.events.Event;
 
