@@ -1,14 +1,9 @@
 package ;
 
-import at.dotpoint.core.MainApplication;
-import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.primitives.Cube;
 import at.dotpoint.dot3d.primitives.Plane;
-import at.dotpoint.dot3d.render.RenderProcessor;
-import at.dotpoint.dot3d.render.Viewport;
-import at.dotpoint.dot3d.scene.Scene;
 import at.dotpoint.dot3d.Space;
 import at.dotpoint.math.vector.Vector3;
 import flash.events.Event;
@@ -21,14 +16,12 @@ import shader.TestShader;
  * ...
  * @author RK
  */
-class Main extends MainApplication
+class Main extends MainDot3D
 {
 	
-	private var renderer:RenderProcessor;
-	private var controller:ModelController;
-	private var scene:Scene;
-	
+	private var controller:ModelController;	
 	private var model:Model;
+	
 	private var t:Float;
 	
 	// ************************************************************************ //
@@ -53,18 +46,13 @@ class Main extends MainApplication
 	 * 
 	 */
 	override private function init():Void
-	{
-		var viewport:Viewport = Viewport.create( this, true );		
+	{		
+		super.init();
 		
-		this.renderer = new RenderProcessor( viewport );
-		this.renderer.init( this.onRenderInitComplete );
+		this.createScene();	
 		
 		this.controller = new ModelController();
 		this.controller.moveSpeed = 0.25;	
-		
-		this.scene = new Scene();
-		this.scene.camera = Camera.createDefault( this.renderer.viewport );	
-		this.createScene();	
 		
 		this.t = 0;
 	}	
@@ -73,7 +61,7 @@ class Main extends MainApplication
 	 * 
 	 * @param	event
 	 */
-	private function onRenderInitComplete( event:Event ):Void
+	override private function onRenderInitComplete( event:Event ):Void
 	{					
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
 	}
@@ -91,20 +79,12 @@ class Main extends MainApplication
 		this.updateScene();	
 		this.updateLight();				
 		
-		this.renderer.render( this.scene.gatherRenderUnits() );
+		this.renderScene();
 	}
 	
 	/**
 	 * 
 	 */
-	private function updateLight():Void
-	{
-		this.t += 0.0001;	
-		
-		this.scene.light = new Vector3( Math.cos(t * 10) * 1, Math.sin(t * 5) * 2, Math.sin(t) * Math.cos(t) * 2);
-		this.scene.light.normalize();
-	}
-	
 	private function updateScene():Void
 	{
 		this.controller.update( this.model );	
@@ -117,6 +97,17 @@ class Main extends MainApplication
 				model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	private function updateLight():Void
+	{
+		this.t += 0.0001;	
+		
+		this.scene.light = new Vector3( Math.cos(t * 10) * 1, Math.sin(t * 5) * 2, Math.sin(t) * Math.cos(t) * 2);
+		this.scene.light.normalize();
 	}
 	
 	// ************************************************************************ //
