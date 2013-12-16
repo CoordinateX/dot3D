@@ -1,6 +1,8 @@
 package ;
 
 import at.dotpoint.dot3d.DrawHelper;
+import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
+import at.dotpoint.dot3d.loader.format.WavefrontObjectFormat;
 import at.dotpoint.dot3d.MainDot3D;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
@@ -9,10 +11,12 @@ import at.dotpoint.dot3d.primitives.Plane;
 import at.dotpoint.dot3d.shader.PointShader;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.dot3d.Space;
+import at.dotpoint.loader.DataHelper;
+import at.dotpoint.loader.DataRequest;
 import at.dotpoint.math.vector.Vector3;
 import flash.events.Event;
 import flash.Lib;
-
+import haxe.ds.Vector;
 
 /**
  * ...
@@ -20,6 +24,7 @@ import flash.Lib;
  */
 class Main extends MainDot3D
 {
+	private var loader:DataRequest;
 	
 	private var controller:ModelController;	
 	private var model:Model;
@@ -51,13 +56,40 @@ class Main extends MainDot3D
 	{		
 		super.init();
 		
-		this.createScene();	
+		this.loadScene();	
+		this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 60;
 		
 		this.controller = new ModelController();
 		this.controller.moveSpeed = 0.25;	
 		
 		this.t = 0;
 	}	
+	
+	/**
+	 * 
+	 */
+	private function loadScene():Void
+	{
+		DataHelper.instance.formats.push( WavefrontObjectFormat.instance );
+		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
+		
+		this.loader = DataRequest.createFromURL( "assets/cube.obj" );
+		this.loader.load( this.onComplete );
+	}	
+	
+	/**
+	 * 
+	 * @param	event
+	 */
+	private function onComplete( event:Event ):Void
+	{
+		var list:Vector<Model> = this.loader.getData();
+		
+		for( model in list )
+		{
+			this.scene.modelList.push( model );
+		}
+	}
 	
 	/**
 	 * 
@@ -89,7 +121,8 @@ class Main extends MainDot3D
 	 */
 	private function updateScene():Void
 	{
-		this.controller.update( this.model );	
+		if( this.model != null )
+			this.controller.update( this.model );	
 		
 		for( model in this.scene.modelList )
 		{

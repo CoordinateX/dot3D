@@ -28,7 +28,7 @@
     <option flashStrict="False" />
     <option mainClass="Main" />
     <option enabledebug="True" />
-    <option additional="-D dotpoint&#xA;&#xA;" />
+    <option additional="-D dotpoint" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
