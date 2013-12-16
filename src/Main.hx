@@ -68,7 +68,7 @@ class Main extends MainDot3D
 	 */
 	private function loadScene():Void
 	{
-		this.loader = DataRequest.createFromURL( "assets/cube_staple.obj" );
+		this.loader = DataRequest.createFromURL( "assets/cube.obj" );
 		this.loader.load( this.onComplete );
 	}	
 	
