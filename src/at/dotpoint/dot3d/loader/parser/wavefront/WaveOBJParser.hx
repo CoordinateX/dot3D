@@ -165,10 +165,10 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 			if( p > 0 )
 			{
 				var sig:MeshSignature = this.subParser[p - 1].getData().data.signature; //previous sig for offset
-			
+				
 				for( j in 0...sig.size() )
 				{
-					offset[j] = sig.getNumEntries( sig.getTypeByIndex(j) ) + 1; // +1 cause by default 1 too high
+					offset[j] += sig.getNumEntries( sig.getTypeByIndex(j) ); 
 				}
 			}			
 			

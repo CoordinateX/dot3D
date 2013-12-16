@@ -21,10 +21,9 @@ import haxe.ds.Vector;
  */
 class Main extends MainDot3D
 {
-	private var loader:DataRequest;
 	
+	private var loader:DataRequest;	
 	private var controller:ModelController;	
-	private var model:Model;
 	
 	private var t:Float;
 	
@@ -53,9 +52,10 @@ class Main extends MainDot3D
 	{		
 		super.init();
 		
-		//this.loadScene();	
-		this.createScene();
-		//this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 60;
+		//this.createScene();
+		
+		this.loadScene();			
+		this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 20;
 		
 		this.controller = new ModelController();
 		this.controller.moveSpeed = 0.25;	
@@ -68,7 +68,7 @@ class Main extends MainDot3D
 	 */
 	private function loadScene():Void
 	{
-		this.loader = DataRequest.createFromURL( "assets/composed_scene.obj" );
+		this.loader = DataRequest.createFromURL( "assets/cube_staple.obj" );
 		this.loader.load( this.onComplete );
 	}	
 	
@@ -84,8 +84,8 @@ class Main extends MainDot3D
 		{
 			this.scene.modelList.push( model );
 			
-			model.getTransform( Space.WorldSpace ).rotation.pitch( Math.random() * 5 );
-			model.getTransform( Space.WorldSpace ).rotation.roll( Math.random() * 5  );
+			model.getTransform( Space.WorldSpace ).rotation.pitch( Math.random() * 2 );
+			model.getTransform( Space.WorldSpace ).rotation.roll( Math.random() * 2  );
 		}
 	}
 	
@@ -118,21 +118,14 @@ class Main extends MainDot3D
 	 * 
 	 */
 	private function updateScene():Void
-	{
-		if( this.model != null )
-			this.controller.update( this.model );	
+	{		
+		this.controller.update( this.scene.camera );	
 		
 		for( model in this.scene.modelList )
 		{
-			if( model != this.model )
-			{
-				model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
-				model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );
-			}
-		}
-		
-		if( this.model == null && this.scene.modelList.length > 0 )
-			this.model = this.scene.modelList[0];
+			model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
+			model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );	
+		}		
 	}
 	
 	/**
@@ -162,9 +155,7 @@ class Main extends MainDot3D
 		// ----------------- //			
 		
 		this.scene.modelList.push( m0 );		
-		//this.scene.modelList.push( m1 );
-		
-		this.model = m0;
+	//	this.scene.modelList.push( m1 );
 	}
 	
 	/**

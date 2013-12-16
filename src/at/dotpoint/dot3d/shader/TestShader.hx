@@ -53,9 +53,9 @@ private class TShader extends Shader
 		
 		function fragment( ambient:Texture, diffuse:Texture, normal:Texture ) 
 		{
-			if ( false )
+			if ( useTexture )
 			{
-				out = diffuse.get(tuv); //(lpow * 0.8 + 0.2);
+				out = diffuse.get(tuv) * (lpow * 0.8 + 0.2);
 			}
 			else
 			{
@@ -168,7 +168,7 @@ class TestShader extends Material
 	
 	private function set_ambientMap( value:Texture ):Texture
 	{
-		//this.cast_shader.useTexture = true;
+		this.cast_shader.useTexture = true;
 		return this.cast_shader.ambient = value;
 	}
 	
@@ -180,7 +180,7 @@ class TestShader extends Material
 	
 	private function set_diffuseMap( value:Texture ):Texture
 	{
-		//this.cast_shader.useTexture = true;
+		this.cast_shader.useTexture = true;
 		return this.cast_shader.diffuse = value;
 	}
 	
@@ -192,7 +192,7 @@ class TestShader extends Material
 	
 	private function set_normalMap( value:Texture ):Texture
 	{
-		//this.cast_shader.useTexture = true;
+		this.cast_shader.useTexture = true;
 		return this.cast_shader.normal = value;
 	}
 }

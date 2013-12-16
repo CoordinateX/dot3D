@@ -2,11 +2,14 @@ package at.dotpoint.dot3d.loader.parser.wavefront;
 
 import at.dotpoint.dot3d.loader.format.TextureFormat;
 import at.dotpoint.dot3d.model.material.Material;
+import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.loader.parser.ABaseParser;
 import at.dotpoint.loader.parser.ISingleDataParser;
 import at.dotpoint.math.vector.Vector3;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.events.Event;
 import flash.net.URLRequest;
 import flash.display3D.Context3DTriangleFace;
@@ -206,9 +209,21 @@ class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String
 	 */
 	private function onTexture( line:Array<String>, type:String ):Void
 	{
-		var request:TextureRequest = new TextureRequest( new URLRequest( this.directoryURL + "/" + line[0] ) );
+		var url:Array<String> = line[0].split("\\");			// D:\Projects\Dotpoint\dot3D\bin\assets\textures\cardboard.jpg
+		var dir:Array<String> = this.directoryURL.split("/");	// assets/
+		
+		for( j in 0...url.length )
+		{
+			if( url[url.length - j] == dir[0] ) // j = 2 in this example
+			{
+				url = dir.concat( url.splice(url.length - j + 1, j) );
+				break;
+			}
+		}
+		
+		var request:TextureRequest = new TextureRequest( new URLRequest( url.join("/") ) );
 			request.type = type;
-			
+		
 		this.pendingTextures.push( request );
 	}
 	
@@ -227,19 +242,22 @@ class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String
 			return;
 		}
 		
-		var request:TextureRequest = this.pendingTextures.pop();
-			request.load( this.onTextureComplete  );		
+		var request:TextureRequest = this.pendingTextures[this.pendingTextures.length-1];
+			request.load( this.onTextureComplete  );	
 	}
 	
 	/**
 	 * when the current parsing material is done, save result and try the next one
 	 */
 	private function onTextureComplete( event:Event ):Void
-	{
-		var request:TextureRequest = event.target;
+	{		
+		var request:TextureRequest = this.pendingTextures.pop();
+		var data:BitmapData = request.getData().bitmapData;
 		
-		//Reflect.setProperty( this.output, request.type, request.getData() );
-		trace("onTextureComplete " + request.type );
+		var texture:Texture = new Texture( request.type, data.width, data.height );
+			texture.bitmaps.push( data );
+		
+		Reflect.setProperty( this.output, request.type, texture );
 		
 		this.loadTexture();
 	}
