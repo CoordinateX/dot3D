@@ -53,8 +53,9 @@ class Main extends MainDot3D
 	{		
 		super.init();
 		
-		this.loadScene();	
-		this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 60;
+		//this.loadScene();	
+		this.createScene();
+		//this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 60;
 		
 		this.controller = new ModelController();
 		this.controller.moveSpeed = 0.25;	
@@ -129,6 +130,9 @@ class Main extends MainDot3D
 				model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );
 			}
 		}
+		
+		if( this.model == null && this.scene.modelList.length > 0 )
+			this.model = this.scene.modelList[0];
 	}
 	
 	/**
@@ -158,9 +162,9 @@ class Main extends MainDot3D
 		// ----------------- //			
 		
 		this.scene.modelList.push( m0 );		
-		this.scene.modelList.push( m1 );
+		//this.scene.modelList.push( m1 );
 		
-		this.model = m1;
+		this.model = m0;
 	}
 	
 	/**

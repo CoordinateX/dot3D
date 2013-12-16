@@ -9,6 +9,7 @@ import at.dotpoint.loader.parser.ISingleDataParser;
 import at.dotpoint.math.vector.Vector3;
 import flash.events.Event;
 import flash.net.URLRequest;
+import flash.display3D.Context3DTriangleFace;
 
 /**
  * Parses a single material out of an *.mtl file which might contain a lot of them
@@ -58,6 +59,8 @@ class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String
 		this.setParsing();
 		
 		this.output = new TestShader();
+		this.output.contextSetting.culling = Context3DTriangleFace.FRONT;
+		
 		this.output.name = this.name;
 		
 		this.start();

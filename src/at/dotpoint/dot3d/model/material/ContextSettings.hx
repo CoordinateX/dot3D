@@ -37,7 +37,7 @@ class ContextSettings
 		this.depthTest 		= true;
 		this.depthTestMode 	= Context3DCompareMode.LESS;
 		
-		this.culling = Context3DTriangleFace.BACK;
+		this.culling = Context3DTriangleFace.FRONT;
 	}
 	
 	/**

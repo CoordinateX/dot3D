@@ -62,9 +62,13 @@ class Scene
 			// --------------- //
 			// light:
 			
-			if( Reflect.hasField( model.material.shader, "light" ) )
-				Reflect.setProperty( model.material.shader, "light", light );	
-				
+			//if( Reflect.hasField( model.material.shader, "light" ) )
+				Reflect.setProperty( model.material.shader, "light", this.light );	
+			
+			//	trace( Reflect.fields( model.material )  );	
+			
+			//trace( model.material.shader.getDebugShaderCode() );
+			
 			// --------------- //	
 				
 			var unit:RenderUnit = new RenderUnit();
