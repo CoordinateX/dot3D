@@ -1,6 +1,10 @@
 package at.dotpoint.dot3d;
 
 import at.dotpoint.core.MainApplication;
+import at.dotpoint.dot3d.loader.format.TextureFormat;
+import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
+import at.dotpoint.dot3d.loader.format.WavefrontObjectFormat;
+import at.dotpoint.loader.DataHelper;
 import flash.events.Event;
 
 import at.dotpoint.dot3d.render.RenderProcessor;
@@ -36,6 +40,12 @@ class MainDot3D extends MainApplication
 	 */
 	override private function init():Void
 	{
+		DataHelper.instance.formats.push( WavefrontObjectFormat.instance );
+		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
+		DataHelper.instance.formats.push( TextureFormat.instance );
+		
+		// --------------------------- //
+		
 		var viewport:Viewport = Viewport.create( this, true );		
 		
 		this.renderer = new RenderProcessor( viewport );

@@ -17,6 +17,11 @@ class Material
 {
 
 	/**
+	 * 
+	 */
+	public var name:String;
+	
+	/**
 	 * hxsl shader
 	 */
 	public var shader:Shader;	

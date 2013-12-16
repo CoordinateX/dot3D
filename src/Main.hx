@@ -1,8 +1,6 @@
 package ;
 
 import at.dotpoint.dot3d.DrawHelper;
-import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
-import at.dotpoint.dot3d.loader.format.WavefrontObjectFormat;
 import at.dotpoint.dot3d.MainDot3D;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
@@ -11,7 +9,6 @@ import at.dotpoint.dot3d.primitives.Plane;
 import at.dotpoint.dot3d.shader.PointShader;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.dot3d.Space;
-import at.dotpoint.loader.DataHelper;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.math.vector.Vector3;
 import flash.events.Event;
@@ -70,10 +67,7 @@ class Main extends MainDot3D
 	 */
 	private function loadScene():Void
 	{
-		DataHelper.instance.formats.push( WavefrontObjectFormat.instance );
-		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
-		
-		this.loader = DataRequest.createFromURL( "assets/cube.obj" );
+		this.loader = DataRequest.createFromURL( "assets/composed_scene.obj" );
 		this.loader.load( this.onComplete );
 	}	
 	
@@ -88,6 +82,9 @@ class Main extends MainDot3D
 		for( model in list )
 		{
 			this.scene.modelList.push( model );
+			
+			model.getTransform( Space.WorldSpace ).rotation.pitch( Math.random() * 5 );
+			model.getTransform( Space.WorldSpace ).rotation.roll( Math.random() * 5  );
 		}
 	}
 	

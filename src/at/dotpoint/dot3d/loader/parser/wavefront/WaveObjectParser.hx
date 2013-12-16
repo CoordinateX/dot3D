@@ -23,10 +23,29 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 	
 	// ------------------ //
 	
+	/**
+	 * mesh has no name, so WaveOBJParser sets it on the model
+	 */
 	public var name:String;
 	
+	/**
+	 * mesh has no material, so WaveOBJParser sets it on the model
+	 */
+	public var materialName:String;
+	
+	// ------------------ //
+	
+	/**
+	 * determine unique vertex
+	 */
 	private var vertexLookup:StringMap<Vertex>;
 	private var numUniqueVertices:Int;
+	
+	/**
+	 * register indices for vertices do have an offset depending on previously parsed
+	 * objects. e.g.: f 10/8/12 9/5/12 13/6/12 must be substracted with 8/4/6
+	 */
+	public var offsets:Array<Int>;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -48,8 +67,8 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 	 * 
 	 * @param	request
 	 */
-	public function parse( request:String ):Void
-	{
+	public function parse( input:String ):Void
+	{		
 		this.setParsing();
 		this.start();
 	}
@@ -112,9 +131,12 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 			numRegisters++;
 		
 		// ------------------------------ //	
-		// signature/mesh:
+		// pre calculate unique vertices
 		
 		var vertices:Array<Vertex> = this.parseFaces(); // parse first to determine unique vertices
+		
+		// ------------------------------ //	
+		// signature/mesh:
 		
 		var numVertices:Int = this.numUniqueVertices;
 		var numFaces:Int 	= Std.parseInt( freg.matched(1) );
@@ -122,8 +144,8 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 		var signature:MeshSignature = new MeshSignature( numVertices, numFaces, numRegisters );
 			signature.addType( Register.VERTEX_POSITION, Std.parseInt( vreg.matched(1) ) );
 		
-		if(	hasN ) 	signature.addType( Register.VERTEX_NORMAL, 	 Std.parseInt( nreg.matched(1) ) );
 		if(	hasT )	signature.addType( Register.VERTEX_UV, 		 Std.parseInt( treg.matched(1) ) );
+		if(	hasN ) 	signature.addType( Register.VERTEX_NORMAL, 	 Std.parseInt( nreg.matched(1) ) );		
 		
 		this.output = new Mesh( signature );
 		
@@ -136,6 +158,7 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 		if( hasT ) this.parseVertexData( Register.VERTEX_UV,	 ~/vt\s+(\-?[0-9]+\.?[0-9]*\s){2}/ );
 		
 		this.buildMesh( vertices );
+		this.parseMaterialName();
 		
 		// ------------------------------ //
 		
@@ -190,7 +213,7 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 			var data:Array<Int> = new Array<Int>();
 			
 			for( d in 0...splitted.length )
-				data[d] = Std.parseInt( splitted[d] ) - 1; //starting at 0, obj does at 1
+				data[d] = Std.parseInt( splitted[d] ) - this.offsets[d]; //starting at 0, obj does at 1
 			
 			var vertex:Vertex = new Vertex();
 				vertex.index = this.numUniqueVertices;
@@ -215,7 +238,8 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 	{
 		var data:Array<Float> = new Array<Float>();
 		
-		var size:Int = type.size + 1;		
+		var size:Int = type.size + 1;
+		
 		var p:Int = 0;
 		var i:Int = 0;
 		
@@ -253,6 +277,17 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 			if( v % 3 == 2 )
 				this.output.data.setFaceIndices( Std.int( v / 3 ), data );
 		}
+	}
+	
+	/**
+	 * usemtl wire_214228153
+	 */
+	private function parseMaterialName():Void
+	{
+		var mreg:EReg = ~/usemtl\s+([a-zA-Z0-9_]+)\s*/;	
+			mreg.match( this.input );
+		
+		this.materialName = mreg.matched(1);
 	}
 }
 

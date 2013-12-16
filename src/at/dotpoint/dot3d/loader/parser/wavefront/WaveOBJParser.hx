@@ -1,5 +1,7 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
+import at.dotpoint.dot3d.model.material.Material;
+import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.loader.DataRequest;
@@ -29,7 +31,7 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 	
 	private var directoryURL:String;
 	
-	private var objectParser:Array<WaveObjectParser>;
+	private var subParser:Array<WaveObjectParser>;
 	private var materialLoader:DataRequest;
 	
 	// ************************************************************************ //
@@ -41,7 +43,7 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 		super();
 		
 		this.directoryURL = directoryURL;
-		this.objectParser = new Array<WaveObjectParser>();
+		this.subParser = new Array<WaveObjectParser>();
 	}
 	
 	// ************************************************************************ //
@@ -101,6 +103,24 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 	private function onMaterialComplete( event:Event ):Void
 	{
 		trace( "onMaterialComplete" );
+		
+		var materials:Vector<Material> = event.target.getData();
+		
+		for( p in 0...this.subParser.length )
+		{
+			var parser:WaveObjectParser = this.subParser[p];				
+			var model:Model  			= this.output[p];				
+			
+			for( material in materials )
+			{
+				if( material.name == parser.materialName )	
+				{
+					model.material = material;
+					break;
+				}
+			}
+		}
+		
 		this.setComplete();
 	}
 	
@@ -126,9 +146,10 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 			p = span.pos + span.len;
 			c++;
 			
-			this.objectParser.push( new WaveObjectParser( obj.matched(1), split[c] ) );	
+			this.subParser.push( new WaveObjectParser( obj.matched(1), split[c] ) );	
 		}
 		
+		this.output = new Vector<Model>( this.subParser.length );
 		this.parseObjects();		
 	}	
 	
@@ -137,17 +158,28 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 	 */
 	private function parseObjects():Void
 	{
-		this.output = new Vector<Model>( this.objectParser.length );
+		var offset:Array<Int> = [1,1,1]; // default offset
 		
-		var shader:TestShader = new TestShader();
-			shader.diffuseColor = new Vector3( 1, 0.5, 0.5 );	
-		
-		for( p in 0...this.objectParser.length )
+		for( p in 0...this.subParser.length )
 		{
-			var parser:WaveObjectParser = this.objectParser[p];
+			if( p > 0 )
+			{
+				var sig:MeshSignature = this.subParser[p - 1].getData().data.signature; //previous sig for offset
+			
+				for( j in 0...sig.size() )
+				{
+					offset[j] = sig.getNumEntries( sig.getTypeByIndex(j) ) + 1; // +1 cause by default 1 too high
+				}
+			}			
+			
+			var parser:WaveObjectParser = this.subParser[p];
+				parser.offsets = offset;
 				parser.parse( null );
 			
-			this.output[p] = new Model( parser.getData(), shader );
+			var model:Model = new Model( parser.getData() );
+				model.name = parser.name;
+				
+			this.output[p] = model;
 		}
 		
 		trace( "onObjectsComplete" );

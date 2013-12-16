@@ -19,6 +19,11 @@ class Model extends EntityContainer
 {
 	
 	/**
+	 * 
+	 */
+	public var name:String;
+	
+	/**
 	 * geometry: vertex + index buffer
 	 */
 	public var mesh:Mesh;
