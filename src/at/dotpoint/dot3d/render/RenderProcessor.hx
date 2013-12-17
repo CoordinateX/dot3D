@@ -119,6 +119,7 @@ class RenderProcessor extends EventDispatcher
 		
 		for ( unit in list )
 		{
+			unit.shaderData.apply( unit.shader );
 			this.selectShader( unit.shader );		
 			
 			// ------------------- //

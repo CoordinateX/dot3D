@@ -1,8 +1,10 @@
 package at.dotpoint.dot3d.scene;
 
 import at.dotpoint.dot3d.camera.Camera;
+import at.dotpoint.dot3d.model.material.ShaderInput;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
+import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.dot3d.render.RenderUnit;
 import at.dotpoint.math.vector.Matrix44;
 import at.dotpoint.math.vector.Vector3;
@@ -41,44 +43,51 @@ class Scene
 	{
 		var unitList:Array<RenderUnit> = new Array<RenderUnit>();		
 		
-		var w2c:Matrix44 	= this.camera.getProjectionMatrix();		
-		var camPos:Vector3 	= this.camera.getTransform( Space.WorldSpace ).position.getVector();
-		var light:Vector3 	= this.light;
-		
-		
 		for( model in this.modelList )
 		{			
-			var m2w:Matrix44 = model.getTransform( Space.WorldSpace ).getMatrix();
-			
-			Reflect.setProperty( model.material.shader, Register.MODEL_WORLD.ID, m2w );
-			Reflect.setProperty( model.material.shader, Register.WORLD_CAMERA.ID, w2c );
-			
-			// --------------- //
-			// camera:
-			
-			if( Reflect.hasField( model.material.shader, "cam" ) )
-				Reflect.setProperty( model.material.shader, "cam", camPos );
-			
-			// --------------- //
-			// light:
-			
-			//if( Reflect.hasField( model.material.shader, "light" ) )
-				Reflect.setProperty( model.material.shader, "light", this.light );	
-			
-			//	trace( Reflect.fields( model.material )  );	
-			
-			//trace( model.material.shader.getDebugShaderCode() );
-			
-			// --------------- //	
-				
 			var unit:RenderUnit = new RenderUnit();
 				unit.context 	= model.material.contextSetting;
-				unit.shader 	= model.material.shader;
+				unit.shader 	= model.material.shader;				
 				unit.mesh 		= model.mesh;
 				
+			unit.shaderData = this.createShaderInput( model );
+			
 			unitList.push( unit );
 		}
 		
 		return unitList;
+	}
+	
+	private function createShaderInput( model:Model ):ShaderInput
+	{
+		var input:ShaderInput = new ShaderInput();
+		
+		var vertexInput:Array<RegisterType> = model.material.reflectVertexArguments();
+		//var fragmentInput:Array<RegisterType> = model.material.reflectFragmentArguments();
+		
+		for( vType in vertexInput )
+		{
+			if( vType.ID == Register.MODEL_WORLD.ID )
+			{
+				input.set( vType.ID, model.getTransform( Space.WorldSpace ).getMatrix() );
+			}
+			
+			if( vType.ID == Register.WORLD_CAMERA.ID )
+			{
+				input.set( vType.ID, this.camera.getProjectionMatrix() );
+			}
+			
+			if( vType.ID == Register.LIGHT.ID )
+			{
+				input.set( vType.ID, this.light );
+			}
+			
+			if( vType.ID == Register.CAMERA_POSITION.ID )
+			{
+				input.set( vType.ID, this.camera.getTransform( Space.WorldSpace ).position.getVector() );
+			}			
+		}
+		
+		return input;
 	}
 }

@@ -52,9 +52,9 @@ class Main extends MainDot3D
 	{		
 		super.init();
 		
-		//this.createScene();
+		this.createScene();		
+		this.loadScene();
 		
-		this.loadScene();			
 		this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 20;
 		
 		this.controller = new ModelController();
@@ -68,7 +68,7 @@ class Main extends MainDot3D
 	 */
 	private function loadScene():Void
 	{
-		this.loader = DataRequest.createFromURL( "assets/cube.obj" );
+		this.loader = DataRequest.createFromURL( "assets/cube_staple.obj" );
 		this.loader.load( this.onComplete );
 	}	
 	
@@ -154,8 +154,8 @@ class Main extends MainDot3D
 		
 		// ----------------- //			
 		
-		this.scene.modelList.push( m0 );		
-	//	this.scene.modelList.push( m1 );
+		//this.scene.modelList.push( m0 );		
+		this.scene.modelList.push( m1 );
 	}
 	
 	/**

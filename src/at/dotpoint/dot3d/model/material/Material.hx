@@ -94,8 +94,32 @@ class Material
 	 */
 	public function reflectVertexArguments():Array<RegisterType>
 	{		
-		return null;
+		return this.toRegisterType( this.shader.globals.data.vertex.args );
 	}
 	
+	/**
+	 *  data.fragment.args
+	 */
+	public function reflectFragmentArguments():Array<RegisterType>
+	{		
+		return this.toRegisterType( this.shader.globals.data.fragment.args );
+	}
+	
+	/**
+	 * 
+	 * @param	data
+	 * @return
+	 */
+	private function toRegisterType( varlist:Array<Variable> ):Array<RegisterType>
+	{
+		var output:Array<RegisterType> = new Array<RegisterType>();
+		
+		for ( field in varlist )
+		{
+			output.push( new RegisterType( field.name, field.type ) );
+		}
+		
+		return output;
+	}
 	
 }

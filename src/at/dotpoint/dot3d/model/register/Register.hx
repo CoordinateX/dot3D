@@ -22,9 +22,14 @@ class Register
 	public static var WORLD_CAMERA:RegisterType 	= new RegisterType( "mproj", VarType.TMatrix(4, 4, null) );	
 	
 	/**
-	 * light collections: format is faked and unusable
+	 * a single light (will be changed)
 	 */
-	public static var LIGHT_COLLECTION:RegisterType = new RegisterType( "lights", VarType.TNull );
+	public static var LIGHT:RegisterType 			= new RegisterType( "light", VarType.TFloat3 );
+	
+	/**
+	 * 
+	 */
+	public static var CAMERA_POSITION:RegisterType 	= new RegisterType( "cam", VarType.TFloat3 );
 	
 	// --------------------------------------------------- //
 	// --------------------------------------------------- //
@@ -34,6 +39,7 @@ class Register
 	public static var VERTEX_UV:RegisterType 			= new RegisterType( "uv", 				VarType.TFloat2, 1 );
 	public static var VERTEX_BARYCENTRIC:RegisterType 	= new RegisterType( "barycentric", 		VarType.TFloat3,  3 ); // wireframe
 	
+	// especially for lines/particles
 	public static var VERTEX_DIRECTION:RegisterType 	= new RegisterType( "dir", 			VarType.TFloat3, 1 );
 	public static var VERTEX_SIGN:RegisterType 			= new RegisterType( "sign", 		VarType.TFloat, 2 );
 	public static var VERTEX_COLOR:RegisterType 		= new RegisterType( "color", 		VarType.TFloat3, 3 );
