@@ -5,3 +5,5 @@
 /src/QuickTest.hx
 /doc
 /bin/_save
+/unit/report
+/unit/bin

@@ -11,4 +11,4 @@
 -D dotpoint
 
 -swf-version 11
--swf bin/dot3D.swf
+-swf unit/bin/documentation.swf

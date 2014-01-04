@@ -1,4 +1,4 @@
-package ;
+package;
 
 import at.dotpoint.dot3d.DrawHelper;
 import at.dotpoint.dot3d.MainDot3D;
@@ -23,7 +23,9 @@ class Main extends MainDot3D
 {
 	
 	private var loader:DataRequest;	
+	
 	private var controller:ModelController;	
+	private var rotateList:Array<Model>;
 	
 	private var t:Float;
 	
@@ -32,9 +34,9 @@ class Main extends MainDot3D
 	// ************************************************************************ //
 	
 	static public function main() 
-	{		
+	{                
 		Lib.current.addChild( new Main() );
-	}	
+	}        
 	
 	public function new() 
 	{
@@ -68,7 +70,7 @@ class Main extends MainDot3D
 	 */
 	private function loadScene():Void
 	{
-		this.loader = DataRequest.createFromURL( "assets/cube_staple.obj" );
+		this.loader = DataRequest.createFromURL( "../assets/cube_staple.obj" );
 		this.loader.load( this.onComplete );
 	}	
 	
@@ -80,12 +82,15 @@ class Main extends MainDot3D
 	{
 		var list:Vector<Model> = this.loader.getData();
 		
+		this.rotateList = new Array<Model>();
+		
 		for( model in list )
 		{
 			this.scene.modelList.push( model );
+			this.rotateList .push( model );
 			
 			model.getTransform( Space.WorldSpace ).rotation.pitch( Math.random() * 2 );
-			model.getTransform( Space.WorldSpace ).rotation.roll( Math.random() * 2  );
+			model.getTransform( Space.WorldSpace ).rotation.roll( Math.random() * 2  );			
 		}
 	}
 	
@@ -121,7 +126,10 @@ class Main extends MainDot3D
 	{		
 		this.controller.update( this.scene.camera );	
 		
-		for( model in this.scene.modelList )
+		if( this.rotateList == null )
+			return;
+		
+		for( model in this.rotateList)
 		{
 			model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
 			model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );	
@@ -145,17 +153,12 @@ class Main extends MainDot3D
 
 	private function createScene():Void
 	{
-		var m0:Model = this.createCube( 5 );	
-			m0.getTransform( Space.WorldSpace ).position.z -= 30;
-		
-		var m1:Model = DrawHelper.createAxis( 5 ); 		
-			m1.getTransform( Space.WorldSpace ).position.z -= 30;
-			m1.getTransform( Space.WorldSpace ).position.x += 0;		
+		var m0:Model = DrawHelper.drawGrid( 100 );	
 		
 		// ----------------- //			
 		
 		//this.scene.modelList.push( m0 );		
-		this.scene.modelList.push( m1 );
+		this.scene.modelList.push( m0 );
 	}
 	
 	/**

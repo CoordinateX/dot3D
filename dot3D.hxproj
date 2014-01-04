@@ -4,7 +4,7 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\dot3D.swf" />
+    <movie path="unit\bin\local.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
@@ -16,11 +16,11 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
-    <class path="lib\dotCore\src" />
     <class path="lib\hxsl" />
+    <class path="lib\dotCore\src" />
     <class path="lib\dotMath\src" />
     <class path="lib\dotLoader\src" />
-    <class path="test\src" />
+    <class path="unit\src" />
   </classpaths>
   <!-- Build options -->
   <build>
