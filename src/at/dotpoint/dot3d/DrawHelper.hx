@@ -12,7 +12,7 @@ import at.dotpoint.dot3d.primitives.Line;
 class DrawHelper
 {
 
-	public static function createAxis( size:Float, thickness:Float = 2 ):Model
+	public static function createAxis( size:Float = 5, thickness:Float = 2 ):Model
 	{
 		var s:Float = size;
 		
@@ -25,6 +25,23 @@ class DrawHelper
 			
 			mesh.moveTo( [0, 0, 0], [0,0,1] );
 			mesh.lineTo( [0, 0, s], [0,0,1] );
+			
+		var shader:LineShader = new LineShader();
+			shader.thickness = thickness;		
+			
+		return new Model( mesh, shader ); 
+	}
+	
+	public static function drawGrid( size:Float = 5, thickness:Float = 2  ):Model
+	{
+		var s:Float = size;
+		
+		var mesh:Line = new Line( 3, 3 );
+			mesh.moveTo( [-s, 0, 0], [0,0,0] );
+			mesh.lineTo( [ s, 0, 0], [0,0,0] );
+			
+			mesh.moveTo( [0, 0,-s], [0,0,0] );
+			mesh.lineTo( [0, 0, s], [0,0,0] );
 			
 		var shader:LineShader = new LineShader();
 			shader.thickness = thickness;		
