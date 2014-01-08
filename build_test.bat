@@ -1,4 +1,4 @@
-cd test
-haxelib run munit test -as3
+cd unit
+haxelib run munit test
 cd ..
 PAUSE
