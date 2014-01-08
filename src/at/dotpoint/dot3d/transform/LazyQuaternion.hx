@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.transform;
 
-import at.dotpoint.core.event.EvaluateEvent;
+import at.dotpoint.core.event.event.EvaluateEvent;
 import at.dotpoint.math.MathUtil;
 import at.dotpoint.math.vector.Quaternion;
 import flash.events.EventDispatcher;

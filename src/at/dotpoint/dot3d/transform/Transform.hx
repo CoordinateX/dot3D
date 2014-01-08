@@ -1,11 +1,11 @@
 package at.dotpoint.dot3d.transform;
 
-import at.dotpoint.core.event.EvaluateEvent;
+import at.dotpoint.core.event.Event;
+import at.dotpoint.core.event.event.EvaluateEvent;
+import at.dotpoint.core.event.EventDispatcher;
 import at.dotpoint.math.vector.IVector3;
 import at.dotpoint.math.vector.Matrix44;
 import at.dotpoint.math.vector.Vector3;
-import flash.events.Event;
-import flash.events.EventDispatcher;
 
 /**
  * ...
