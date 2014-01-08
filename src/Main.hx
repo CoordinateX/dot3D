@@ -11,7 +11,7 @@ import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.dot3d.Space;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.math.vector.Vector3;
-import flash.events.Event;
+import at.dotpoint.core.event.Event;
 import flash.Lib;
 import haxe.ds.Vector;
 
@@ -72,6 +72,7 @@ class Main extends MainDot3D
 	{
 		this.loader = DataRequest.createFromURL( "../assets/cube_staple.obj" );
 		this.loader.load( this.onComplete );
+		trace("never done?");
 	}	
 	
 	/**
@@ -80,7 +81,7 @@ class Main extends MainDot3D
 	 */
 	private function onComplete( event:Event ):Void
 	{
-		var list:Vector<Model> = this.loader.getData();
+		var list:Vector<Model> = this.loader.result;
 		
 		this.rotateList = new Array<Model>();
 		

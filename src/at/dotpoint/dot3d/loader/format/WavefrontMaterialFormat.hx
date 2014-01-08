@@ -1,11 +1,11 @@
 package at.dotpoint.dot3d.loader.format;
 
 import at.dotpoint.dot3d.loader.parser.wavefront.WaveMTLParser;
+import at.dotpoint.loader.DataRequest;
 import at.dotpoint.loader.format.ABaseDataFormat;
-import at.dotpoint.loader.loader.ISingleDataLoader;
-import at.dotpoint.loader.parser.ISingleDataParser;
-import at.dotpoint.loader.loader.StringLoader;
-import flash.net.URLRequest;
+import at.dotpoint.loader.format.StringFormat;
+import at.dotpoint.loader.processor.IDataProcessor;
+import at.dotpoint.loader.URLRequest;
 
 /**
  * ...
@@ -37,18 +37,18 @@ class WavefrontMaterialFormat extends ABaseDataFormat
 	 * 
 	 * @return
 	 */
-	public override function createLoader( request:URLRequest ):ISingleDataLoader<Dynamic> 
+	public override function createLoader( request:DataRequest ):IDataProcessor<URLRequest,Dynamic>
 	{
-		return new StringLoader();
+		return StringFormat.instance.createLoader( request );
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public override function createParser( request:URLRequest ):ISingleDataParser<Dynamic,Dynamic> 
+	public override function createParser( request:DataRequest ):IDataProcessor<Dynamic,Dynamic>
 	{
-		var directory:String = request.url;
+		var directory:String = request.request.url;
 			directory		 = directory.substring( 0, directory.lastIndexOf( "/" ) );
 		
 		return new WaveMTLParser( directory );

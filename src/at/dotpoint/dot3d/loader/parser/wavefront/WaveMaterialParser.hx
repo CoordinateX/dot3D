@@ -1,17 +1,17 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
+import at.dotpoint.core.event.Event;
+import at.dotpoint.core.event.event.StatusEvent;
 import at.dotpoint.dot3d.loader.format.TextureFormat;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.loader.DataRequest;
-import at.dotpoint.loader.parser.ABaseParser;
-import at.dotpoint.loader.parser.ISingleDataParser;
+import at.dotpoint.loader.processor.ADataProcessor;
+import at.dotpoint.loader.processor.IDataProcessor;
+import at.dotpoint.loader.URLRequest;
 import at.dotpoint.math.vector.Vector3;
-import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.events.Event;
-import flash.net.URLRequest;
 import flash.display3D.Context3DTriangleFace;
 
 /**
@@ -21,11 +21,11 @@ import flash.display3D.Context3DTriangleFace;
  * 
  * @author RK
  */
-class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String,Material>
+class WaveMaterialParser extends ADataProcessor implements IDataProcessor<String,TestShader>
 {
 
 	private var input:String;
-	private var output:TestShader;
+	public var result(default,null):TestShader;
 	
 	// ------------------ //
 	
@@ -57,33 +57,16 @@ class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String
 	 * 
 	 * @param	request
 	 */
-	public function parse( request:String ):Void
+	public function start( request:String ):Void
 	{
-		this.setParsing();
+		this.setStatus( StatusEvent.STARTED );
 		
-		this.output = new TestShader();
-		this.output.contextSetting.culling = Context3DTriangleFace.FRONT;
+		this.result = new TestShader();
+		this.result.contextSetting.culling = Context3DTriangleFace.FRONT;
 		
-		this.output.name = this.name;
+		this.result.name = this.name;
 		
-		this.start();
-	}
-	
-	/**
-	 * 
-	 */
-	public function close():Void
-	{
-		throw "close() not supported";
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public function getData():Material
-	{
-		return this.output;
+		this.parse();
 	}
 	
 	// ************************************************************************ //
@@ -94,7 +77,7 @@ class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String
 	 * 
 	 * @param	input
 	 */
-	private function start():Void
+	private function parse():Void
 	{
 		var lineStream:Array<String> = this.input.split( "\r\n" );
 			lineStream.reverse();
@@ -127,19 +110,19 @@ class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String
 		switch ( infoType ) 
 		{
 			case "Ka":
-				this.output.ambientColor = this.parseColor( line );
+				this.result.ambientColor = this.parseColor( line );
 			
 			case "Kd": 
-				this.output.diffuseColor = this.parseColor( line );
+				this.result.diffuseColor = this.parseColor( line );
 			
 			case "Ks": 
-				this.output.specularColor = this.parseColor( line );
+				this.result.specularColor = this.parseColor( line );
 			
 			case "Ns": 
-				this.output.specularWeight = this.parseFloat( line );
+				this.result.specularWeight = this.parseFloat( line );
 			
 			case "d":
-				this.output.alpha = this.parseFloat( line );
+				this.result.alpha = this.parseFloat( line );
 			
 			case "illum": 
 				return;
@@ -238,7 +221,7 @@ class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String
 	{
 		if( this.pendingTextures.length == 0 )
 		{			
-			this.setComplete();
+			this.setStatus( StatusEvent.COMPLETE );
 			return;
 		}
 		
@@ -252,12 +235,12 @@ class WaveMaterialParser extends ABaseParser implements ISingleDataParser<String
 	private function onTextureComplete( event:Event ):Void
 	{		
 		var request:TextureRequest = this.pendingTextures.pop();
-		var data:BitmapData = request.getData().bitmapData;
+		var data:BitmapData = request.result.bitmapData;
 		
 		var texture:Texture = new Texture( request.type, data.width, data.height );
 			texture.bitmaps.push( data );
 		
-		Reflect.setProperty( this.output, request.type, texture );
+		Reflect.setProperty( this.result, request.type, texture ); //onto shader
 		
 		this.loadTexture();
 	}

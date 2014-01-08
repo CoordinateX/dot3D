@@ -1,11 +1,11 @@
 package at.dotpoint.dot3d.loader.format;
 
 import at.dotpoint.core.ds.VectorUtil;
+import at.dotpoint.loader.DataRequest;
 import at.dotpoint.loader.format.ABaseDataFormat;
 import at.dotpoint.loader.format.BitmapFormat;
-import at.dotpoint.loader.loader.ISingleDataLoader;
-import at.dotpoint.loader.parser.ISingleDataParser;
-import flash.net.URLRequest;
+import at.dotpoint.loader.processor.IDataProcessor;
+import at.dotpoint.loader.URLRequest;
 
 /**
  * ...
@@ -37,7 +37,7 @@ class TextureFormat extends ABaseDataFormat
 	 * 
 	 * @return
 	 */
-	public override function createLoader( request:URLRequest ):ISingleDataLoader<Dynamic> 
+	public override function createLoader( request:DataRequest ):IDataProcessor<URLRequest,Dynamic>
 	{
 		return BitmapFormat.instance.createLoader( request );
 	}

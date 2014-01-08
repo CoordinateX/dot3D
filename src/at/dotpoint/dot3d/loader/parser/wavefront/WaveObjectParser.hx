@@ -1,11 +1,12 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
+import at.dotpoint.core.event.event.StatusEvent;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.dot3d.model.register.RegisterType;
-import at.dotpoint.loader.parser.ABaseParser;
-import at.dotpoint.loader.parser.ISingleDataParser;
+import at.dotpoint.loader.processor.ADataProcessor;
+import at.dotpoint.loader.processor.IDataProcessor;
 import haxe.ds.StringMap;
 
 /**
@@ -15,11 +16,11 @@ import haxe.ds.StringMap;
  * 
  * @author RK
  */
-class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,Mesh>
+class WaveObjectParser extends ADataProcessor implements IDataProcessor<String,Mesh>
 {
 
 	private var input:String;
-	private var output:Mesh;
+	public var result(default,null):Mesh;
 	
 	// ------------------ //
 	
@@ -67,27 +68,10 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 	 * 
 	 * @param	request
 	 */
-	public function parse( input:String ):Void
+	public function start( input:String ):Void
 	{		
-		this.setParsing();
-		this.start();
-	}
-	
-	/**
-	 * 
-	 */
-	public function close():Void
-	{
-		throw "close() not supported";
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public function getData():Mesh
-	{
-		return this.output;
+		this.setStatus( StatusEvent.STARTED );
+		this.parse();
 	}
 	
 	// ************************************************************************ //
@@ -101,7 +85,7 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 	 * the mesh. the material name will be extracted aswell but has to be set
 	 * manually into the model afterwards. (same goes for the model/object name)
 	 */
-	private function start():Void
+	private function parse():Void
 	{		
 		// position
 		var vreg:EReg = ~/#\s+([0-9]+)\s+vertices/;	
@@ -147,7 +131,7 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 		if(	hasT )	signature.addType( Register.VERTEX_UV, 		 Std.parseInt( treg.matched(1) ) );
 		if(	hasN ) 	signature.addType( Register.VERTEX_NORMAL, 	 Std.parseInt( nreg.matched(1) ) );		
 		
-		this.output = new Mesh( signature );
+		this.result = new Mesh( signature );
 		
 		// ------------------------------ //		
 		// fill meshdata:
@@ -162,7 +146,7 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 		
 		// ------------------------------ //
 		
-		this.setComplete();
+		this.setStatus( StatusEvent.COMPLETE );
 	}
 	
 	// ---------------------------------------------------------------------------------- //
@@ -250,7 +234,7 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 			for( d in 1...size ) // skip type identifier, size: data + skip
 				data[d - 1] = Std.parseFloat( splitted[d] );
 			
-			this.output.data.setVertexData( type, i++, data );	
+			this.result.data.setVertexData( type, i++, data );	
 			
 			p = line.matchedPos().pos + line.matchedPos().len; 	
 		}
@@ -270,12 +254,12 @@ class WaveObjectParser extends ABaseParser implements ISingleDataParser<String,M
 		
 		for( v in 0...list.length )
 		{
-			this.output.data.setVertexIndices( list[v].index, list[v].data ); // brutally overrides previous data, although its the same			
+			this.result.data.setVertexIndices( list[v].index, list[v].data ); // brutally overrides previous data, although its the same			
 			
 			data[v % 3] = list[v].index;
 			
 			if( v % 3 == 2 )
-				this.output.data.setFaceIndices( Std.int( v / 3 ), data );
+				this.result.data.setFaceIndices( Std.int( v / 3 ), data );
 		}
 	}
 	

@@ -1,15 +1,13 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
+import at.dotpoint.core.event.event.StatusEvent;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.Model;
-import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.loader.DataRequest;
-import at.dotpoint.loader.parser.ABaseParser;
-import at.dotpoint.loader.parser.ISingleDataParser;
-import at.dotpoint.math.vector.Vector3;
+import at.dotpoint.loader.processor.ADataProcessor;
+import at.dotpoint.loader.processor.IDataProcessor;
 import flash.events.Event;
-import flash.net.URLRequest;
 import haxe.ds.Vector;
 
 /**
@@ -21,11 +19,11 @@ import haxe.ds.Vector;
  */
 @:access( at.dotpoint.dot3d.loader.parser.wavefront )
 //
-class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Vector<Model> >
+class WaveOBJParser extends ADataProcessor implements IDataProcessor< String, Vector<Model> >
 {
 	
 	private var input:String;
-	private var output:Vector<Model>;
+	public var result(default,null):Vector<Model>;
 	
 	// ------------------ //
 	
@@ -54,31 +52,14 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 	 * 
 	 * @param	request
 	 */
-	public function parse( request:String ):Void
+	public function start( request:String ):Void
 	{
 		this.input = request;	
 		
-		this.setParsing();
+		this.setStatus( StatusEvent.STARTED );
 		
 		this.startMaterials();
 		this.startObjects();
-	}
-	
-	/**
-	 * 
-	 */
-	public function close():Void
-	{
-		throw "close() not supported";
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public function getData():Vector<Model>
-	{
-		return this.output;
 	}
 	
 	// ************************************************************************ //
@@ -104,12 +85,12 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 	{
 		trace( "onMaterialComplete" );
 		
-		var materials:Vector<Material> = event.target.getData();
+		var materials:Vector<Material> = event.target.result;
 		
 		for( p in 0...this.subParser.length )
 		{
 			var parser:WaveObjectParser = this.subParser[p];				
-			var model:Model  			= this.output[p];				
+			var model:Model  			= this.result[p];				
 			
 			for( material in materials )
 			{
@@ -121,7 +102,7 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 			}
 		}
 		
-		this.setComplete();
+		this.setStatus( StatusEvent.COMPLETE );
 	}
 	
 	// ************************************************************************ //
@@ -149,7 +130,7 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 			this.subParser.push( new WaveObjectParser( obj.matched(1), split[c] ) );	
 		}
 		
-		this.output = new Vector<Model>( this.subParser.length );
+		this.result = new Vector<Model>( this.subParser.length );
 		this.parseObjects();		
 	}	
 	
@@ -164,7 +145,7 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 		{
 			if( p > 0 )
 			{
-				var sig:MeshSignature = this.subParser[p - 1].getData().data.signature; //previous sig for offset
+				var sig:MeshSignature = this.subParser[p - 1].result.data.signature; //previous sig for offset
 				
 				for( j in 0...sig.size() )
 				{
@@ -174,15 +155,13 @@ class WaveOBJParser extends ABaseParser implements ISingleDataParser< String, Ve
 			
 			var parser:WaveObjectParser = this.subParser[p];
 				parser.offsets = offset;
-				parser.parse( null );
+				parser.start( null );
 			
-			var model:Model = new Model( parser.getData() );
+			var model:Model = new Model( parser.result );
 				model.name = parser.name;
 				
-			this.output[p] = model;
+			this.result[p] = model;
 		}
-		
-		trace( "onObjectsComplete" );
 	}
 	
 }

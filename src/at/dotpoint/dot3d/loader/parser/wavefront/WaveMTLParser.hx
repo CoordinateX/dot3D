@@ -1,8 +1,9 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
+import at.dotpoint.core.event.event.StatusEvent;
 import at.dotpoint.dot3d.model.material.Material;
-import at.dotpoint.loader.parser.ABaseParser;
-import at.dotpoint.loader.parser.ISingleDataParser;
+import at.dotpoint.loader.processor.ADataProcessor;
+import at.dotpoint.loader.processor.IDataProcessor;
 import flash.events.Event;
 import haxe.ds.Vector;
 
@@ -15,11 +16,11 @@ import haxe.ds.Vector;
  */
 @:access( at.dotpoint.dot3d.loader.parser.wavefront )
 //
-class WaveMTLParser extends ABaseParser implements ISingleDataParser< String, Vector<Material> >
+class WaveMTLParser extends ADataProcessor implements IDataProcessor< String, Vector<Material> >
 {
 	
 	private var input:String;
-	private var output:Vector<Material>;
+	public var result(default,null):Vector<Material>;
 	
 	// ------------------ //
 	
@@ -46,29 +47,12 @@ class WaveMTLParser extends ABaseParser implements ISingleDataParser< String, Ve
 	 * 
 	 * @param	request
 	 */
-	public function parse( input:String ):Void
+	public function start( input:String ):Void
 	{
 		this.input = input;
 		
-		this.setParsing();
+		this.setStatus( StatusEvent.STARTED );
 		this.startMaterials();
-	}
-	
-	/**
-	 * 
-	 */
-	public function close():Void
-	{
-		throw "close() not supported";
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public function getData():Vector<Material>
-	{
-		return this.output;
 	}
 	
 	// ************************************************************************ //
@@ -96,7 +80,7 @@ class WaveMTLParser extends ABaseParser implements ISingleDataParser< String, Ve
 			this.subParser.push( new WaveMaterialParser( obj.matched(1), this.directoryURL, split[c] ) );	
 		}
 		
-		this.output = new Vector<Material>( this.subParser.length );
+		this.result = new Vector<Material>( this.subParser.length );
 		this.parseMaterial();		
 	}	
 	
@@ -107,13 +91,13 @@ class WaveMTLParser extends ABaseParser implements ISingleDataParser< String, Ve
 	{
 		if( this.subParser.length == 0 )
 		{			
-			this.setComplete();
+			this.setStatus( StatusEvent.COMPLETE );
 			return;
 		}
 		
 		var parser:WaveMaterialParser = this.subParser.pop();
-			parser.addListener( null, null, this.onMaterialComplete );
-			parser.parse( null );		
+			parser.addListener( this.onMaterialComplete );
+			parser.start( null );		
 	}
 	
 	/**
@@ -121,7 +105,7 @@ class WaveMTLParser extends ABaseParser implements ISingleDataParser< String, Ve
 	 */
 	private function onMaterialComplete( event:Event ):Void
 	{
-		this.output[ this.subParser.length ] = event.target.getData();
+		this.result[ this.subParser.length ] = event.target.result;
 		this.parseMaterial();
 	}
 }
