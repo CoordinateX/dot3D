@@ -15,6 +15,7 @@
 -cp src
 
 -D dotpoint
+-D munit_server
 
 -swf-version 11
 -swf bin/as3_test.swf
