@@ -33,6 +33,7 @@
   <haxelib>
     <library name="munit" />
     <library name="format" />
+    <library name="actuate" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

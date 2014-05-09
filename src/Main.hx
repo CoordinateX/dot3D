@@ -1,7 +1,7 @@
 package;
 
-import at.dotpoint.dot3d.camera.Camera;
-import at.dotpoint.dot3d.DrawHelper;
+import at.dotpoint.core.event.Event;
+import at.dotpoint.dot3D.bootstrapper.Bootstrapper3D;
 import at.dotpoint.dot3d.loader.format.TextureFormat;
 import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
 import at.dotpoint.dot3d.loader.format.WavefrontObjectFormat;
@@ -9,17 +9,12 @@ import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.primitives.Cube;
 import at.dotpoint.dot3d.primitives.Plane;
-import at.dotpoint.dot3d.render.RenderProcessor;
-import at.dotpoint.dot3d.render.Viewport;
-import at.dotpoint.dot3d.scene.Scene;
 import at.dotpoint.dot3d.shader.PointShader;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.dot3d.Space;
 import at.dotpoint.loader.DataHelper;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.math.vector.Vector3;
-import at.dotpoint.core.event.Event;
-import flash.display.Stage3D;
 import flash.Lib;
 import haxe.ds.Vector;
 
@@ -27,11 +22,12 @@ import haxe.ds.Vector;
  * ...
  * @author RK
  */
-class Main extends flash.display.Sprite
+class Main extends Bootstrapper3D
 {
 	
-	private var renderer:RenderProcessor;
-	private var scene:Scene;	
+	private static var instance:Main;
+	
+	// --------------- //
 	
 	private var loader:DataRequest;	
 	
@@ -46,46 +42,30 @@ class Main extends flash.display.Sprite
 	
 	static public function main() 
 	{                
-		Lib.current.addChild( new Main() );
+		Main.instance = new Main();
 	}        
 	
 	public function new() 
 	{
 		super();
-		this.init();
+		this.startURL( "config.json" );
 	}
 	
 	// ************************************************************************ //
 	// Methodes
 	// ************************************************************************ //
 	
-	private function superInit():Void
-	{
-		DataHelper.instance.formats.push( WavefrontObjectFormat.instance );
-		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
-		DataHelper.instance.formats.push( TextureFormat.instance );
-		
-		// --------------------------- //
-		
-		var stage:Stage3D = Lib.current.stage.stage3Ds[0];
-		
-		var viewport:Viewport = new Viewport( stage, 800, 600 );		
-		
-		this.renderer = new RenderProcessor( viewport );
-		this.renderer.init( this.onRenderInitComplete );
-		
-		this.scene = new Scene();
-		this.scene.camera = Camera.createDefault( viewport );		
-	}
-	
 	/**
 	 * 
 	 */
-	private function init():Void
+	override function initialize():Void
 	{		
-		this.superInit();
+		super.initialize();
 		
-		this.createScene();		
+		DataHelper.instance.formats.push( WavefrontObjectFormat.instance );
+		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
+		DataHelper.instance.formats.push( TextureFormat.instance );			
+		
 		this.loadScene();
 		
 		this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 20;
@@ -102,16 +82,15 @@ class Main extends flash.display.Sprite
 	private function loadScene():Void
 	{
 		this.loader = DataRequest.createFromURL( "../assets/cube_staple.obj" );
-		this.loader.load( this.onComplete );
-		trace("never done?");
+		this.loader.load( this.onSceneComplete );
 	}	
 	
 	/**
 	 * 
 	 * @param	event
 	 */
-	private function onComplete( event:Event ):Void
-	{trace("nah its done");
+	private function onSceneComplete( event:Event ):Void
+	{
 		var list:Vector<Model> = this.loader.result;
 		
 		this.rotateList = new Array<Model>();
@@ -126,14 +105,7 @@ class Main extends flash.display.Sprite
 		}
 	}
 	
-	/**
-	 * 
-	 * @param	event
-	 */
-	private function onRenderInitComplete( event:Event ):Void
-	{					
-		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
-	}
+	
 	
 	// ************************************************************************ //
 	// UPDATE
@@ -143,20 +115,12 @@ class Main extends flash.display.Sprite
 	 * 
 	 * @param	event
 	 */
-	private function onEnterFrame( event:Event ):Void
+	override private function onEnterFrame( event:Event ):Void
 	{
 		this.updateScene();	
 		this.updateLight();				
 		
-		this.renderScene();
-	}
-	
-	/**
-	 * 
-	 */
-	private function renderScene():Void
-	{
-		this.renderer.render( this.scene.gatherRenderUnits() );
+		super.onEnterFrame( event );
 	}
 	
 	/**
@@ -191,16 +155,6 @@ class Main extends flash.display.Sprite
 	// Create
 	// ************************************************************************ //
 
-	private function createScene():Void
-	{
-		var m0:Model = DrawHelper.drawGrid( 100 );	
-		
-		// ----------------- //			
-		
-		//this.scene.modelList.push( m0 );		
-		this.scene.modelList.push( m0 );
-	}
-	
 	/**
 	 * 
 	 * @param	scale
