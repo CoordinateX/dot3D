@@ -158,7 +158,7 @@ class WaveOBJParser extends ADataProcessor implements IDataProcessor< String, Ve
 				parser.start( null );
 			
 			var model:Model = new Model( parser.result );
-				model.name = parser.name;
+			//	model.name = parser.name;
 				
 			this.result[p] = model;
 		}

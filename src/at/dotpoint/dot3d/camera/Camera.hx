@@ -1,6 +1,9 @@
 package at.dotpoint.dot3d.camera;
 
-import at.dotpoint.dot3d.EntityContainer;
+import at.dotpoint.core.event.event.EvaluateEvent;
+import at.dotpoint.display.components.transform.Transform;
+import at.dotpoint.display.DisplayObject;
+import at.dotpoint.dot3D.DisplayObject3D;
 import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.math.vector.Matrix44;
 import flash.events.Event;
@@ -12,7 +15,7 @@ import flash.events.Event;
  * 
  * @author Gerald Hattensauer
  */
-class Camera extends EntityContainer
+class Camera extends DisplayObject3D
 {
 
 	private var projectionMatrix:Matrix44;
@@ -29,7 +32,8 @@ class Camera extends EntityContainer
 		super();
 		
 		this.lense = projection;	
-		this.lense.addEventListener( Event.CHANGE, this.onMatrixChanged, false, 0, true );
+		this.lense.addEventListener( EvaluateEvent.CHANGED, this.onMatrixChanged, false, 0, true );
+		this.transform.addEventListener( EvaluateEvent.CHANGED, this.onTransformChanged );
 		
 		this.projectionMatrix = new Matrix44();
 		this.invalidMatrix = true;
@@ -74,9 +78,8 @@ class Camera extends EntityContainer
 	// ----------------------------------------------------------------------- //
 	
 	// position/scale/rotation of the cam changed
-	override private function onTransformChanged( event:Event ):Void
+	private function onTransformChanged( event:Event ):Void
 	{
-		super.onTransformChanged( event );
 		this.invalidMatrix = true;
 	}
 	

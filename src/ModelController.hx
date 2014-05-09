@@ -1,11 +1,11 @@
 package ;
 
 import at.dotpoint.core.KeyInput;
-import at.dotpoint.dot3d.EntityContainer;
-import at.dotpoint.dot3d.transform.Position;
-import at.dotpoint.dot3d.transform.Rotation;
-import at.dotpoint.dot3d.transform.Scale;
-import at.dotpoint.dot3d.transform.Transform;
+import at.dotpoint.display.components.transform.Position;
+import at.dotpoint.display.components.transform.Rotation;
+import at.dotpoint.display.components.transform.Scale;
+import at.dotpoint.display.components.transform.Transform;
+import at.dotpoint.dot3D.DisplayObject3D;
 import at.dotpoint.dot3d.Space;
 import flash.events.KeyboardEvent;
 import flash.Lib;
@@ -39,7 +39,7 @@ class ModelController
 	/**
 	 * 
 	 */
-	public function update( container:EntityContainer ):Void
+	public function update( container:DisplayObject3D ):Void
 	{
 		var transform:Transform 	= container.getTransform( Space.WorldSpace );
 		

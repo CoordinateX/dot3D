@@ -4,7 +4,7 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="unit\bin\local.swf" />
+    <movie path="demo\bin\dot3D.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
@@ -18,14 +18,13 @@
     <class path="src" />
     <class path="lib\hxsl" />
     <class path="lib\dotCore\src" />
-    <class path="lib\dotMath\src" />
-    <class path="lib\dotLoader\src" />
     <class path="unit\src" />
   </classpaths>
   <!-- Build options -->
   <build>
     <option directives="" />
     <option flashStrict="False" />
+    <option noInlineOnDebug="False" />
     <option mainClass="Main" />
     <option enabledebug="True" />
     <option additional="-D dotpoint" />
@@ -45,7 +44,7 @@
   </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
-    <!-- example: <hidden path="..." /> -->
+    <hidden path="obj" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />
@@ -55,6 +54,7 @@
   <options>
     <option showHiddenPaths="False" />
     <option testMovie="Default" />
+    <option testMovieCommand="" />
   </options>
   <!-- Plugin storage -->
   <storage />

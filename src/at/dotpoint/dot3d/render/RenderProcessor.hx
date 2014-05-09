@@ -1,5 +1,6 @@
 package at.dotpoint.dot3d.render;
 
+import at.dotpoint.core.log.Log;
 import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.model.mesh.Mesh;
@@ -64,7 +65,7 @@ class RenderProcessor extends EventDispatcher
 		
 		if ( this.context != null )
 		{
-			trace( "already initialized" );
+			Log.warn( "already initialized" );
 			
 			this.dispatchEvent( new Event( Event.COMPLETE ) );			
 			return;

@@ -12,9 +12,6 @@ import at.dotpoint.dot3d.model.register.RegisterType;
 class Mesh
 {
 	
-	private static var IDCounter:Int;
-	public var ID:Int;
-
 	/**
 	 * gpu allocated vertex and index buffers
 	 */
@@ -37,8 +34,6 @@ class Mesh
 	{
 		this.data = new MeshData( signature );
 		this.buffer = new MeshBuffer();
-		
-		this.ID = Mesh.IDCounter++;
 	}
 	
 	

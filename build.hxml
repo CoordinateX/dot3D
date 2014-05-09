@@ -3,8 +3,6 @@
 -lib format
 
 -cp src
--cp lib/dotMath/src
--cp lib/dotLoader/src
 -cp lib/dotCore/src
 -cp lib/hxsl
 

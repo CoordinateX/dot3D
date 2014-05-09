@@ -1,17 +1,25 @@
 package;
 
+import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.dot3d.DrawHelper;
-import at.dotpoint.dot3d.MainDot3D;
+import at.dotpoint.dot3d.loader.format.TextureFormat;
+import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
+import at.dotpoint.dot3d.loader.format.WavefrontObjectFormat;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.primitives.Cube;
 import at.dotpoint.dot3d.primitives.Plane;
+import at.dotpoint.dot3d.render.RenderProcessor;
+import at.dotpoint.dot3d.render.Viewport;
+import at.dotpoint.dot3d.scene.Scene;
 import at.dotpoint.dot3d.shader.PointShader;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.dot3d.Space;
+import at.dotpoint.loader.DataHelper;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.math.vector.Vector3;
 import at.dotpoint.core.event.Event;
+import flash.display.Stage3D;
 import flash.Lib;
 import haxe.ds.Vector;
 
@@ -19,8 +27,11 @@ import haxe.ds.Vector;
  * ...
  * @author RK
  */
-class Main extends MainDot3D
+class Main extends flash.display.Sprite
 {
+	
+	private var renderer:RenderProcessor;
+	private var scene:Scene;	
 	
 	private var loader:DataRequest;	
 	
@@ -41,18 +52,38 @@ class Main extends MainDot3D
 	public function new() 
 	{
 		super();
+		this.init();
 	}
 	
 	// ************************************************************************ //
 	// Methodes
 	// ************************************************************************ //
 	
+	private function superInit():Void
+	{
+		DataHelper.instance.formats.push( WavefrontObjectFormat.instance );
+		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
+		DataHelper.instance.formats.push( TextureFormat.instance );
+		
+		// --------------------------- //
+		
+		var stage:Stage3D = Lib.current.stage.stage3Ds[0];
+		
+		var viewport:Viewport = new Viewport( stage, 800, 600 );		
+		
+		this.renderer = new RenderProcessor( viewport );
+		this.renderer.init( this.onRenderInitComplete );
+		
+		this.scene = new Scene();
+		this.scene.camera = Camera.createDefault( viewport );		
+	}
+	
 	/**
 	 * 
 	 */
-	override private function init():Void
+	private function init():Void
 	{		
-		super.init();
+		this.superInit();
 		
 		this.createScene();		
 		this.loadScene();
@@ -80,7 +111,7 @@ class Main extends MainDot3D
 	 * @param	event
 	 */
 	private function onComplete( event:Event ):Void
-	{
+	{trace("nah its done");
 		var list:Vector<Model> = this.loader.result;
 		
 		this.rotateList = new Array<Model>();
@@ -99,7 +130,7 @@ class Main extends MainDot3D
 	 * 
 	 * @param	event
 	 */
-	override private function onRenderInitComplete( event:Event ):Void
+	private function onRenderInitComplete( event:Event ):Void
 	{					
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );	
 	}
@@ -118,6 +149,14 @@ class Main extends MainDot3D
 		this.updateLight();				
 		
 		this.renderScene();
+	}
+	
+	/**
+	 * 
+	 */
+	private function renderScene():Void
+	{
+		this.renderer.render( this.scene.gatherRenderUnits() );
 	}
 	
 	/**

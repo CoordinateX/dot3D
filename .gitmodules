@@ -4,9 +4,3 @@
 [submodule "lib/hxsl"]
 	path = lib/hxsl
 	url = https://github.com/ScrambledRK/hxsl.git
-[submodule "lib/dotMath"]
-	path = lib/dotMath
-	url = https://github.com/ScrambledRK/dotMath.git
-[submodule "lib/dotLoader"]
-	path = lib/dotLoader
-	url = https://github.com/ScrambledRK/dotLoader.git
