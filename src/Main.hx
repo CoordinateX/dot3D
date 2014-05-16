@@ -62,9 +62,7 @@ class Main extends Bootstrapper3D
 	{		
 		super.initialize();
 		
-		DataHelper.instance.formats.push( WavefrontObjectFormat.instance );
-		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
-		DataHelper.instance.formats.push( TextureFormat.instance );			
+		// ------------ //
 		
 		this.loadScene();
 		

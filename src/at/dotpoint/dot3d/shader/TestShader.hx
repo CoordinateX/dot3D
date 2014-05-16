@@ -2,6 +2,8 @@ package at.dotpoint.dot3d.shader;
 
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.material.Texture;
+import at.dotpoint.math.color.ColorFormat;
+import at.dotpoint.math.color.ColorUtil;
 import at.dotpoint.math.vector.Vector3;
 import hxsl.Shader;
 
@@ -93,6 +95,8 @@ class TestShader extends Material
 		this.cast_shader.useTexture = false;
 		
 		super( this.cast_shader );	
+		
+		this.diffuseColor = ColorUtil.toVector( Std.int( Math.random() * 0xFFFFFF ), ColorFormat.RGB );
 	}
 	
 	// ************************************************************************ //

@@ -2,7 +2,19 @@ package at.dotpoint.dot3d.primitives;
 
 import at.dotpoint.dot3d.model.mesh.EditableMesh;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
+import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
+
+/**
+ * 
+ */
+class Cube extends Model
+{
+	public function new( w:Float, h:Float, l:Float ) 
+	{
+		super( new CubeMesh( w, h, l ) );
+	}
+}
 
 /**
  * ordinary cube, but has to be plugged into a Model as this is just a mesh.
@@ -10,7 +22,7 @@ import at.dotpoint.dot3d.model.register.Register;
  * 
  * @author RK
  */
-class Cube extends EditableMesh
+class CubeMesh extends EditableMesh
 {
 
 	

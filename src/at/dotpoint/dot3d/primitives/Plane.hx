@@ -2,7 +2,19 @@ package at.dotpoint.dot3d.primitives;
 
 import at.dotpoint.dot3d.model.mesh.EditableMesh;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
+import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
+
+/**
+ * 
+ */
+class Plane extends Model
+{
+	public function new( w:Float, h:Float, backface:Bool = false ) 
+	{
+		super( new PlaneMesh( w, h, backface ) );
+	}
+}
 
 /**
  * ordinary plane, but has to be plugged into a Model as this is just a mesh.
@@ -10,7 +22,7 @@ import at.dotpoint.dot3d.model.register.Register;
  * 
  * @author RK
  */
-class Plane extends EditableMesh
+class PlaneMesh extends EditableMesh
 {
 
 	
@@ -55,10 +67,9 @@ class Plane extends EditableMesh
 	/**
 	 * 
 	 */
-	private function setupFaces( backface ):Void
+	private function setupFaces( backface:Bool ):Void
 	{
 		this.createFace( [0, 1, 2] );
 		this.createFace( [2, 3, 0] );
-	}
-		
+	}		
 }
