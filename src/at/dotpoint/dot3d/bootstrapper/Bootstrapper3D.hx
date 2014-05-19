@@ -9,9 +9,11 @@ import at.dotpoint.dot3d.loader.format.TextureFormat;
 import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
 import at.dotpoint.dot3d.loader.format.WavefrontObjectFormat;
 import at.dotpoint.dot3d.render.RenderProcessor;
+import at.dotpoint.dot3d.render.RenderSystem;
 import at.dotpoint.dot3d.render.Viewport;
 import at.dotpoint.dot3d.scene.Scene;
 import at.dotpoint.dot3d.Space;
+import at.dotpoint.engine.bootstrapper.BootstrapperEngine;
 import at.dotpoint.loader.DataHelper;
 import at.dotpoint.math.vector.Vector3;
 import flash.display.Stage3D;
@@ -21,13 +23,13 @@ import flash.Lib;
  * ...
  * @author RK
  */
-class Bootstrapper3D extends Bootstrapper
+class Bootstrapper3D extends BootstrapperEngine
 {
 
 	/**
 	 * 
 	 */
-	private var renderer:RenderProcessor;
+	private var render:RenderSystem;
 	
 	/**
 	 * 
@@ -58,8 +60,8 @@ class Bootstrapper3D extends Bootstrapper
 		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
 		DataHelper.instance.formats.push( TextureFormat.instance );			
 		
-		this.initializeRenderer();
 		this.initializeScene();
+		this.initializeRenderer();		
 	}
 	
 	/**
@@ -67,11 +69,10 @@ class Bootstrapper3D extends Bootstrapper
 	 */
 	private function initializeRenderer():Void
 	{
-		var stage:Stage3D = Lib.current.stage.stage3Ds[0];		
-		var viewport:Viewport = new Viewport( stage, Lib.current.stage.stageWidth, Lib.current.stage.stageHeight );		
+		var viewport:Viewport = this.createViewport();	
 		
-		this.renderer = new RenderProcessor( viewport );
-		this.renderer.init( this.onRenderInitComplete );
+		this.render = new RenderSystem( new RenderProcessor( viewport ), this.scene );		
+		this.render.renderer.init( this.onRenderInitComplete );
 	}
 	
 	/**
@@ -80,7 +81,7 @@ class Bootstrapper3D extends Bootstrapper
 	private function initializeScene():Void
 	{		
 		this.scene = new Scene();
-		this.scene.camera = Camera.createDefault( this.renderer.viewport );
+		this.scene.camera = Camera.createDefault( this.createViewport() );
 		this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 100;
 		
 		var t:Float = Math.random();
@@ -91,27 +92,24 @@ class Bootstrapper3D extends Bootstrapper
 	
 	/**
 	 * 
+	 * @return
+	 */
+	private function createViewport():Viewport
+	{
+		var stage:Stage3D = Lib.current.stage.stage3Ds[0];		
+		var viewport:Viewport = new Viewport( stage, Lib.current.stage.stageWidth, Lib.current.stage.stageHeight );	
+		
+		return viewport;
+	}
+	
+	/**
+	 * 
 	 * @param	event
 	 */
 	private function onRenderInitComplete( event:Event ):Void
 	{					
-		Stage.instance.addEventListener( DisplayEvent.ENTER_FRAME, this.onEnterFrame );	
+		this.engine.render.push( this.render );	
+		this.engine.start();
 	}
-	
-	/**
-	 * 
-	 * @param	event
-	 */
-	private function onEnterFrame( event:Event ):Void
-	{
-		this.renderScene();
-	}
-	
-	/**
-	 * 
-	 */
-	private function renderScene():Void
-	{
-		this.renderer.render( this.scene.gatherRenderUnits() );
-	}
+
 }
