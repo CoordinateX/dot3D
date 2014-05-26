@@ -84,12 +84,14 @@ class LineShader extends Material
 	
 	public function new()
 	{
-		this.cast_shader = new LShader();
+		this.cast_shader = new LShader();		
 		
 		var settings:ContextSettings = new ContextSettings();
-			settings.culling = Context3DTriangleFace.NONE;
-		
+			settings.culling = Context3DTriangleFace.NONE;			
+			
 		super( this.cast_shader, settings );	
+		
+		this.thickness = 3;
 	}
 	
 	// ************************************************************************ //

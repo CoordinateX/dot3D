@@ -1,5 +1,6 @@
 package at.dotpoint.dot3d.camera;
 
+import at.dotpoint.core.event.event.EvaluateEvent;
 import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.math.vector.Matrix44;
 import flash.events.Event;
@@ -144,8 +145,8 @@ class Lens extends EventDispatcher
 	{
 		this.invalidProjection = true;
 		
-		if ( this.hasEventListener( Event.CHANGE ) )
-			this.dispatchEvent( new Event( Event.CHANGE ) );
+		if ( this.hasEventListener( EvaluateEvent.CHANGED ) )
+			this.dispatchEvent( new EvaluateEvent( EvaluateEvent.CHANGED ) );
 	}
 	
 }

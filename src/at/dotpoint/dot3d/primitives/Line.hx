@@ -39,10 +39,10 @@ class Line extends EditableMesh
 		var numUniqueSigns:Int = 2;				// 1, -1
 		
 		var signature:MeshSignature = new MeshSignature( numVertices, numFaces, numRegister );		
-			signature.addType( Register.VERTEX_POSITION, numUniquePos ); 
-			signature.addType( Register.VERTEX_DIRECTION, numUniqueDirs ); 
-			signature.addType( Register.VERTEX_SIGN, numUniqueSigns ); 
-			signature.addType( Register.VERTEX_COLOR, numUniquePos ); 
+			signature.addType( Register.VERTEX_POSITION, 	numUniquePos 	); 
+			signature.addType( Register.VERTEX_DIRECTION, 	numUniqueDirs 	); 
+			signature.addType( Register.VERTEX_SIGN, 		numUniqueSigns 	); 
+			signature.addType( Register.VERTEX_COLOR, 		numUniquePos 	); 
 			
 		super( signature );
 		
@@ -51,7 +51,7 @@ class Line extends EditableMesh
 	
 	private function init( segments:Int ):Void
 	{
-		this.addVertexData( [ 0.5], Register.VERTEX_SIGN  );
+		this.addVertexData( [ 0.5], Register.VERTEX_SIGN );
 		this.addVertexData( [-0.5], Register.VERTEX_SIGN );
 	}
 	
