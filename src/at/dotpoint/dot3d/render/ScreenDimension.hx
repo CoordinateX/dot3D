@@ -1,7 +1,6 @@
 package at.dotpoint.dot3d.render;
-
-import flash.events.Event;
-import flash.events.EventDispatcher;
+import at.dotpoint.core.event.EventDispatcher;
+import at.dotpoint.display.event.DisplayEvent;
 
 /**
  * width and height of the viewport, defining the screen-render-size. any change in dimension
@@ -9,7 +8,6 @@ import flash.events.EventDispatcher;
  * 
  * @author Gerald Hattensauer
  */
-
 class ScreenDimension extends EventDispatcher
 {
 	
@@ -78,7 +76,7 @@ class ScreenDimension extends EventDispatcher
 		
 		this.ratio = this.width / this.height;
 		
-		if( this.hasEventListener( Event.RESIZE ) )
-			this.dispatchEvent( new Event( Event.RESIZE ) );
+		if( this.hasEventListener( DisplayEvent.RESIZE ) )
+			this.dispatchEvent( new DisplayEvent( DisplayEvent.RESIZE ) );
 	}
 }

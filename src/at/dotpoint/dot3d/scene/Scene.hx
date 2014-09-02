@@ -2,32 +2,15 @@ package at.dotpoint.dot3d.scene;
 
 import at.dotpoint.core.entity.IEntity;
 import at.dotpoint.dot3d.camera.Camera;
-import at.dotpoint.dot3d.model.material.ShaderInput;
 import at.dotpoint.dot3d.model.Model;
-import at.dotpoint.dot3d.model.register.Register;
-import at.dotpoint.dot3d.model.register.RegisterType;
-import at.dotpoint.dot3d.render.RenderUnit;
-import at.dotpoint.engine.database.IEntityQuery;
-import at.dotpoint.engine.database.IEntityStructure;
-import at.dotpoint.engine.database.query.SpatialQuery;
-import at.dotpoint.engine.database.QueryType;
-import at.dotpoint.math.vector.Matrix44;
 import at.dotpoint.math.vector.Vector3;
-import at.dotpoint.dot3d.Space;
 
 /**
  * ...
  * @author RK
  */
-class Scene implements IEntityStructure<SpatialQuery>
+class Scene
 {
-	
-	/**
-	 * type of queries this structure solves
-	 */
-	public var type:String;
-	
-	// ---------------- //
 	
 	public var modelList:Array<Model>;		
 
@@ -40,7 +23,6 @@ class Scene implements IEntityStructure<SpatialQuery>
 	
 	public function new() 
 	{
-		this.type = QueryType.SPATIAL;
 		this.modelList = new Array<Model>();
 	}
 	
@@ -51,10 +33,8 @@ class Scene implements IEntityStructure<SpatialQuery>
 	/**
 	 * 
 	 */
-	public function has( x:IEntity ):Bool
+	public function has( model:Model ):Bool
 	{
-		var model:Model = cast x;
-		
 		if( model == null )
 			return false;
 		
@@ -64,10 +44,8 @@ class Scene implements IEntityStructure<SpatialQuery>
 	/**
 	 * 
 	 */
-	public function add( x:IEntity ):Bool
+	public function add( model:Model ):Bool
 	{
-		var model:Model = cast x;
-		
 		if( model == null )
 			return false;
 		
@@ -79,10 +57,8 @@ class Scene implements IEntityStructure<SpatialQuery>
 	/**
 	 * 
 	 */
-	public function remove( x:IEntity ):Bool
+	public function remove( model:Model ):Bool
 	{
-		var model:Model = cast x;
-		
 		if( model == null )
 			return false;
 		
@@ -93,20 +69,9 @@ class Scene implements IEntityStructure<SpatialQuery>
 	 * 
 	 * @return
 	 */
-	public function iterator():Iterator<IEntity>
+	public function iterator():Iterator<Model>
 	{
 		return this.modelList.iterator();
 	}
 	
-	// ---------------------- //
-	
-	/**
-	 * 
-	 * @param	query
-	 * @return
-	 */
-	public function search( query:SpatialQuery, ?output:Array<IEntity> ):Array<IEntity>
-	{
-		return null;
-	}
 }

@@ -2,20 +2,15 @@ package;
 
 import at.dotpoint.core.event.Event;
 import at.dotpoint.dot3D.bootstrapper.Bootstrapper3D;
-import at.dotpoint.dot3d.loader.format.TextureFormat;
-import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
-import at.dotpoint.dot3d.loader.format.WavefrontObjectFormat;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.primitives.Cube;
 import at.dotpoint.dot3d.primitives.Plane;
 import at.dotpoint.dot3d.shader.PointShader;
 import at.dotpoint.dot3d.shader.TestShader;
-import at.dotpoint.dot3d.Space;
-import at.dotpoint.loader.DataHelper;
+import at.dotpoint.math.geom.Space;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.math.vector.Vector3;
-import flash.Lib;
 import haxe.ds.Vector;
 
 /**
@@ -48,7 +43,8 @@ class Main extends Bootstrapper3D
 	public function new() 
 	{
 		super();
-		this.startURL( "config.json" );
+		//this.startURL( "config.json" );
+		this.start();
 	}
 	
 	// ************************************************************************ //
@@ -66,7 +62,7 @@ class Main extends Bootstrapper3D
 		
 		this.loadScene();
 		
-		this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 20;
+		this.scene.camera.getTransform( Space.WORLD ).position.z -= 20;
 		
 		this.controller = new ModelController();
 		this.controller.moveSpeed = 0.25;	
@@ -96,10 +92,10 @@ class Main extends Bootstrapper3D
 		for( model in list )
 		{
 			this.scene.modelList.push( model );
-			this.rotateList .push( model );
+			this.rotateList.push( model );
 			
-			model.getTransform( Space.WorldSpace ).rotation.pitch( Math.random() * 2 );
-			model.getTransform( Space.WorldSpace ).rotation.roll( Math.random() * 2  );			
+			model.getTransform( Space.WORLD ).rotation.pitch( Math.random() * 2 );
+			model.getTransform( Space.WORLD ).rotation.roll( Math.random() * 2  );			
 		}
 	}
 	
@@ -133,8 +129,8 @@ class Main extends Bootstrapper3D
 		
 		for( model in this.rotateList)
 		{
-			model.getTransform( Space.WorldSpace ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
-			model.getTransform( Space.WorldSpace ).rotation.roll( this.controller.rotateSpeed * 0.25 );	
+			model.getTransform( Space.WORLD ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
+			model.getTransform( Space.WORLD ).rotation.roll( this.controller.rotateSpeed * 0.25 );	
 		}		
 	}
 	
@@ -164,7 +160,7 @@ class Main extends Bootstrapper3D
 		var h:Float = 1 * scale;
 		var l:Float = 1 * scale;
 		
-		var mesh:Mesh = new Cube( w, h, l );
+		var mesh:Mesh = new CubeMesh( w, h, l );
 		
 		var shader:TestShader = new TestShader();
 			shader.diffuseColor = new Vector3( 1, 0.5, 0.5 );		
@@ -182,7 +178,7 @@ class Main extends Bootstrapper3D
 		var w:Float = 1 * scale;
 		var h:Float = 1 * scale;
 		
-		var mesh:Mesh = new Plane( w, h );
+		var mesh:Mesh = new PlaneMesh( w, h );
 		
 		var shader:PointShader = new PointShader();
 			shader.diffuseColor = new Vector3( 0.25, 1, 0.25 );		

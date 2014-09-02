@@ -1,12 +1,11 @@
 package at.dotpoint.dot3d.camera;
 
-import at.dotpoint.core.event.event.EvaluateEvent;
-import at.dotpoint.display.components.transform.Transform;
+import at.dotpoint.core.evaluate.event.EvaluateEvent;
+import at.dotpoint.core.event.Event;
 import at.dotpoint.display.DisplayObject;
-import at.dotpoint.dot3D.DisplayObject3D;
 import at.dotpoint.dot3d.render.ScreenDimension;
+import at.dotpoint.math.geom.Space;
 import at.dotpoint.math.vector.Matrix44;
-import flash.events.Event;
 
 /**
  * A virtual camera used to render through. Depending on the Lens chosen it projects the visible
@@ -15,7 +14,7 @@ import flash.events.Event;
  * 
  * @author Gerald Hattensauer
  */
-class Camera extends DisplayObject3D
+class Camera extends DisplayObject
 {
 
 	private var projectionMatrix:Matrix44;
@@ -32,8 +31,9 @@ class Camera extends DisplayObject3D
 		super();
 		
 		this.lense = projection;	
-		this.lense.addEventListener( EvaluateEvent.CHANGED, this.onMatrixChanged, false, 0, true );
-		this.transform.addEventListener( EvaluateEvent.CHANGED, this.onTransformChanged );
+		this.lense.addEventListener( EvaluateEvent.CHANGED, this.onMatrixChanged );
+		
+		this.transformations.addEventListener( EvaluateEvent.CHANGED, this.onTransformChanged );
 		
 		this.projectionMatrix = new Matrix44();
 		this.invalidMatrix = true;
@@ -98,7 +98,7 @@ class Camera extends DisplayObject3D
 	//
 	private function validate():Void
 	{
-		Matrix44.multiply( this.lense.getProjectionMatrix(), this.getTransform( Space.WorldSpace ).getMatrix(), this.projectionMatrix );	
+		Matrix44.multiply( this.lense.getProjectionMatrix(), this.getTransform( Space.WORLD ).getMatrix(), this.projectionMatrix );	
 		this.invalidMatrix = false;
 	}
 		

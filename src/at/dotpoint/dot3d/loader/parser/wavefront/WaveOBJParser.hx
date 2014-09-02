@@ -81,11 +81,11 @@ class WaveOBJParser extends ADataProcessor implements IDataProcessor< String, Ve
 	/**
 	 * materials are done, create models and assign materials
 	 */
-	private function onMaterialComplete( event:Event ):Void
+	private function onMaterialComplete( event:StatusEvent ):Void
 	{
 		trace( "onMaterialComplete" );
 		
-		var materials:Vector<Material> = event.target.result;
+		var materials:Vector<Material> = cast cast( event.target, DataRequest).result;
 		
 		for( p in 0...this.subParser.length )
 		{

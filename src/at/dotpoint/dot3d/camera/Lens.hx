@@ -1,10 +1,11 @@
 package at.dotpoint.dot3d.camera;
 
-import at.dotpoint.core.event.event.EvaluateEvent;
+import at.dotpoint.core.evaluate.event.EvaluateEvent;
+import at.dotpoint.core.event.Event;
+import at.dotpoint.core.event.EventDispatcher;
+import at.dotpoint.display.event.DisplayEvent;
 import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.math.vector.Matrix44;
-import flash.events.Event;
-import flash.events.EventDispatcher;
 
 /**
  * abstract class defining the projection algorithm and providing
@@ -59,10 +60,10 @@ class Lens extends EventDispatcher
 	private function set_screen( value:ScreenDimension ):ScreenDimension 
 	{
 		if ( this.screen != null )
-			this.screen.removeEventListener( Event.RESIZE, this.onScreenChanged );
+			this.screen.removeEventListener( DisplayEvent.RESIZE, this.onScreenChanged );
 		
 		this.screen = value;
-		this.screen.addEventListener( Event.RESIZE, this.onScreenChanged, false, 0, true );
+		this.screen.addEventListener( DisplayEvent.RESIZE, this.onScreenChanged );
 		
 		this.setDirty();
 		

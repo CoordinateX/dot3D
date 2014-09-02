@@ -2,11 +2,12 @@ package at.dotpoint.dot3d.model;
 
 import at.dotpoint.core.entity.Component;
 import at.dotpoint.display.components.renderable.IRenderable;
-import at.dotpoint.dot3D.DisplayObject3D;
+import at.dotpoint.display.components.renderable.RenderType;
+import at.dotpoint.display.DisplayObject;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 
-class Model extends DisplayObject3D
+class Model extends DisplayObject
 {
 
 	/**
@@ -85,6 +86,11 @@ class Model extends DisplayObject3D
  */
 class ModelEC extends Component implements IRenderable
 {
+	
+	/**
+	 * 
+	 */
+	public var renderType:RenderType;
 	
 	/**
 	 * geometry: vertex + index buffer

@@ -19,6 +19,9 @@
     <class path="lib\hxsl" />
     <class path="lib\dotCore\src" />
     <class path="unit\src" />
+    <class path="lib\dotLoader\src" />
+    <class path="lib\dotLogger\src" />
+    <class path="lib\dotUI\src" />
   </classpaths>
   <!-- Build options -->
   <build>

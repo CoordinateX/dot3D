@@ -4,23 +4,15 @@ import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.dot3d.scene.Scene;
-import at.dotpoint.engine.Engine;
-import at.dotpoint.engine.IEngineSystem;
+import at.dotpoint.math.geom.Space;
 
 /**
  * ...
  * @author RK
  */
-class RenderSystem implements IEngineSystem
+class RenderSystem
 {
 
-	/**
-	 * instance to pass messages to and listen as well
-	 */
-	public var engine:Engine;
-	
-	// ----------- //
-	
 	/**
 	 * 
 	 */
@@ -95,7 +87,7 @@ class RenderSystem implements IEngineSystem
 		{
 			if( vType.ID == Register.MODEL_WORLD.ID )
 			{
-				input.set( vType.ID, model.getTransform( Space.WorldSpace ).getMatrix() );
+				input.set( vType.ID, model.getTransform( Space.WORLD ).getMatrix() );
 				continue;
 			}
 			
@@ -113,7 +105,7 @@ class RenderSystem implements IEngineSystem
 			
 			if( vType.ID == Register.CAMERA_POSITION.ID )
 			{
-				input.set( vType.ID, this.scene.camera.getTransform( Space.WorldSpace ).position.getVector() );
+				input.set( vType.ID, this.scene.camera.getTransform( Space.WORLD ).position.clone() );
 				continue;
 			}			
 		}

@@ -12,9 +12,8 @@ import at.dotpoint.dot3d.render.RenderProcessor;
 import at.dotpoint.dot3d.render.RenderSystem;
 import at.dotpoint.dot3d.render.Viewport;
 import at.dotpoint.dot3d.scene.Scene;
-import at.dotpoint.dot3d.Space;
-import at.dotpoint.engine.bootstrapper.BootstrapperEngine;
 import at.dotpoint.loader.DataHelper;
+import at.dotpoint.math.geom.Space;
 import at.dotpoint.math.vector.Vector3;
 import flash.display.Stage3D;
 import flash.Lib;
@@ -23,7 +22,7 @@ import flash.Lib;
  * ...
  * @author RK
  */
-class Bootstrapper3D extends BootstrapperEngine
+class Bootstrapper3D extends Bootstrapper
 {
 
 	/**
@@ -82,7 +81,7 @@ class Bootstrapper3D extends BootstrapperEngine
 	{		
 		this.scene = new Scene();
 		this.scene.camera = Camera.createDefault( this.createViewport() );
-		this.scene.camera.getTransform( Space.WorldSpace ).position.z -= 100;
+		this.scene.camera.getTransform( Space.WORLD ).position.z -= 10;
 		
 		var t:Float = Math.random();
 		
@@ -108,8 +107,15 @@ class Bootstrapper3D extends BootstrapperEngine
 	 */
 	private function onRenderInitComplete( event:Event ):Void
 	{					
-		this.engine.render.push( this.render );	
-		this.engine.start();
+		Stage.instance.addEventListener( DisplayEvent.ENTER_FRAME, this.onEnterFrame );
 	}
 
+	/**
+	 * 
+	 * @param	event
+	 */
+	private function onEnterFrame( event:Event ):Void
+	{
+		this.render.update(0);
+	}
 }

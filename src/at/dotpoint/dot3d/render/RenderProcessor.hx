@@ -1,6 +1,9 @@
 package at.dotpoint.dot3d.render;
 
-import at.dotpoint.core.log.Log;
+import at.dotpoint.core.event.Event;
+import at.dotpoint.core.event.event.StatusEvent;
+import at.dotpoint.core.event.EventDispatcher;
+import at.dotpoint.logger.Log;
 import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.model.mesh.Mesh;
@@ -9,9 +12,6 @@ import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
-import flash.events.ErrorEvent;
-import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.utils.Endian;
 import haxe.io.BytesData;
 import hxsl.Shader;
@@ -61,18 +61,18 @@ class RenderProcessor extends EventDispatcher
 	public function init( ?onComplete:Event->Void ):Void
 	{
 		if( onComplete != null )
-			this.addEventListener( Event.COMPLETE, onComplete, false, 0, true  );
+			this.addEventListener( StatusEvent.COMPLETE, onComplete );
 		
 		if ( this.context != null )
 		{
 			Log.warn( "already initialized" );
 			
-			this.dispatchEvent( new Event( Event.COMPLETE ) );			
+			this.dispatchEvent( new StatusEvent( StatusEvent.COMPLETE ) );			
 			return;
 		}
 		
-		this.viewport.stage3D.addEventListener( Event.CONTEXT3D_CREATE, this.onContextCreated );
-		this.viewport.stage3D.addEventListener( ErrorEvent.ERROR, this.onContextCreationError );
+		this.viewport.stage3D.addEventListener( flash.events.Event.CONTEXT3D_CREATE, this.onContextCreated );
+		this.viewport.stage3D.addEventListener( flash.events.ErrorEvent.ERROR, this.onContextCreationError );
 		
 		this.viewport.stage3D.requestContext3D();
 	}
@@ -84,7 +84,7 @@ class RenderProcessor extends EventDispatcher
 	/**
 	 * 
 	 */
-	private function onContextCreated( event:Event ):Void
+	private function onContextCreated( event:flash.events.Event ):Void
 	{
 		this.context = this.viewport.context;		
 		this.context.configureBackBuffer( this.viewport.width, this.viewport.height, 0, true );	
@@ -93,16 +93,16 @@ class RenderProcessor extends EventDispatcher
 			this.context.enableErrorChecking = true; 
 		#end 
 		
-		this.viewport.stage3D.removeEventListener( Event.CONTEXT3D_CREATE, this.onContextCreated );
-		this.viewport.stage3D.removeEventListener( ErrorEvent.ERROR, this.onContextCreationError );
+		this.viewport.stage3D.removeEventListener( flash.events.Event.CONTEXT3D_CREATE, this.onContextCreated );
+		this.viewport.stage3D.removeEventListener( flash.events.ErrorEvent.ERROR, this.onContextCreationError );
 		
-		this.dispatchEvent( new Event( Event.COMPLETE ) );
+		this.dispatchEvent( new StatusEvent( StatusEvent.COMPLETE ) );
 	}
 	
 	/**
 	 * 
 	 */
-	private function onContextCreationError( event:ErrorEvent ):Void 
+	private function onContextCreationError( event:flash.events.ErrorEvent ):Void 
 	{
 		throw "unknown stage3D error; ID: " +  event.errorID;
 	}

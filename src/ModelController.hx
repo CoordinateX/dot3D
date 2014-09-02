@@ -5,8 +5,8 @@ import at.dotpoint.display.components.transform.Position;
 import at.dotpoint.display.components.transform.Rotation;
 import at.dotpoint.display.components.transform.Scale;
 import at.dotpoint.display.components.transform.Transform;
-import at.dotpoint.dot3D.DisplayObject3D;
-import at.dotpoint.dot3d.Space;
+import at.dotpoint.display.DisplayObject;
+import at.dotpoint.math.geom.Space;
 import flash.events.KeyboardEvent;
 import flash.Lib;
 import flash.ui.Keyboard;
@@ -39,9 +39,9 @@ class ModelController
 	/**
 	 * 
 	 */
-	public function update( container:DisplayObject3D ):Void
+	public function update( container:DisplayObject ):Void
 	{
-		var transform:Transform 	= container.getTransform( Space.WorldSpace );
+		var transform:Transform 	= container.getTransform( Space.WORLD );
 		
 		var position:Position 		= transform.position;
 		var rotation:Rotation 		= transform.rotation;

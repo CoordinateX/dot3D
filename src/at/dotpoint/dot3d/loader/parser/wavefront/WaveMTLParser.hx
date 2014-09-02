@@ -2,6 +2,7 @@ package at.dotpoint.dot3d.loader.parser.wavefront;
 
 import at.dotpoint.core.event.event.StatusEvent;
 import at.dotpoint.dot3d.model.material.Material;
+import at.dotpoint.loader.DataRequest;
 import at.dotpoint.loader.processor.ADataProcessor;
 import at.dotpoint.loader.processor.IDataProcessor;
 import flash.events.Event;
@@ -103,9 +104,9 @@ class WaveMTLParser extends ADataProcessor implements IDataProcessor< String, Ve
 	/**
 	 * when the current parsing material is done, save result and try the next one
 	 */
-	private function onMaterialComplete( event:Event ):Void
+	private function onMaterialComplete( event:StatusEvent ):Void
 	{
-		this.result[ this.subParser.length ] = event.target.result;
+		this.result[ this.subParser.length ] = cast cast( event.target, IDataProcessor<Dynamic,Dynamic>).result;
 		this.parseMaterial();
 	}
 }
