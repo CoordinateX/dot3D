@@ -94,7 +94,7 @@ class Main extends Bootstrapper3D
 		
 		this.rotateList = new Array<Model>();
 		
-		//this.container = new DisplayObjectContainer();		
+		this.container = new ModelContainer();		
 		
 		for( model in list )
 		{
@@ -125,12 +125,12 @@ class Main extends Bootstrapper3D
 		}
 		
 		//trace("CONTAINER");
-		//this.containerModel = new Model( this.drawBoundings( container.boundings.modelSpace ), new LineShader() );
-		//this.scene.modelList.push( this.containerModel );
+		this.containerModel = new Model( this.drawBoundings( container.boundings.modelSpace ), new LineShader() );
+		this.scene.modelList.push( this.containerModel );
 	}
 	
 	private var containerModel:Model;
-	private var container:DisplayObjectContainer;
+	private var container:ModelContainer;
 	
 	// ************************************************************************ //
 	// UPDATE
@@ -164,7 +164,7 @@ class Main extends Bootstrapper3D
 			model.getTransform( Space.WORLD ).rotation.roll( this.controller.rotateSpeed * 0.025 );	
 		}		
 		
-		//this.containerModel.mesh = this.drawBoundings( this.container.boundings.localSpace );
+		this.containerModel.mesh = this.drawBoundings( this.container.boundings.localSpace );
 	}
 	
 	/**
@@ -264,3 +264,10 @@ class Main extends Bootstrapper3D
 	}
 }
 
+class ModelContainer extends DisplayObjectContainer
+{
+	public function new()
+	{
+		super();
+	}
+}
