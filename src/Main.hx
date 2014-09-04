@@ -36,6 +36,14 @@ class Main extends Bootstrapper3D
 	
 	private var t:Float;
 	
+	// --------------- //
+	
+	private var container:ModelContainer;
+	private var containerModel:Model;
+	
+	private var debugList:Array<Model>;
+	private var cubeList:Array<Model>;
+	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
@@ -93,6 +101,8 @@ class Main extends Bootstrapper3D
 		var list:Vector<Model> = this.loader.result;
 		
 		this.rotateList = new Array<Model>();
+		this.cubeList 	= new Array<Model>();
+		this.debugList 	= new Array<Model>();
 		
 		this.container = new ModelContainer();		
 		
@@ -101,12 +111,11 @@ class Main extends Bootstrapper3D
 			this.scene.modelList.push( model );
 			this.rotateList.push( model );
 			
+			this.cubeList.push( model );
+			
 			var pitch:Float = Math.random() * 2;			
 			var roll:Float 	= Math.random() * 2;
 			var yaw:Float 	= Math.random() * 2;
-			
-			//var pitch:Float = 0;
-			//var roll:Float = 0;
 			
 			model.getTransform( Space.WORLD ).rotation.pitch( pitch );
 			model.getTransform( Space.WORLD ).rotation.roll( roll  );	
@@ -117,20 +126,14 @@ class Main extends Bootstrapper3D
 			// ----------- // 
 			
 			var bounds:Model = new Model( this.drawBoundings( model.boundings.modelSpace ), new LineShader() );
-				bounds.getTransform( Space.WORLD ).rotation.pitch( pitch );
-				bounds.getTransform( Space.WORLD ).rotation.roll( roll );
 			
-			this.scene.modelList.push( bounds );
-			this.rotateList.push( bounds );	
+			this.scene.modelList.push( bounds );			
+			this.debugList.push( bounds );			
 		}
 		
-		//trace("CONTAINER");
-		this.containerModel = new Model( this.drawBoundings( container.boundings.modelSpace ), new LineShader() );
-		this.scene.modelList.push( this.containerModel );
-	}
-	
-	private var containerModel:Model;
-	private var container:ModelContainer;
+		this.containerModel = new Model( this.drawBoundings( this.container.boundings.modelSpace ), new LineShader() );		
+		this.scene.modelList.push( this.containerModel );		
+	}	
 	
 	// ************************************************************************ //
 	// UPDATE
@@ -160,11 +163,19 @@ class Main extends Bootstrapper3D
 		
 		for( model in this.rotateList)
 		{
-			model.getTransform( Space.WORLD ).rotation.pitch( this.controller.rotateSpeed * 0.05 );
-			model.getTransform( Space.WORLD ).rotation.roll( this.controller.rotateSpeed * 0.025 );	
+			model.getTransform( Space.WORLD ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
+			model.getTransform( Space.WORLD ).rotation.roll( this.controller.rotateSpeed * 0.25 );	
 		}		
 		
-		this.containerModel.mesh = this.drawBoundings( this.container.boundings.localSpace );
+		this.containerModel.mesh = this.drawBoundings( this.container.boundings.worldSpace );
+		
+		for( j in 0...this.debugList.length )
+		{
+			var cube:Model = this.cubeList[j];
+			var debug:Model = this.debugList[j];
+			
+			debug.mesh = this.drawBoundings( cube.boundings.worldSpace );
+		}
 	}
 	
 	/**
