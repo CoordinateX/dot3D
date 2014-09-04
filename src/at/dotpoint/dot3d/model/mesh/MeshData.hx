@@ -98,6 +98,11 @@ class MeshData
 		this.vertexData.setData( type, index, data );
 	}
 	
+	public function getVertexData( type:RegisterType, index:Int, ?output:Array<Float> ):Array<Float>
+	{
+		return this.vertexData.getData( type, index, output );
+	}
+	
 	/**
 	 * adds or overrides a unique vertex by using the given registerIndices array
 	 * where each value is an index pointing to the register data used for the vertex. the order

@@ -6,6 +6,10 @@ import at.dotpoint.display.components.renderable.RenderType;
 import at.dotpoint.display.DisplayObject;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.mesh.Mesh;
+import at.dotpoint.dot3d.model.mesh.MeshSignature;
+import at.dotpoint.dot3d.model.register.Register;
+import at.dotpoint.dot3d.model.register.RegisterType;
+import at.dotpoint.math.vector.Vector3;
 
 class Model extends DisplayObject
 {
@@ -32,7 +36,11 @@ class Model extends DisplayObject
 	public function new( ?mesh:Mesh, ?material:Material ) 
 	{
 		super();	
-		this.addComponent( new ModelEC( mesh, material ) );
+		
+		this.addComponent( new ModelEC() );
+		
+		this.mesh = mesh;
+		this.material = material;
 	}
 	
 	// ************************************************************************ //
@@ -58,7 +66,14 @@ class Model extends DisplayObject
 	
 	private function set_mesh( value:Mesh ):Mesh 
 	{ 
-		return this.model.mesh = value;
+		this.model.mesh = value;
+		
+		if( this.model.mesh != null )
+		{
+			this.calculateBoundings();
+		}
+		
+		return value;
 	}
 	
 	/**
@@ -72,6 +87,35 @@ class Model extends DisplayObject
 		return this.model.material = value;
 	}
 	
+	// ************************************************************************ //
+	// Methodes
+	// ************************************************************************ //
+	
+	/**
+	 * 
+	 */
+	private function calculateBoundings():Void
+	{
+		this.boundings.modelSpace.reset();
+		
+		// ------------- //
+		
+		var length:Int = this.mesh.data.signature.getNumEntries( Register.VERTEX_POSITION );
+		
+		var data:Array<Float> = new Array<Float>();
+		var vertex:Vector3 = new Vector3();
+		
+		for( v in 0...length )
+		{
+			this.mesh.data.getVertexData( Register.VERTEX_POSITION, v, data );
+			
+			vertex.x = data[0];
+			vertex.y = data[1];
+			vertex.z = data[2];
+			
+			this.boundings.modelSpace.insertPoint( vertex );
+		}
+	}
 }
 
 /**
