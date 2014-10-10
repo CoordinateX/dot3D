@@ -30,7 +30,7 @@ class GameplayMeshParser extends ADataProcessor implements IDataProcessor<Xml,Me
 	/**
 	 * 
 	 */
-	private var name:String;
+	public var name:String;
 	
 	// -------------- //
 	
