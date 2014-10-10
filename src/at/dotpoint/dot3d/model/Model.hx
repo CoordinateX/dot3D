@@ -11,6 +11,11 @@ class Model extends DisplayObject
 {
 
 	/**
+	 * 
+	 */
+	public var name:String;
+	
+	/**
 	 * IRenderable
 	 */
 	public var model(get, set):ModelEC;
@@ -23,7 +28,7 @@ class Model extends DisplayObject
 	/**
 	 * material, shader, textures - can also be applied to mesh sub regions only 
 	 */
-	public var material(get, set):Material;	
+	public var material(get, set):Material;		
 	
 	// ************************************************************************ //
 	// Constructor
