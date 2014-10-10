@@ -4,6 +4,7 @@ import at.dotpoint.core.bootstrapper.Bootstrapper;
 import at.dotpoint.core.event.Event;
 import at.dotpoint.display.event.DisplayEvent;
 import at.dotpoint.display.Stage;
+import at.dotpoint.dot3d.bootstrapper.IRenderManager;
 import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.dot3d.loader.format.TextureFormat;
 import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
@@ -22,18 +23,18 @@ import flash.Lib;
  * ...
  * @author RK
  */
-class Bootstrapper3D extends Bootstrapper
+class Bootstrapper3D extends Bootstrapper implements IRenderManager
 {
 
 	/**
 	 * 
 	 */
-	private var render:RenderSystem;
+	public var render:RenderSystem;
 	
 	/**
 	 * 
 	 */
-	private var scene:Scene;	
+	public var scene:Scene;	
 	
 	// ************************************************************************ //
 	// Constructor
@@ -57,64 +58,14 @@ class Bootstrapper3D extends Bootstrapper
 		
 		DataHelper.instance.formats.push( WavefrontObjectFormat.instance );
 		DataHelper.instance.formats.push( WavefrontMaterialFormat.instance );
-		DataHelper.instance.formats.push( TextureFormat.instance );			
-		
-		this.initializeScene();
-		this.initializeRenderer();		
-	}
-	
-	/**
-	 * 
-	 */
-	private function initializeRenderer():Void
-	{
-		var viewport:Viewport = this.createViewport();	
-		
-		this.render = new RenderSystem( new RenderProcessor( viewport ), this.scene );		
-		this.render.renderer.init( this.onRenderInitComplete );
-	}
-	
-	/**
-	 * 
-	 */
-	private function initializeScene():Void
-	{		
-		this.scene = new Scene();
-		this.scene.camera = Camera.createDefault( this.createViewport() );
-		this.scene.camera.getTransform( Space.WORLD ).position.z -= 10;
-		
-		var t:Float = Math.random();
-		
-		this.scene.light = new Vector3( Math.cos(t * 10) * 1, Math.sin(t * 5) * 2, Math.sin(t) * Math.cos(t) * 2);
-		this.scene.light.normalize();
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	private function createViewport():Viewport
-	{
-		var stage:Stage3D = Lib.current.stage.stage3Ds[0];		
-		var viewport:Viewport = new Viewport( stage, Lib.current.stage.stageWidth, Lib.current.stage.stageHeight );	
-		
-		return viewport;
+		DataHelper.instance.formats.push( TextureFormat.instance );	
 	}
 	
 	/**
 	 * 
 	 * @param	event
 	 */
-	private function onRenderInitComplete( event:Event ):Void
-	{					
-		Stage.instance.addEventListener( DisplayEvent.ENTER_FRAME, this.onEnterFrame );
-	}
-
-	/**
-	 * 
-	 * @param	event
-	 */
-	private function onEnterFrame( event:Event ):Void
+	public function onEnterFrame( event:Event ):Void
 	{
 		this.render.update(0);
 	}
