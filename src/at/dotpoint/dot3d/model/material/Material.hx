@@ -13,7 +13,7 @@ import hxsl.Shader;
  */
 @:access(hxsl.Shader)
 //
-class Material 
+class Material<T:Shader>
 {
 
 	/**
@@ -24,19 +24,24 @@ class Material
 	/**
 	 * hxsl shader
 	 */
-	public var shader:Shader;	
+	public var shader:T;
+	
+	/**
+	 * dyn values like model matrix, camera projection matrix, lightning, etc used by the shader 
+	 */
+	public var shaderInput:ShaderInput;
 	
 	/**
 	 * settings applied before rendering the material
 	 */
-	public var contextSetting:ContextSettings;
+	public var contextSetting:ContextSettings;	
 	
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( shader:Shader, ?contextSetting:ContextSettings ) 
+	public function new( shader:T, ?contextSetting:ContextSettings ) 
 	{		
 		this.shader = shader;
 		this.contextSetting = contextSetting != null ? contextSetting : new ContextSettings();
@@ -54,6 +59,40 @@ class Material
 	{
 		return this.shader.getInstance();
 	}	
+	
+	// ************************************************************************ //
+	// Shader Input
+	// ************************************************************************ //	
+	
+	/**
+	 * 
+	 * @param	input
+	 */
+	public function applyInput( shaderInput:ShaderInput ):Void
+	{
+		for( regin in shaderInput.values )
+		{
+			if( Reflect.getProperty( this.shader, regin.type ) != regin.input )
+				Reflect.setProperty( this.shader, regin.type, regin.input );
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public function createShaderInput():ShaderInput
+	{
+		var vertexArguments:Array<RegisterType> = this.reflectVertexArguments();
+		
+		var shaderInput = new ShaderInput( vertexArguments.length );
+		
+		for( regtype in vertexArguments )
+		{
+			shaderInput.setValue( regtype.ID, null );
+		}
+		
+		return shaderInput;
+	}
 	
 	// ************************************************************************ //
 	// Shader Reflect

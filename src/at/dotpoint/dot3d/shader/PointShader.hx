@@ -1,6 +1,7 @@
 package at.dotpoint.dot3d.shader;
 
 import at.dotpoint.dot3d.model.material.Material;
+import at.dotpoint.dot3d.model.material.ShaderInput;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.math.vector.Vector3;
 import hxsl.Shader;
@@ -49,9 +50,8 @@ private class PShader extends Shader
 /**
  * 
  */
-class PointShader extends Material
+class PointShader extends Material<PShader>
 {
-	private var cast_shader:PShader;
 	public var diffuseColor(get, set):Vector3;	
 	
 	// ************************************************************************ //
@@ -60,23 +60,60 @@ class PointShader extends Material
 	
 	public function new()
 	{
-		this.cast_shader = new PShader();			
-		super( this.cast_shader );	
+		super( new PShader() );	
 	}
 	
 	// ************************************************************************ //
 	// Methodes
+	// ************************************************************************ //
+	
+	/**
+	 * 
+	 * @param	input
+	 */
+	public override function applyInput( shaderInput:ShaderInput ):Void 
+	{
+		for( regin in shaderInput.values )
+		{
+			switch( regin.type )
+			{
+				case "mpos":
+				{
+					if( this.shader.mpos != regin.input )
+						this.shader.mpos = regin.input;
+				}
+				
+				case "mproj":
+				{
+					if( this.shader.mproj != regin.input )
+						this.shader.mproj = regin.input;
+				}
+					
+				case "light":
+				{
+					if( this.shader.light != regin.input )
+						this.shader.light = regin.input;
+				}	
+				
+				default:
+					throw "ShaderInput '" + regin.type + "' cannot be applied";
+			}
+		}
+	}
+	
+	// ************************************************************************ //
+	// getter / setter
 	// ************************************************************************ //
 
 	/**
 	 * 
 	 * @return
 	 */
-	private function get_diffuseColor():Vector3 { return this.cast_shader.diffuseColor; }
+	private function get_diffuseColor():Vector3 { return this.shader.diffuseColor; }
 	
 	private function set_diffuseColor( value:Vector3 ):Vector3
 	{
-		return this.cast_shader.diffuseColor = value;
+		return this.shader.diffuseColor = value;
 	}
 
 }

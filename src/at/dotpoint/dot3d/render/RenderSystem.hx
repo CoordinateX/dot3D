@@ -4,7 +4,9 @@ import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.dot3d.scene.Scene;
+import at.dotpoint.dot3d.shader.TestShader.TShader;
 import at.dotpoint.math.geom.Space;
+import haxe.ds.Vector;
 
 /**
  * ...
@@ -22,6 +24,11 @@ class RenderSystem
 	 * 
 	 */
 	public var scene:Scene;
+	
+	/**
+	 * 
+	 */
+	private var cache:Array<RenderUnit>;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -54,21 +61,47 @@ class RenderSystem
 	 */
 	private function generateRenderUnits():Array<RenderUnit> 
 	{
-		var unitList:Array<RenderUnit> = new Array<RenderUnit>();		
-		
-		for( model in this.scene.modelList )
-		{			
-			var unit:RenderUnit = new RenderUnit();
-				unit.context 	= model.material.contextSetting;
-				unit.shader 	= model.material.shader;				
-				unit.mesh 		= model.mesh;
-				
-			unit.shaderData = this.createShaderInput( model );
+		if( this.cache == null )
+		{
+			var unitList:Array<RenderUnit> = new Array<RenderUnit>();		
 			
-			unitList.push( unit );
+			for( model in this.scene.modelList )
+			{			
+				var unit:RenderUnit = new RenderUnit();				
+					unit.model 			= model;	
+					unit.shaderInput 	= model.material.createShaderInput();	
+				
+				unitList.push( unit );
+			}
+			
+			unitList.sort( this.sortRenderUnits );
+			
+			this.cache = unitList;
 		}
 		
-		return unitList;
+		for( unit in this.cache )
+		{
+			this.updateShaderInput( unit );
+		}
+		
+		return this.cache;
+	}
+	
+	/**
+	 * 
+	 * @param	a
+	 * @param	b
+	 * @return
+	 */
+	private function sortRenderUnits( a:RenderUnit, b:RenderUnit ):Int
+	{
+		if( a.mesh == b.mesh ) 
+			return 1;		
+		
+		//if( a.model.material == b.model.material )	
+			//return 1;			
+			
+		return -1;
 	}
 	
 	/**
@@ -76,41 +109,38 @@ class RenderSystem
 	 * @param	model
 	 * @return
 	 */
-	private function createShaderInput( model:Model ):ShaderInput
-	{
-		var input:ShaderInput = new ShaderInput();
+	private function updateShaderInput( unit:RenderUnit ):Void
+	{		
+		var input:Vector<RegisterInput> = unit.shaderInput.values;
 		
-		var vertexInput:Array<RegisterType> = model.material.reflectVertexArguments();
-		//var fragmentInput:Array<RegisterType> = model.material.reflectFragmentArguments();
-		
-		for( vType in vertexInput )
+		for( v in 0...input.length )
 		{
-			if( vType.ID == Register.MODEL_WORLD.ID )
+			var reg:RegisterInput = input[v];
+			
+			if( reg.type == Register.MODEL_WORLD.ID )
 			{
-				input.set( vType.ID, model.getTransform( Space.WORLD ).getMatrix() );
+				reg.input = unit.model.getTransform( Space.WORLD ).getMatrix();
 				continue;
 			}
 			
-			if( vType.ID == Register.WORLD_CAMERA.ID )
+			if( reg.type == Register.WORLD_CAMERA.ID )
 			{
-				input.set( vType.ID, this.scene.camera.getProjectionMatrix() );
+				reg.input = this.scene.camera.getProjectionMatrix();
 				continue;
 			}
 			
-			if( vType.ID == Register.LIGHT.ID )
+			if( reg.type == Register.LIGHT.ID )
 			{
-				input.set( vType.ID, this.scene.light );
+				reg.input = this.scene.light;
 				continue;
 			}
 			
-			if( vType.ID == Register.CAMERA_POSITION.ID )
+			if( reg.type == Register.CAMERA_POSITION.ID )
 			{
-				input.set( vType.ID, this.scene.camera.getTransform( Space.WORLD ).position.clone() );
+				reg.input = this.scene.camera.getTransform( Space.WORLD ).position/*.clone()*/;
 				continue;
 			}			
 		}
-		
-		return input;
 	}
 	
 }

@@ -7,6 +7,7 @@ import at.dotpoint.loader.processor.ADataProcessor;
 import at.dotpoint.loader.processor.IDataProcessor;
 import flash.events.Event;
 import haxe.ds.Vector;
+import hxsl.Shader;
 
 /**
  * Parses *.mtl files by quickly scanning the file and delegating the detailed parsing
@@ -17,11 +18,11 @@ import haxe.ds.Vector;
  */
 @:access( at.dotpoint.dot3d.loader.parser.wavefront )
 //
-class WaveMTLParser extends ADataProcessor implements IDataProcessor< String, Vector<Material> >
+class WaveMTLParser extends ADataProcessor implements IDataProcessor< String, Vector<Material<Shader>> >
 {
 	
 	private var input:String;
-	public var result(default,null):Vector<Material>;
+	public var result(default,null):Vector<Material<Shader>>;
 	
 	// ------------------ //
 	
@@ -81,7 +82,7 @@ class WaveMTLParser extends ADataProcessor implements IDataProcessor< String, Ve
 			this.subParser.push( new WaveMaterialParser( obj.matched(1), this.directoryURL, split[c] ) );	
 		}
 		
-		this.result = new Vector<Material>( this.subParser.length );
+		this.result = new Vector<Material<Shader>>( this.subParser.length );
 		this.parseMaterial();		
 	}	
 	

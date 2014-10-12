@@ -1,22 +1,34 @@
 package at.dotpoint.dot3d.model.material;
 
+import at.dotpoint.core.entity.Component;
+import at.dotpoint.dot3d.model.register.RegisterType;
+import at.dotpoint.dot3d.shader.TestShader.TShader;
 import haxe.ds.StringMap;
+import haxe.ds.Vector;
 import hxsl.Shader;
 
 /**
  * 
  * @author RK
  */
-class ShaderInput extends StringMap<Dynamic>
+class ShaderInput
 {
-
+	
+	/**
+	 * 
+	 */
+	public var values:Vector<RegisterInput>;
+	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new() 
-	{
-		super();
+	public function new( size:Int ) 
+	{		
+		this.values = new Vector<RegisterInput>( size );
+		
+		for( i in 0...size )
+			this.values[i] = new RegisterInput( null );
 	}
 	
 	// ************************************************************************ //
@@ -25,16 +37,46 @@ class ShaderInput extends StringMap<Dynamic>
 	
 	/**
 	 * 
-	 * @param	shader
+	 * @param	index
+	 * @param	input
 	 */
-	public function apply( shader:Shader ):Void
+	public function setValue( type:String, input:Dynamic ):Void
 	{
-		var iter:Iterator<String> = this.keys();
+		var index:Int = this.indexOf( type );
 		
-		while( iter.hasNext() )
+		if( index == -1 )
+			throw "cannot set shaderInput '" + type + "'";
+		
+		var regin:RegisterInput = this.values[index];	
+			regin.type = type;
+			regin.input = input;	
+	}
+	
+	/**
+	 * 
+	 * @param	type
+	 * @return
+	 */
+	public function indexOf( type:String ):Int
+	{
+		for( i in 0...this.values.length )
 		{
-			var type:String = iter.next();			
-			Reflect.setProperty( shader, type, this.get( type ) );
+			if( this.values[i].type == type || this.values[i].type == null )
+				return i;
 		}
+		
+		return -1;
+	}
+	
+}
+
+class RegisterInput
+{
+	public var type:String;
+	public var input:Dynamic;
+	
+	public function new( type:String )
+	{
+		this.type = type;
 	}
 }

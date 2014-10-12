@@ -2,6 +2,7 @@ package at.dotpoint.dot3d.shader;
 
 import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Material;
+import at.dotpoint.dot3d.model.material.ShaderInput;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.math.vector.Vector3;
 import hxsl.Shader;
@@ -72,10 +73,9 @@ private class LShader extends Shader
 /**
  * 
  */
-class LineShader extends Material
+class LineShader extends Material<LShader>
 {
-	private var cast_shader:LShader;
-	
+
 	public var thickness(get, set):Float;	
 	
 	// ************************************************************************ //
@@ -84,12 +84,10 @@ class LineShader extends Material
 	
 	public function new()
 	{
-		this.cast_shader = new LShader();		
-		
 		var settings:ContextSettings = new ContextSettings();
 			settings.culling = Context3DTriangleFace.NONE;			
 			
-		super( this.cast_shader, settings );	
+		super( new LShader(), settings );	
 		
 		this.thickness = 3;
 	}
@@ -97,16 +95,54 @@ class LineShader extends Material
 	// ************************************************************************ //
 	// Methodes
 	// ************************************************************************ //
+	
+	/**
+	 * 
+	 * @param	input
+	 */
+	public override function applyInput( shaderInput:ShaderInput ):Void 
+	{
+		for( regin in shaderInput.values )
+		{
+			switch( regin.type )
+			{
+				case "mpos":
+				{
+					if( this.shader.mpos != regin.input )
+						this.shader.mpos = regin.input;
+				}
+				
+				case "mproj":
+				{
+					if( this.shader.mproj != regin.input )
+						this.shader.mproj = regin.input;
+				}
+					
+				case "cam":
+				{
+					if( this.shader.cam != regin.input )
+						this.shader.cam = regin.input;
+				}	
+				
+				default:
+					throw "ShaderInput '" + regin.type + "' cannot be applied";
+			}
+		}
+	}
+	
+	// ************************************************************************ //
+	// getter / setter
+	// ************************************************************************ //
 
 	/**
 	 * 
 	 * @return
 	 */
-	private function get_thickness():Float { return this.cast_shader.thickness; }
+	private function get_thickness():Float { return this.shader.thickness; }
 	
 	private function set_thickness( value:Float ):Float
 	{
-		return this.cast_shader.thickness = value;
+		return this.shader.thickness = value;
 	}
 
 }

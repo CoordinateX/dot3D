@@ -9,6 +9,7 @@ import at.dotpoint.loader.processor.ADataProcessor;
 import at.dotpoint.loader.processor.IDataProcessor;
 import flash.events.Event;
 import haxe.ds.Vector;
+import hxsl.Shader;
 
 /**
  * Parses *.obj files by quickly scanning the file and delegating the detailed parsing
@@ -85,7 +86,7 @@ class WaveOBJParser extends ADataProcessor implements IDataProcessor< String, Ve
 	{
 		trace( "onMaterialComplete" );
 		
-		var materials:Vector<Material> = cast cast( event.target, DataRequest).result;
+		var materials:Vector<Material<Shader>> = cast cast( event.target, DataRequest).result;
 		
 		for( p in 0...this.subParser.length )
 		{

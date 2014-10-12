@@ -40,6 +40,7 @@ class RenderProcessor extends EventDispatcher
 	private var currentShader:ShaderInstance;
 	private var currentMesh:MeshBuffer;
 	
+	private var currentContext:ContextSettings;
 	private var currentVertexBufferLength:Int;
 	private var currentTextures:Array<Texture>;
 	
@@ -120,10 +121,11 @@ class RenderProcessor extends EventDispatcher
 		
 		for ( unit in list )
 		{
-			unit.shaderData.apply( unit.shader );
-			this.selectShader( unit.shader );		
+			unit.material.applyInput( unit.shaderInput );
 			
 			// ------------------- //
+			
+			this.selectShader( unit.shader );				
 			
 			if( this.currentShader.varsChanged )
 				this.updateShaderVars();
@@ -228,8 +230,20 @@ class RenderProcessor extends EventDispatcher
 	 */
 	private function updateContextSettings( settings:ContextSettings ):Void
 	{
-		this.context.setCulling( settings.culling );
-		this.context.setDepthTest( settings.depthTest, settings.depthTestMode );
+		if( this.currentContext == null 
+		||  settings.culling 	!= this.currentContext.culling )
+		{			
+			this.context.setCulling( settings.culling );
+		}
+		
+		if( this.currentContext 	== null 
+		||  settings.depthTest 		!= this.currentContext.depthTest 
+		||  settings.depthTestMode 	!= this.currentContext.depthTestMode )
+		{			
+			this.context.setDepthTest( settings.depthTest, settings.depthTestMode );
+		}
+		
+		this.currentContext = settings;
 	}
 	
 	// ---------------------------------------------------------- //

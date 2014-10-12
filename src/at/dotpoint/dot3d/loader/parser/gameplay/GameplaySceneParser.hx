@@ -7,6 +7,8 @@ import at.dotpoint.loader.DataRequest;
 import at.dotpoint.loader.processor.ADataProcessor;
 import at.dotpoint.loader.processor.IDataProcessor;
 import at.dotpoint.dot3d.model.Model;
+import at.dotpoint.math.geom.Space;
+import at.dotpoint.math.vector.Matrix44;
 import haxe.ds.Vector;
 /**
  * ...
@@ -90,10 +92,66 @@ class GameplaySceneParser extends ADataProcessor implements IDataProcessor< Stri
 			var parser:GameplayMeshParser = this.subParser[p];
 				parser.start( null );
 			
-			var model:Model = new Model( parser.result, new TestShader() );
-			//	model.name = parser.name;
+			var model:Model = new Model( parser.result, cast new TestShader() );
+				model.name = parser.name;
 				
+			var matrix:Matrix44 = this.getTransform( model.name );	
+			
+			if( matrix != null )
+				model.getTransform( Space.LOCAL ).setMatrix( matrix );
+			
 			this.result[p] = model;
 		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private function getTransform( name:String ):Matrix44
+	{
+		for( element in this.input.firstChild().elementsNamed( "Scene" ) )
+		{
+			for( node in element.elementsNamed( "Node" ) )			
+			{
+				if( node.get("id") == name )
+				{
+					for( transform in node.elementsNamed( "transform" ) )			
+						return this.parseTransform( transform );
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param	transform
+	 * @return
+	 */
+	private function parseTransform( transform:Xml ):Matrix44 
+	{
+		var values:String = transform.toString();
+		
+		// ------------- //
+		
+		var data:Array<Float> = new Array<Float>();
+		
+		var line:EReg = ~/(\-?[0-9]+\.?[0-9]*\s){1}/;
+		var p:Int = 0;
+		
+		while( line.matchSub( values, p ) )
+		{			
+			data.push( Std.parseFloat( line.matched(0) ) );
+			p = line.matchedPos().pos + line.matchedPos().len; 	
+		}
+		
+		//data[12] = 0; // data[12] * -1;
+		
+		var matrix:Matrix44 = new Matrix44();
+			matrix.setArray( data );
+			
+		return matrix;
 	}
 }

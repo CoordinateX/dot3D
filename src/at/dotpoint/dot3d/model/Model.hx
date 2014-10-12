@@ -5,11 +5,13 @@ import at.dotpoint.display.components.renderable.IRenderable;
 import at.dotpoint.display.components.renderable.RenderType;
 import at.dotpoint.display.DisplayObject;
 import at.dotpoint.dot3d.model.material.Material;
+import at.dotpoint.dot3d.model.material.ShaderInput;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.math.vector.Vector3;
+import hxsl.Shader;
 
 class Model extends DisplayObject
 {
@@ -32,13 +34,13 @@ class Model extends DisplayObject
 	/**
 	 * material, shader, textures - can also be applied to mesh sub regions only 
 	 */
-	public var material(get, set):Material;		
+	public var material(get, set):Material<Shader>;		
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( ?mesh:Mesh, ?material:Material ) 
+	public function new( ?mesh:Mesh, ?material:Material<Shader> ) 
 	{
 		super();	
 		
@@ -85,9 +87,9 @@ class Model extends DisplayObject
 	 * 
 	 * @return
 	 */
-	private function get_material():Material { return this.model.material; }
+	private function get_material():Material<Shader> { return this.model.material; }
 	
-	private function set_material( value:Material ):Material 
+	private function set_material( value:Material<Shader> ):Material<Shader> 
 	{ 
 		return this.model.material = value;
 	}
@@ -149,13 +151,13 @@ class ModelEC extends Component implements IRenderable
 	/**
 	 * material, shader, textures - can also be applied to mesh sub regions only 
 	 */
-	public var material:Material;	
+	public var material:Material<Shader>;
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
 	
-	public function new( ?mesh:Mesh, ?material:Material ) 
+	public function new( ?mesh:Mesh, ?material:Material<Shader> ) 
 	{
 		super();
 		
