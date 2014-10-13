@@ -1,8 +1,8 @@
 package at.dotpoint.dot3d.render;
 
-import at.dotpoint.core.event.Event;
-import at.dotpoint.core.event.event.StatusEvent;
-import at.dotpoint.core.event.EventDispatcher;
+import at.dotpoint.core.dispatcher.Event;
+import at.dotpoint.core.dispatcher.event.StatusEvent;
+import at.dotpoint.core.dispatcher.EventDispatcher;
 import at.dotpoint.logger.Log;
 import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Texture;
@@ -62,13 +62,13 @@ class RenderProcessor extends EventDispatcher
 	public function init( ?onComplete:Event->Void ):Void
 	{
 		if( onComplete != null )
-			this.addEventListener( StatusEvent.COMPLETE, onComplete );
+			this.addListener( StatusEvent.COMPLETE, onComplete );
 		
 		if ( this.context != null )
 		{
 			Log.warn( "already initialized" );
 			
-			this.dispatchEvent( new StatusEvent( StatusEvent.COMPLETE ) );			
+			this.dispatch( new StatusEvent( StatusEvent.COMPLETE ) );			
 			return;
 		}
 		
@@ -97,7 +97,7 @@ class RenderProcessor extends EventDispatcher
 		this.viewport.stage3D.removeEventListener( flash.events.Event.CONTEXT3D_CREATE, this.onContextCreated );
 		this.viewport.stage3D.removeEventListener( flash.events.ErrorEvent.ERROR, this.onContextCreationError );
 		
-		this.dispatchEvent( new StatusEvent( StatusEvent.COMPLETE ) );
+		this.dispatch( new StatusEvent( StatusEvent.COMPLETE ) );
 	}
 	
 	/**

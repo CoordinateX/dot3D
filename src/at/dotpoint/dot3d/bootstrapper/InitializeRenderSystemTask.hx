@@ -1,7 +1,7 @@
 package at.dotpoint.dot3d.bootstrapper;
 
-import at.dotpoint.core.event.Event;
-import at.dotpoint.core.event.EventDispatcher;
+import at.dotpoint.core.dispatcher.Event;
+import at.dotpoint.core.dispatcher.EventDispatcher;
 import at.dotpoint.core.processor.event.ProcessEvent;
 import at.dotpoint.core.processor.ITask;
 import at.dotpoint.display.event.DisplayEvent;
@@ -46,7 +46,7 @@ class InitializeRenderSystemTask extends EventDispatcher implements ITask
 	 */
 	public function execute():Void 
 	{
-		this.dispatchEvent( new ProcessEvent( ProcessEvent.TASK_STARTED ) );	
+		this.dispatch( new ProcessEvent( ProcessEvent.TASK_STARTED ) );	
 		
 		this.initializeScene();
 		this.initializeRenderer();	
@@ -98,7 +98,7 @@ class InitializeRenderSystemTask extends EventDispatcher implements ITask
 	 */
 	private function onRenderInitComplete( event:Event ):Void
 	{					
-		Stage.instance.addEventListener( DisplayEvent.ENTER_FRAME, this.renderManager.onEnterFrame );
+		Stage.instance.addListener( DisplayEvent.ENTER_FRAME, this.renderManager.onEnterFrame );
 		this.clear();
 	}
 	
@@ -110,6 +110,6 @@ class InitializeRenderSystemTask extends EventDispatcher implements ITask
 	 */
 	public function clear():Void 
 	{
-		this.dispatchEvent( new ProcessEvent( ProcessEvent.TASK_COMPLETE ) );
+		this.dispatch( new ProcessEvent( ProcessEvent.TASK_COMPLETE ) );
 	}
 }

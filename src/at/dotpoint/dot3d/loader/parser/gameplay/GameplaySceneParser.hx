@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.loader.parser.gameplay;
 
-import at.dotpoint.core.event.event.StatusEvent;
+import at.dotpoint.core.dispatcher.event.StatusEvent;
 import at.dotpoint.dot3d.loader.parser.gameplay.GameplayMeshParser;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.loader.DataRequest;

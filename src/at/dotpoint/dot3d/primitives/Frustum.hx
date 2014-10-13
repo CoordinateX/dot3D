@@ -1,5 +1,5 @@
 package at.dotpoint.dot3d.primitives;
-import at.dotpoint.core.event.Event;
+import at.dotpoint.core.dispatcher.Event;
 import at.dotpoint.core.event.event.EvaluateEvent;
 import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.dot3d.camera.Lens;

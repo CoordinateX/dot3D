@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
-import at.dotpoint.core.event.event.StatusEvent;
+import at.dotpoint.core.dispatcher.event.StatusEvent;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.loader.processor.ADataProcessor;
@@ -98,7 +98,7 @@ class WaveMTLParser extends ADataProcessor implements IDataProcessor< String, Ve
 		}
 		
 		var parser:WaveMaterialParser = this.subParser.pop();
-			parser.addListener( this.onMaterialComplete );
+			parser.addStatusListener( this.onMaterialComplete );
 			parser.start( null );		
 	}
 	

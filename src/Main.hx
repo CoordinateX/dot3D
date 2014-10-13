@@ -1,7 +1,6 @@
 package;
 
-import at.dotpoint.core.event.Event;
-import at.dotpoint.display.components.bounds.BoundingBox;
+import at.dotpoint.core.dispatchat.dotpoint.core.dispatcher.Eventt.display.components.bounds.BoundingBox;
 import at.dotpoint.display.DisplayObjectContainer;
 import at.dotpoint.display.Sprite;
 import at.dotpoint.dot3D.bootstrapper.Bootstrapper3D;

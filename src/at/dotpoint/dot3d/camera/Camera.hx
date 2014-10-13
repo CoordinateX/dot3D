@@ -1,7 +1,7 @@
 package at.dotpoint.dot3d.camera;
 
 import at.dotpoint.core.evaluate.event.EvaluateEvent;
-import at.dotpoint.core.event.Event;
+import at.dotpoint.core.dispatcher.Event;
 import at.dotpoint.display.DisplayObject;
 import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.math.geom.Space;
@@ -31,9 +31,9 @@ class Camera extends DisplayObject
 		super();
 		
 		this.lense = projection;	
-		this.lense.addEventListener( EvaluateEvent.CHANGED, this.onMatrixChanged );
+		this.lense.addListener( EvaluateEvent.CHANGED, this.onMatrixChanged );
 		
-		this.transformations.addEventListener( EvaluateEvent.CHANGED, this.onTransformChanged );
+		this.transformations.addListener( EvaluateEvent.CHANGED, this.onTransformChanged );
 		
 		this.projectionMatrix = new Matrix44();
 		this.invalidMatrix = true;
@@ -88,8 +88,8 @@ class Camera extends DisplayObject
 	{
 		this.invalidMatrix = true;
 		
-		//if ( this.hasEventListener( EntityEvent.PROJECTION_CHANGED ) )
-		//	this.dispatchEvent( new EntityEvent( EntityEvent.PROJECTION_CHANGED ) );
+		//if ( this.hasListener( EntityEvent.PROJECTION_CHANGED ) )
+		//	this.dispatch( new EntityEvent( EntityEvent.PROJECTION_CHANGED ) );
 	}
 	
 	// ----------------------------------------------------------------------- //

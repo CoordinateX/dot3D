@@ -1,5 +1,6 @@
 package at.dotpoint.dot3d.render;
-import at.dotpoint.core.event.EventDispatcher;
+
+import at.dotpoint.core.dispatcher.EventDispatcher;
 import at.dotpoint.display.event.DisplayEvent;
 
 /**
@@ -76,7 +77,7 @@ class ScreenDimension extends EventDispatcher
 		
 		this.ratio = this.width / this.height;
 		
-		if( this.hasEventListener( DisplayEvent.RESIZE ) )
-			this.dispatchEvent( new DisplayEvent( DisplayEvent.RESIZE ) );
+		if( this.hasListener( DisplayEvent.RESIZE ) )
+			this.dispatch( new DisplayEvent( DisplayEvent.RESIZE ) );
 	}
 }

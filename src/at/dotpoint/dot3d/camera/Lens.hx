@@ -1,8 +1,8 @@
 package at.dotpoint.dot3d.camera;
 
 import at.dotpoint.core.evaluate.event.EvaluateEvent;
-import at.dotpoint.core.event.Event;
-import at.dotpoint.core.event.EventDispatcher;
+import at.dotpoint.core.dispatcher.Event;
+import at.dotpoint.core.dispatcher.EventDispatcher;
 import at.dotpoint.display.event.DisplayEvent;
 import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.math.vector.Matrix44;
@@ -60,10 +60,10 @@ class Lens extends EventDispatcher
 	private function set_screen( value:ScreenDimension ):ScreenDimension 
 	{
 		if ( this.screen != null )
-			this.screen.removeEventListener( DisplayEvent.RESIZE, this.onScreenChanged );
+			this.screen.removeListener( DisplayEvent.RESIZE, this.onScreenChanged );
 		
 		this.screen = value;
-		this.screen.addEventListener( DisplayEvent.RESIZE, this.onScreenChanged );
+		this.screen.addListener( DisplayEvent.RESIZE, this.onScreenChanged );
 		
 		this.setDirty();
 		
@@ -146,8 +146,8 @@ class Lens extends EventDispatcher
 	{
 		this.invalidProjection = true;
 		
-		if ( this.hasEventListener( EvaluateEvent.CHANGED ) )
-			this.dispatchEvent( new EvaluateEvent( EvaluateEvent.CHANGED ) );
+		if ( this.hasListener( EvaluateEvent.CHANGED ) )
+			this.dispatch( new EvaluateEvent( EvaluateEvent.CHANGED ) );
 	}
 	
 }
