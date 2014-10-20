@@ -115,6 +115,18 @@ class RenderProcessor extends EventDispatcher
 	/**
 	 * 
 	 */
+	public function reset():Void
+	{
+		this.currentContext 			= null;
+		this.currentMesh 				= null;
+		this.currentShader 				= null;
+		this.currentTextures 			= new Array<Texture>();
+		this.currentVertexBufferLength 	= 0;
+	}
+	
+	/**
+	 * 
+	 */
 	public function render( list:Iterable<RenderUnit> ):Void
 	{
 		this.context.clear( 0.1, 0.1, 0.1 );

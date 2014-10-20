@@ -109,7 +109,7 @@ class TestShader extends Material<TShader>
 	 * 
 	 * @param	input
 	 */
-	public override function applyInput( shaderInput:ShaderInput  ):Void 
+	public override function applyInput( shaderInput:ShaderInput ):Void 
 	{
 		for( regin in shaderInput.values )
 		{

@@ -31,24 +31,24 @@ class RenderUnit
 	/**
 	 * 
 	 */
-	public var mesh(get, null):Mesh;	
+	public var mesh(default, null):Mesh;	
 	
 	/**
 	 * 
 	 */
-	public var material(get,null):Material<Shader>;	
+	public var material(default,null):Material<Shader>;	
 	
 	// ----------- //
 	
 	/**
 	 * 
 	 */
-	public var shader(get, null):Shader;
+	public var shader(default, null):Shader;
 	
 	/**
 	 * 
 	 */
-	public var context(get,null):ContextSettings;
+	public var context(default,null):ContextSettings;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -57,17 +57,11 @@ class RenderUnit
 	public function new( ?model:Model ) 
 	{
 		this.model = model;
+		
+		this.mesh 		= this.model.mesh;
+		this.material 	= this.model.material;
+		this.shader 	= this.material.shader;
+		this.context 	= this.material.contextSetting;
 	}
-	
-	// ************************************************************************ //
-	// Constructor
-	// ************************************************************************ //	
-	
-	private function get_mesh():Mesh { return this.model.mesh; }
-	
-	private function get_material():Material<Shader> { return this.model.material; }
-	
-	private function get_shader():Shader { return this.material.shader; }
-	
-	private function get_context():ContextSettings { return this.material.contextSetting; }
+
 }

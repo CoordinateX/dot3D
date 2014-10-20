@@ -6,6 +6,7 @@ import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.dot3d.scene.Scene;
 import at.dotpoint.dot3d.shader.TestShader.TShader;
 import at.dotpoint.math.geom.Space;
+import at.dotpoint.math.vector.Matrix44;
 import haxe.ds.Vector;
 
 /**
@@ -44,7 +45,7 @@ class RenderSystem
 	// Methods
 	// ************************************************************************ //	
 	
-		/**
+	/**
 	 * 
 	 * @param	interpolation
 	 */
@@ -53,6 +54,22 @@ class RenderSystem
 		this.renderer.render( this.generateRenderUnits() );
 		
 		return true;
+	}
+	
+	/**
+	 * 
+	 */
+	public function reset():Void
+	{
+		this.renderer.reset();
+		
+		for( unit in this.cache )
+		{
+			unit.shader.getInstance().program = null;
+		}
+		
+		this.scene.modelList = new Array<Model>();
+		this.cache = null;
 	}
 	
 	/**
@@ -67,8 +84,7 @@ class RenderSystem
 			
 			for( model in this.scene.modelList )
 			{			
-				var unit:RenderUnit = new RenderUnit();				
-					unit.model 			= model;	
+				var unit:RenderUnit = new RenderUnit( model );				
 					unit.shaderInput 	= model.material.createShaderInput();	
 				
 				unitList.push( unit );
@@ -79,13 +95,18 @@ class RenderSystem
 			this.cache = unitList;
 		}
 		
+		this.mproj = this.scene.camera.getProjectionMatrix();
+		
 		for( unit in this.cache )
 		{
 			this.updateShaderInput( unit );
+			//unit.material.applyInput( unit.shaderInput );
 		}
 		
 		return this.cache;
 	}
+	
+	private var mproj:Matrix44;
 	
 	/**
 	 * 
@@ -113,32 +134,21 @@ class RenderSystem
 	{		
 		var input:Vector<RegisterInput> = unit.shaderInput.values;
 		
-		for( v in 0...input.length )
+		for( reg in input )
 		{
-			var reg:RegisterInput = input[v];
-			
-			if( reg.type == Register.MODEL_WORLD.ID )
+			switch( reg.type )
 			{
-				reg.input = unit.model.getTransform( Space.WORLD ).getMatrix();
-				continue;
-			}
-			
-			if( reg.type == Register.WORLD_CAMERA.ID )
-			{
-				reg.input = this.scene.camera.getProjectionMatrix();
-				continue;
-			}
-			
-			if( reg.type == Register.LIGHT.ID )
-			{
-				reg.input = this.scene.light;
-				continue;
-			}
-			
-			if( reg.type == Register.CAMERA_POSITION.ID )
-			{
-				reg.input = this.scene.camera.getTransform( Space.WORLD ).position/*.clone()*/;
-				continue;
+				case "mpos":
+					reg.input = unit.model.transformations.worldSpace.getMatrix();
+					
+				case "mproj":
+					reg.input = this.mproj; //this.scene.camera.getProjectionMatrix();
+					
+				case "light":
+					reg.input = this.scene.light;
+					
+				case "cam":
+					reg.input = this.scene.camera.getTransform( Space.WORLD ).position;
 			}			
 		}
 	}
