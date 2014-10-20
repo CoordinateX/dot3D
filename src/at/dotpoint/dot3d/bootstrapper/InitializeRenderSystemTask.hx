@@ -32,9 +32,10 @@ class InitializeRenderSystemTask extends EventDispatcher implements ITask
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new() 
+	public function new( manager:IRenderManager ) 
 	{
 		super();
+		this.renderManager = manager;
 	}
 	
 	// ************************************************************************ //

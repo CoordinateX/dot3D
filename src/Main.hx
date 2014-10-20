@@ -1,9 +1,11 @@
 package;
 
-import at.dotpoint.core.dispatchat.dotpoint.core.dispatcher.Eventt.display.components.bounds.BoundingBox;
+import at.dotpoint.core.dispatcher.Event;
+import at.dotpoint.display.components.bounds.BoundingBox;
 import at.dotpoint.display.DisplayObjectContainer;
 import at.dotpoint.display.Sprite;
 import at.dotpoint.dot3D.bootstrapper.Bootstrapper3D;
+import at.dotpoint.dot3d.bootstrapper.InitializeRenderSystemTask;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.primitives.Cube;
@@ -56,6 +58,8 @@ class Main extends Bootstrapper3D
 	{
 		super();
 		//this.startURL( "config.json" );
+		
+		this.processor.taskList.push( new InitializeRenderSystemTask( this ) );
 		this.start();
 	}
 	
@@ -124,13 +128,13 @@ class Main extends Bootstrapper3D
 			
 			// ----------- // 
 			
-			var bounds:Model = new Model( this.drawBoundings( model.boundings.modelSpace ), new LineShader() );
+			var bounds:Model = new Model( this.drawBoundings( model.boundings.modelSpace ), cast new LineShader() );
 			
 			this.scene.modelList.push( bounds );			
 			this.debugList.push( bounds );			
 		}
 		
-		this.containerModel = new Model( this.drawBoundings( this.container.boundings.modelSpace ), new LineShader() );		
+		this.containerModel = new Model( this.drawBoundings( this.container.boundings.modelSpace ), cast new LineShader() );		
 		this.scene.modelList.push( this.containerModel );		
 	}	
 	
@@ -142,7 +146,7 @@ class Main extends Bootstrapper3D
 	 * 
 	 * @param	event
 	 */
-	override private function onEnterFrame( event:Event ):Void
+	override public function onEnterFrame( event:Event ):Void
 	{
 		this.updateScene();	
 		this.updateLight();				
@@ -208,7 +212,7 @@ class Main extends Bootstrapper3D
 		var shader:TestShader = new TestShader();
 			shader.diffuseColor = new Vector3( 1, 0.5, 0.5 );		
 		
-		return new Model( mesh, shader ); 
+		return new Model( mesh, cast shader ); 
 	}
 	
 	/**
@@ -226,7 +230,7 @@ class Main extends Bootstrapper3D
 		var shader:PointShader = new PointShader();
 			shader.diffuseColor = new Vector3( 0.25, 1, 0.25 );		
 		
-		return new Model( mesh, shader ); 
+		return new Model( mesh, cast shader ); 
 	}
 	
 	// ************************************************************************ //
