@@ -1,9 +1,9 @@
 package at.dotpoint.dot3d.bootstrapper;
 
-import at.dotpoint.core.dispatcher.IEventDispatcher;
+import at.dotpoint.core.dispatcher.event.IEventDispatcher;
 import at.dotpoint.dot3d.render.RenderSystem;
 import at.dotpoint.dot3d.scene.Scene;
-import at.dotpoint.core.dispatcher.Event;
+import at.dotpoint.core.dispatcher.event.Event;
 
 /**
  * @author RK

@@ -1,8 +1,8 @@
 package at.dotpoint.dot3d.camera;
 
 import at.dotpoint.core.evaluate.event.EvaluateEvent;
-import at.dotpoint.core.dispatcher.Event;
-import at.dotpoint.core.dispatcher.EventDispatcher;
+import at.dotpoint.core.dispatcher.event.Event;
+import at.dotpoint.core.dispatcher.event.EventDispatcher;
 import at.dotpoint.display.event.DisplayEvent;
 import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.math.vector.Matrix44;

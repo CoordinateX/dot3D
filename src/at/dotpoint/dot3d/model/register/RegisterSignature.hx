@@ -1,11 +1,11 @@
 package at.dotpoint.dot3d.model.register;
 
-import at.dotpoint.core.ds.VectorUtil;
-import at.dotpoint.core.ds.VectorSet;
+import at.dotpoint.core.datastructure.VectorUtil;
+import at.dotpoint.core.datastructure.VectorSet;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.math.Limit;
 
-using at.dotpoint.core.ds.VectorUtil;
+using at.dotpoint.core.datastructure.VectorUtil;
 
 /**
  * Lists the allowed RegisterTypes that can be stored in a RegisterContainer. Also saves 
@@ -15,7 +15,7 @@ using at.dotpoint.core.ds.VectorUtil;
  * 
  * @author RK
  */
-@:access( at.dotpoint.core.ds.VectorSet )
+@:access( at.dotpoint.core.datastructure.VectorSet )
 //
 class RegisterSignature
 {	

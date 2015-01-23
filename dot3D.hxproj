@@ -16,12 +16,12 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
-    <class path="lib\hxsl" />
     <class path="lib\dotCore\src" />
     <class path="unit\src" />
     <class path="lib\dotLoader\src" />
     <class path="lib\dotLogger\src" />
     <class path="lib\dotUI\src" />
+    <class path="lib\hxsl" />
   </classpaths>
   <!-- Build options -->
   <build>

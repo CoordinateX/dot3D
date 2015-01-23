@@ -1,15 +1,15 @@
 package at.dotpoint.dot3d.render;
 
-import at.dotpoint.core.dispatcher.Event;
-import at.dotpoint.core.dispatcher.event.StatusEvent;
-import at.dotpoint.core.dispatcher.EventDispatcher;
-import at.dotpoint.logger.Log;
+import at.dotpoint.core.dispatcher.event.Event;
+import at.dotpoint.core.dispatcher.event.EventDispatcher;
+import at.dotpoint.core.event.StatusEvent;
 import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.mesh.MeshBuffer;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.register.RegisterType;
+import at.dotpoint.logger.Log;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
 import flash.utils.Endian;

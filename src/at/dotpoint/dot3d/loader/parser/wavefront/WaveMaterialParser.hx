@@ -1,7 +1,7 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
-import at.dotpoint.core.dispatcher.Event;
-import at.dotpoint.core.dispatcher.event.StatusEvent;
+import at.dotpoint.core.dispatcher.event.Event;
+import at.dotpoint.core.event.StatusEvent;
 import at.dotpoint.dot3d.loader.format.TextureFormat;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.shader.TestShader;

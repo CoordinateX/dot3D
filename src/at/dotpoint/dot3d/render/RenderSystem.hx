@@ -78,7 +78,7 @@ class RenderSystem
 	 */
 	private function generateRenderUnits():Array<RenderUnit> 
 	{
-		if( this.cache == null )
+		if( this.cache == null || true )
 		{
 			var unitList:Array<RenderUnit> = new Array<RenderUnit>();		
 			

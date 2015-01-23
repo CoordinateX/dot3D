@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.render;
 
-import at.dotpoint.core.dispatcher.EventDispatcher;
+import at.dotpoint.core.dispatcher.event.EventDispatcher;
 import at.dotpoint.display.event.DisplayEvent;
 
 /**

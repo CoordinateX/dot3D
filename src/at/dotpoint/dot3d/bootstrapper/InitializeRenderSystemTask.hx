@@ -1,7 +1,7 @@
 package at.dotpoint.dot3d.bootstrapper;
 
-import at.dotpoint.core.dispatcher.Event;
-import at.dotpoint.core.dispatcher.EventDispatcher;
+import at.dotpoint.core.dispatcher.event.Event;
+import at.dotpoint.core.dispatcher.event.EventDispatcher;
 import at.dotpoint.core.processor.event.ProcessEvent;
 import at.dotpoint.core.processor.ITask;
 import at.dotpoint.display.event.DisplayEvent;

@@ -1,24 +1,22 @@
 package;
 
-import at.dotpoint.core.dispatcher.Event;
-import at.dotpoint.display.components.bounds.BoundingBox;
+import at.dotpoint.core.dispatcher.event.Event;
+import at.dotpoint.display.components.bounds.AABB;
 import at.dotpoint.display.DisplayObjectContainer;
-import at.dotpoint.display.Sprite;
 import at.dotpoint.dot3D.bootstrapper.Bootstrapper3D;
 import at.dotpoint.dot3d.bootstrapper.InitializeRenderSystemTask;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
-import at.dotpoint.dot3d.primitives.Cube;
+import at.dotpoint.dot3d.primitives.Cube.CubeMesh;
 import at.dotpoint.dot3d.primitives.Line;
-import at.dotpoint.dot3d.primitives.Plane;
+import at.dotpoint.dot3d.primitives.Plane.PlaneMesh;
 import at.dotpoint.dot3d.shader.LineShader;
 import at.dotpoint.dot3d.shader.PointShader;
 import at.dotpoint.dot3d.shader.TestShader;
-import at.dotpoint.math.geom.Space;
 import at.dotpoint.loader.DataRequest;
+import at.dotpoint.math.geom.Space;
 import at.dotpoint.math.vector.Vector3;
 import haxe.ds.Vector;
-
 /**
  * ...
  * @author RK
@@ -101,6 +99,8 @@ class Main extends Bootstrapper3D
 	 */
 	private function onSceneComplete( event:Event ):Void
 	{
+		trace("onSceneComplete");
+		
 		var list:Vector<Model> = this.loader.result;
 		
 		this.rotateList = new Array<Model>();
@@ -120,21 +120,21 @@ class Main extends Bootstrapper3D
 			var roll:Float 	= Math.random() * 2;
 			var yaw:Float 	= Math.random() * 2;
 			
-			model.getTransform( Space.WORLD ).rotation.pitch( pitch );
-			model.getTransform( Space.WORLD ).rotation.roll( roll  );	
+			//model.getTransform( Space.WORLD ).rotation.pitch( pitch );
+			//model.getTransform( Space.WORLD ).rotation.roll( roll  );	
 			//model.getTransform( Space.WORLD ).rotation.yaw( yaw  );	
 			
 			this.container.addChild( model );
 			
 			// ----------- // 
 			
-			var bounds:Model = new Model( this.drawBoundings( model.boundings.modelSpace ), cast new LineShader() );
+			var bounds:Model = new Model( this.drawBoundings( model.boundings.worldSpace ), cast new LineShader() );
 			
 			this.scene.modelList.push( bounds );			
 			this.debugList.push( bounds );			
 		}
 		
-		this.containerModel = new Model( this.drawBoundings( this.container.boundings.modelSpace ), cast new LineShader() );		
+		this.containerModel = new Model( this.drawBoundings( this.container.boundings.worldSpace ), cast new LineShader() );		
 		this.scene.modelList.push( this.containerModel );		
 	}	
 	
@@ -167,7 +167,7 @@ class Main extends Bootstrapper3D
 		for( model in this.rotateList)
 		{
 			model.getTransform( Space.WORLD ).rotation.pitch( this.controller.rotateSpeed * 0.5 );
-			model.getTransform( Space.WORLD ).rotation.roll( this.controller.rotateSpeed * 0.25 );	
+			//model.getTransform( Space.WORLD ).rotation.roll( this.controller.rotateSpeed * 0.25 );	
 		}		
 		
 		this.containerModel.mesh = this.drawBoundings( this.container.boundings.worldSpace );
@@ -242,37 +242,45 @@ class Main extends Bootstrapper3D
 	 * @param	bounds
 	 * @return
 	 */
-	private function drawBoundings( bounds:BoundingBox ):Mesh
+	private function drawBoundings( bounds:AABB ):Mesh
 	{
 		var color:Array<Float> = [1, 0, 0];
 		
-		var front:Float = bounds.front;
-		var back:Float = bounds.back;
+		var front:Float = bounds.min.z;
+		var back:Float = bounds.max.z;
+		
+		var left:Float = bounds.min.x;
+		var right:Float = bounds.max.x;
+		
+		var top:Float = bounds.min.y;
+		var bottom:Float = bounds.max.y;
+		
+		// ------------- //
 		
 		var line:Line = new Line( 12, 6 );
-			line.moveTo( [bounds.left, 	bounds.top, 	front], color ); 
-			line.lineTo( [bounds.right, bounds.top, 	front], color ); 
-			line.lineTo( [bounds.right, bounds.bottom, 	front], color ); 
-			line.lineTo( [bounds.left, 	bounds.bottom, 	front], color ); 
-			line.lineTo( [bounds.left, 	bounds.top, 	front], color ); 
+			line.moveTo( [left, 	top, 		front], color ); 
+			line.lineTo( [right, 	top, 		front], color ); 
+			line.lineTo( [right, 	bottom, 	front], color ); 
+			line.lineTo( [left, 	bottom, 	front], color ); 
+			line.lineTo( [left, 	top, 		front], color ); 
 			
-			line.moveTo( [bounds.left, 	bounds.top, 	back], 	color ); 
-			line.lineTo( [bounds.right, bounds.top, 	back], 	color ); 
-			line.lineTo( [bounds.right, bounds.bottom, 	back], 	color ); 
-			line.lineTo( [bounds.left, 	bounds.bottom, 	back], 	color ); 
-			line.lineTo( [bounds.left, 	bounds.top, 	back], 	color ); 
+			line.moveTo( [left, 	top, 		back], 	color ); 
+			line.lineTo( [right, 	top, 		back], 	color ); 
+			line.lineTo( [right, 	bottom, 	back], 	color ); 
+			line.lineTo( [left, 	bottom, 	back], 	color ); 
+			line.lineTo( [left, 	top, 		back], 	color ); 
 			
-			line.moveTo( [bounds.left, 	bounds.top, 	front], color ); 
-			line.lineTo( [bounds.left, 	bounds.top, 	back], 	color );
+			line.moveTo( [left, 	top, 		front], color ); 
+			line.lineTo( [left, 	top, 		back], 	color );
 			
-			line.moveTo( [bounds.right, bounds.top, 	front], color ); 
-			line.lineTo( [bounds.right, bounds.top, 	back], 	color );
+			line.moveTo( [right, 	top, 		front], color ); 
+			line.lineTo( [right, 	top, 		back], 	color );
 			
-			line.moveTo( [bounds.left, 	bounds.bottom, 	front], color ); 
-			line.lineTo( [bounds.left, 	bounds.bottom, 	back], 	color );
+			line.moveTo( [left, 	bottom, 	front], color ); 
+			line.lineTo( [left, 	bottom, 	back], 	color );
 			
-			line.moveTo( [bounds.right, bounds.bottom, 	front], color ); 
-			line.lineTo( [bounds.right, bounds.bottom, 	back], 	color );
+			line.moveTo( [right, 	bottom, 	front], color ); 
+			line.lineTo( [right, 	bottom, 	back], 	color );
 		
 		return line;
 	}

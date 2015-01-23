@@ -1,7 +1,7 @@
 package at.dotpoint.dot3d.camera;
 
 import at.dotpoint.core.evaluate.event.EvaluateEvent;
-import at.dotpoint.core.dispatcher.Event;
+import at.dotpoint.core.dispatcher.event.Event;
 import at.dotpoint.display.DisplayObject;
 import at.dotpoint.dot3d.render.ScreenDimension;
 import at.dotpoint.math.geom.Space;

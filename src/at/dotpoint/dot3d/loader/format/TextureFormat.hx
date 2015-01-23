@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.loader.format;
 
-import at.dotpoint.core.ds.VectorUtil;
+import at.dotpoint.core.datastructure.VectorUtil;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.loader.format.ABaseDataFormat;
 import at.dotpoint.loader.format.BitmapFormat;

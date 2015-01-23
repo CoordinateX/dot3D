@@ -1,7 +1,7 @@
 package at.dotpoint.dot3D.bootstrapper;
 
 import at.dotpoint.core.bootstrapper.Bootstrapper;
-import at.dotpoint.core.dispatcher.Event;
+import at.dotpoint.core.dispatcher.event.Event;
 import at.dotpoint.display.event.DisplayEvent;
 import at.dotpoint.display.Stage;
 import at.dotpoint.dot3d.bootstrapper.IRenderManager;
