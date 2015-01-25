@@ -1,5 +1,7 @@
 package;
 
+import at.dotpoint.dot3d.primitives.icosahedron.IcosahedronSettings;
+import at.dotpoint.dot3d.primitives.icosahedron.Icosahedron;
 import at.dotpoint.core.dispatcher.event.Event;
 import at.dotpoint.display.components.bounds.AABB;
 import at.dotpoint.display.DisplayObjectContainer;
@@ -74,7 +76,8 @@ class Main extends Bootstrapper3D
 		
 		// ------------ //
 		
-		this.loadScene();
+		//this.loadScene();
+		this.addIcosahedron();
 		
 		this.scene.camera.getTransform( Space.WORLD ).position.z -= 20;
 		
@@ -82,7 +85,18 @@ class Main extends Bootstrapper3D
 		this.controller.moveSpeed = 0.25;	
 		
 		this.t = 0;
-	}	
+	}
+
+	/**
+	 *
+	 */
+	private function addIcosahedron():Void
+	{
+		var sphere:Icosahedron = new Icosahedron( IcosahedronSettings.CELLS_642 );
+			sphere.material = cast new TestShader();
+
+		this.scene.modelList.push( sphere );
+	}
 	
 	/**
 	 * 

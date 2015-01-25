@@ -1,5 +1,8 @@
 package at.dotpoint.dot3d.model.mesh;
 
+import haxe.ds.Vector;
+import at.dotpoint.dot3d.model.register.Register;
+import at.dotpoint.math.vector.Vector3;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import haxe.ds.StringMap;
 
@@ -14,9 +17,9 @@ import haxe.ds.StringMap;
 class EditableMesh extends Mesh
 {
 
-	private var vertexLookup:StringMap<Int>;
-	private var typeLookup:StringMap<Int>;
-	
+	private var vertexLookup:StringMap<StringMap<Int>>;
+	private var countLookup:StringMap<Int>;
+
 	private var numSetVertices:Int;
 	private var numSetFaces:Int;
 	
@@ -34,8 +37,11 @@ class EditableMesh extends Mesh
 	{
 		super( signature );	
 		
-		this.vertexLookup = new StringMap<Int>();
-		this.typeLookup = new StringMap<Int>();
+		this.vertexLookup 	= new StringMap<StringMap<Int>>();
+		this.countLookup	= new StringMap<Int>();
+
+		this.vertexLookup.set( "indices", new StringMap<Int>() );
+		this.countLookup.set( "indices", 0 );
 	}
 	
 	// ************************************************************************ //
@@ -92,30 +98,13 @@ class EditableMesh extends Mesh
 	 */
 	private function setVertexIndices( registerIndices:Array<Int> ):Int
 	{
-		var vindex:Int = this.numSetVertices;
-		
-		// ---------------- //
-		// duplicate?
-		
-		if( this.vertexLookup != null ) // might be on max amount of vertices
-		{
-			var vsig:String = registerIndices.join("/");		
-		
-			if( this.vertexLookup.exists( vsig ) )
-			{
-				return this.vertexLookup.get( vsig );
-			}
-			else
-			{
-				this.vertexLookup.set( vsig, vindex );
-			}
-		}
-		
-		// ---------------- //
-		
-		if( this.numSetVertices > this.data.signature.numVertices )
+		var vindex:Int = this.getVertexIndex( "indices", registerIndices );
+
+		if( vindex > this.data.signature.numVertices )
 			throw "already set maximum amount of vertices";
-		
+
+		// ---------------- //
+
 		this.data.setVertexIndices( vindex, registerIndices );
 		this.numSetVertices++;
 		
@@ -136,8 +125,11 @@ class EditableMesh extends Mesh
 	{
 		this.currentType = type;
 		
-		if( !this.typeLookup.exists( this.currentType.ID ) )
-			this.typeLookup.set( this.currentType.ID, 0 );
+		if( !this.countLookup.exists( this.currentType.ID ) )
+			this.countLookup.set( this.currentType.ID, 0 );
+
+		if( !this.vertexLookup.exists( this.currentType.ID ) )
+			this.vertexLookup.set( this.currentType.ID, new StringMap<Int>()  );
 	}
 	
 	/**
@@ -150,20 +142,148 @@ class EditableMesh extends Mesh
 	 * @param	type
 	 * @param	data
 	 */
-	public function addVertexData( data:Array<Float>, ?type:RegisterType ):Void
+	public function addVertexData( data:Array<Float>, ?type:RegisterType ):Int
 	{
 		if( type != null )
 			this.startVertexData( type );
 		
 		if( this.currentType == null )
 			throw "must call startVertexData first";
-		
-		var index:Int = this.typeLookup.get( this.currentType.ID );
-		this.typeLookup.set( this.currentType.ID, index + 1 );
-		
+
+		// ------------- //
+
+		var index:Int = this.getVertexIndex( this.currentType.ID, data );
+
 		this.data.setVertexData( this.currentType, index, data );
+
+		return index;
 	}
-	
+
+	/**
+	 *
+	 */
+	private function getVertexIndex( type:String, values:Array<Dynamic> ):Int
+	{
+		if( this.vertexLookup == null ) // might be on max amount of vertices
+			return -1;
+
+		// ------------------- //
+
+		var index:Int = this.countLookup.get( type );
+
+		var lookup:StringMap<Int> = this.vertexLookup.get( type );
+		var vsig:String 	 = values.join("/");
+
+		if( lookup.exists( vsig ) )
+		{
+			return lookup.get( vsig );
+		}
+		else
+		{
+			lookup.set( vsig, index );
+			this.countLookup.set( type, index + 1 );
+		}
+
+		return index;
+	}
+
+	// ************************************************************************ //
+	// Helper
+	// ************************************************************************ //
+
+	/**
+	 *
+	 */
+	public function addPosition( vertex:Vector3 ):Int
+	{
+		return this.addVertexData( [vertex.x, vertex.y, vertex.z], Register.VERTEX_POSITION );
+	}
+
+	/**
+	 *
+	 * @param	vIndex1
+	 * @param	vIndex2
+	 * @param	vIndex3
+	 */
+	private function addNormal( vIndex1:Int, vIndex2:Int, vIndex3:Int, combine:Bool = true ):Vector3
+	{
+		var cross:Vector3 = this.calculatetNormal( vIndex1, vIndex2, vIndex3 );
+
+		if( !combine )
+		{
+			this.data.setVertexData( Register.VERTEX_NORMAL, vIndex1, [cross.x, cross.y, cross.z] );
+			this.data.setVertexData( Register.VERTEX_NORMAL, vIndex2, [cross.x, cross.y, cross.z] );
+			this.data.setVertexData( Register.VERTEX_NORMAL, vIndex3, [cross.x, cross.y, cross.z] );
+
+			return cross;
+		}
+
+		// --------------------- //
+
+		var normal:Vector3 = new Vector3();
+		var total:Vector3  = new Vector3();
+
+		var indices:Vector<Int> = new Vector<Int>( 3 );
+			indices[0] = vIndex1;
+			indices[1] = vIndex2;
+			indices[2] = vIndex3;
+
+		for( index in indices )
+		{
+			var na:Array<Float> = this.data.getVertexData( Register.VERTEX_NORMAL, index );
+
+			if( na == null )
+			{
+				na = new Array<Float>();
+				na[0] = 0;
+				na[1] = 0;
+				na[2] = 0;
+			}
+
+			// --------- //
+
+			normal.set( na[0], na[1], na[2] );
+
+			total = Vector3.add( normal, cross, total );
+			total.normalize();
+
+			na[0] = total.x;
+			na[1] = total.y;
+			na[2] = total.z;
+
+			this.data.setVertexData( Register.VERTEX_NORMAL, index, na );
+		}
+
+		return total;
+	}
+
+	/**
+	 *
+	 * @param	vIndex1
+	 * @param	vIndex2
+	 * @param	vIndex3
+	 */
+	private function calculatetNormal( vIndex1:Int, vIndex2:Int, vIndex3:Int ):Vector3
+	{
+		var v1a:Array<Float> = this.data.getVertexData( Register.VERTEX_POSITION, vIndex1 );
+		var v2a:Array<Float> = this.data.getVertexData( Register.VERTEX_POSITION, vIndex2 );
+		var v3a:Array<Float> = this.data.getVertexData( Register.VERTEX_POSITION, vIndex3 );
+
+		var v1:Vector3 = new Vector3( v1a[0], v1a[1], v1a[2] );
+		var v2:Vector3 = new Vector3( v2a[0], v2a[1], v2a[2] );
+		var v3:Vector3 = new Vector3( v3a[0], v3a[1], v3a[2] );
+
+		// --------------------- //
+
+		var sub1:Vector3 = Vector3.subtract( v2, v1, new Vector3() );
+		var sub2:Vector3 = Vector3.subtract( v3, v1, new Vector3() );
+
+		var cross:Vector3 = Vector3.cross( sub1, sub2 );
+			cross.normalize();
+
+		return cross;
+	}
+
 	// -------------------------------- //
 	// -------------------------------- //
 	
@@ -177,7 +297,7 @@ class EditableMesh extends Mesh
 	public function finalize():Void
 	{
 		this.vertexLookup = null;
-		this.typeLookup   = null;
+		this.countLookup  = null;
 		
 		this.currentType  = null;
 	}

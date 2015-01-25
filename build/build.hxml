@@ -1,7 +1,7 @@
 
 -lib format
 -cp ../src
--cp ../../dotCore/src
+-cp ../lib/dotCore/src
 -cp ../lib/hxsl
 -main Main
 -swf ../bin/standalone.swf
