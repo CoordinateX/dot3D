@@ -4,9 +4,7 @@ import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.material.ShaderInput;
 import at.dotpoint.dot3d.model.mesh.Mesh;
-import at.dotpoint.dot3d.model.mesh.MeshBuffer;
 import at.dotpoint.dot3d.model.Model;
-import at.dotpoint.math.vector.Matrix44;
 import hxsl.Shader;
 
 /**

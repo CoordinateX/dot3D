@@ -3,8 +3,6 @@ package at.dotpoint.dot3d.render;
 import flash.display.DisplayObject;
 import flash.display.Stage3D;
 import flash.display3D.Context3D;
-import flash.events.ErrorEvent;
-import flash.events.Event;
 
 
 /**

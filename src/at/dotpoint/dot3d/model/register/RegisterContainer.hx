@@ -3,7 +3,6 @@ package at.dotpoint.dot3d.model.register;
 import at.dotpoint.dot3d.model.register.RegisterData;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import haxe.ds.Vector;
-import haxe.PosInfos;
 
 /**
  * Stores Float/Int data for each type of data in a seperate flat list and is mostly used to store vertex data

@@ -1,6 +1,5 @@
 package at.dotpoint.dot3d.scene;
 
-import at.dotpoint.core.entity.IEntity;
 import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.math.vector.Vector3;

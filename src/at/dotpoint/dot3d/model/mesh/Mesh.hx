@@ -1,6 +1,4 @@
 package at.dotpoint.dot3d.model.mesh;
-import at.dotpoint.dot3d.model.register.RegisterSignature;
-import at.dotpoint.dot3d.model.register.RegisterType;
 
 /**
  * Pure geometry without materials, just the raw mesh data in form of vertex data (position, normals, etc) and

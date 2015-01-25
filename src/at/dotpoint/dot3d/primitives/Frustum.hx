@@ -4,8 +4,6 @@ import at.dotpoint.core.event.event.EvaluateEvent;
 import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.dot3d.camera.Lens;
 import at.dotpoint.dot3d.camera.PerspectiveLens;
-import at.dotpoint.math.geom.Rectangle;
-import at.dotpoint.math.vector.Matrix44;
 import at.dotpoint.math.vector.Vector3;
 
 /**

@@ -1,9 +1,5 @@
 package at.dotpoint.dot3d.model.material;
 
-import at.dotpoint.core.entity.Component;
-import at.dotpoint.dot3d.model.register.RegisterType;
-import at.dotpoint.dot3d.shader.TestShader.TShader;
-import haxe.ds.StringMap;
 import haxe.ds.Vector;
 import hxsl.Shader;
 

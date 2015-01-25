@@ -5,7 +5,6 @@ import at.dotpoint.display.components.renderable.IRenderable;
 import at.dotpoint.display.components.renderable.RenderType;
 import at.dotpoint.display.DisplayObject;
 import at.dotpoint.dot3d.model.material.Material;
-import at.dotpoint.dot3d.model.material.ShaderInput;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.register.Register;

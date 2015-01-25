@@ -7,7 +7,6 @@ import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.loader.processor.ADataProcessor;
 import at.dotpoint.loader.processor.IDataProcessor;
-import flash.events.Event;
 import haxe.ds.Vector;
 import hxsl.Shader;
 

@@ -1,7 +1,6 @@
 package at.dotpoint.dot3d.model.mesh;
 
 import at.dotpoint.dot3d.model.register.RegisterContainer;
-import at.dotpoint.dot3d.model.register.RegisterSignature;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.dot3d.model.register.RegisterData;
 import haxe.ds.StringMap;

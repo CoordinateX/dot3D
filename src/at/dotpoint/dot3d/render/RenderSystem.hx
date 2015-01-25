@@ -1,10 +1,7 @@
 package at.dotpoint.dot3d.render;
 import at.dotpoint.dot3d.model.material.ShaderInput;
 import at.dotpoint.dot3d.model.Model;
-import at.dotpoint.dot3d.model.register.Register;
-import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.dot3d.scene.Scene;
-import at.dotpoint.dot3d.shader.TestShader.TShader;
 import at.dotpoint.math.geom.Space;
 import at.dotpoint.math.vector.Matrix44;
 import haxe.ds.Vector;

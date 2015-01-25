@@ -3,8 +3,6 @@ package at.dotpoint.dot3d.shader;
 import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.dot3d.model.material.ShaderInput;
-import at.dotpoint.dot3d.model.material.Texture;
-import at.dotpoint.math.vector.Vector3;
 import hxsl.Shader;
 import flash.display3D.Context3DTriangleFace;
 

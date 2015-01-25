@@ -2,22 +2,13 @@ package at.dotpoint.dot3D.bootstrapper;
 
 import at.dotpoint.core.bootstrapper.Bootstrapper;
 import at.dotpoint.core.dispatcher.event.Event;
-import at.dotpoint.display.event.DisplayEvent;
-import at.dotpoint.display.Stage;
 import at.dotpoint.dot3d.bootstrapper.IRenderManager;
-import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.dot3d.loader.format.TextureFormat;
 import at.dotpoint.dot3d.loader.format.WavefrontMaterialFormat;
 import at.dotpoint.dot3d.loader.format.WavefrontObjectFormat;
-import at.dotpoint.dot3d.render.RenderProcessor;
 import at.dotpoint.dot3d.render.RenderSystem;
-import at.dotpoint.dot3d.render.Viewport;
 import at.dotpoint.dot3d.scene.Scene;
 import at.dotpoint.loader.DataHelper;
-import at.dotpoint.math.geom.Space;
-import at.dotpoint.math.vector.Vector3;
-import flash.display.Stage3D;
-import flash.Lib;
 
 /**
  * ...

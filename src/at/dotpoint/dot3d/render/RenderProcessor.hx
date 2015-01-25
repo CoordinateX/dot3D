@@ -1,5 +1,6 @@
 package at.dotpoint.dot3d.render;
 
+import haxe.io.BytesData;
 import at.dotpoint.core.dispatcher.event.Event;
 import at.dotpoint.core.dispatcher.event.EventDispatcher;
 import at.dotpoint.core.event.StatusEvent;
@@ -13,7 +14,6 @@ import at.dotpoint.logger.Log;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
 import flash.utils.Endian;
-import haxe.io.BytesData;
 import hxsl.Shader;
 
 /**
