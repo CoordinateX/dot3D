@@ -1,0 +1,11 @@
+
+-lib format
+-cp ../src
+-cp ../../dotCore/src
+-cp ../lib/hxsl
+-main Main
+-swf ../bin/standalone.swf
+-swf-version 11
+-debug
+-D fdb
+-D dotpoint

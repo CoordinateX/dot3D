@@ -1,0 +1,7 @@
+version=2.1.0
+src=../unit
+bin=../bin
+report=../report
+hxml=build.hxml
+classPaths=../src
+resources=../assets

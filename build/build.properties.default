@@ -1,0 +1,17 @@
+SDK_HOME        =C\:/Haxe/haxe
+ANT_CONTRIB     =C\:/Ant/lib/ant-contrib-1.0b3.jar
+
+# //////////////////////////////
+
+LIBRARIES       =munit,hamcrest
+
+SOURCE_UNIT     =../unit
+SOURCE_PROJECT  =../src
+
+COMPILER_FLAGS  =munit_server,dotpoint
+
+# //////////////////////////////
+
+DIR_BINARY      =../bin
+DIR_REPORT      =../report
+DIR_RESOURCES   =../assets
