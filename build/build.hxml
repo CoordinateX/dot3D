@@ -6,6 +6,7 @@
 -main Main
 -swf ../bin/standalone.swf
 -swf-version 11
+-swf-header 800:600:30
 -debug
 -D fdb
 -D dotpoint

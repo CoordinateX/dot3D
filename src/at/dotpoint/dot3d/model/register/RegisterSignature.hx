@@ -34,6 +34,9 @@ class RegisterSignature
 	 */
 	public function new( numRegisters:Int ) 
 	{
+		if( numRegisters <= 0 )
+			throw "numRegisters must be >= 1";
+
 		this.registers = new VectorSet<RegisterDataSignature>( numRegisters );
 	}
 	

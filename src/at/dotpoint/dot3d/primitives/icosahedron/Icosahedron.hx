@@ -1,11 +1,11 @@
 package at.dotpoint.dot3d.primitives.icosahedron;
 
+import at.dotpoint.math.vector.Vector2;
+import at.dotpoint.dot3d.model.mesh.editable.MeshVertex;
+import at.dotpoint.dot3d.model.mesh.editable.CustomMesh;
 import at.dotpoint.dot3d.model.Model;
 import haxe.ds.Vector;
 import at.dotpoint.math.vector.Vector3;
-import at.dotpoint.dot3d.model.register.Register;
-import at.dotpoint.dot3d.model.mesh.MeshSignature;
-import at.dotpoint.dot3d.model.mesh.EditableMesh;
 
 class Icosahedron extends Model
 {
@@ -14,14 +14,14 @@ class Icosahedron extends Model
 		if( settings == null )
 			settings = IcosahedronSettings.CELLS_12;
 
-		super( new IcosahedronMesh( settings ) );
+		super( new IcosahedronMesh( settings ).buildMesh() );
 	}
 }
 
 /**
  *
  */
-class IcosahedronMesh extends EditableMesh
+class IcosahedronMesh extends CustomMesh
 {
 
 	/**
@@ -43,20 +43,9 @@ class IcosahedronMesh extends EditableMesh
 
 	public function new( settings:IcosahedronSettings )
 	{
-		var numVertices:Int = settings.total;
-		var numFaces:Int 	= MIN_TRIANGLES * Math.round( Math.pow(4, settings.tesselationDepth ) );
-
-		var signature:MeshSignature = new MeshSignature( numVertices, numFaces, 2 );
-			signature.addType( Register.VERTEX_POSITION, numVertices );
-			signature.addType( Register.VERTEX_UV, 		 1 			 );
-			signature.addType( Register.VERTEX_NORMAL,   numVertices );
-
-		super( signature );
-
-		// ---------------------- //
+		super();
 
 		this.triangles = new Vector<IcosahedronTriangle>( MIN_TRIANGLES );
-
 		this.create( settings );
 	}
 
@@ -70,10 +59,6 @@ class IcosahedronMesh extends EditableMesh
 	 */
 	private function create( settings:IcosahedronSettings ):Void
 	{
-		this.addVertexData( [0.0,0.0], Register.VERTEX_UV );
-
-		// -------------- //
-
 		var vList:Vector<Vector3> = this.getInitialVertices();
 		var iList:Vector<Vector3> = this.getInitialIndices();
 
@@ -85,9 +70,11 @@ class IcosahedronMesh extends EditableMesh
 
 			this.triangles[j] = this.subdivide( v1, v2, v3, null, settings.tesselationDepth, j );
 		}
+
+		this.buildMeshGeometry();
 	}
 
-/**
+	/**
 	 *
 	 * @param	v1
 	 * @param	v2
@@ -97,17 +84,10 @@ class IcosahedronMesh extends EditableMesh
 	{
 		if( depth == 0 )
 		{
-			var vIndex0:Int = this.addPosition( v1 );
-			var vIndex1:Int = this.addPosition( v2 );
-			var vIndex2:Int = this.addPosition( v3 );
-
 			var child:IcosahedronTriangle = this.generateTriangle( parent, count );
-				child.vIndices[0] = vIndex0;
-				child.vIndices[1] = vIndex1;
-				child.vIndices[2] = vIndex2;
-				child.normal 	  = this.addNormal( vIndex0, vIndex1, vIndex2 );
-
-			this.createFace( [vIndex0, 0, vIndex0, vIndex1, 0, vIndex1, vIndex2, 0, vIndex2] );
+				child.v1 = this.generateVertex( v3 );
+				child.v2 = this.generateVertex( v2 );
+				child.v3 = this.generateVertex( v1 );
 
 			return child;
 		}
@@ -129,10 +109,9 @@ class IcosahedronMesh extends EditableMesh
 			// ------------ //
 
 			var triangle:IcosahedronTriangle = this.generateTriangle( parent, count );
-				triangle.vIndices[0] = this.addPosition( v1 );
-				triangle.vIndices[1] = this.addPosition( v2 );
-				triangle.vIndices[2] = this.addPosition( v3 );
-				triangle.normal 	 = this.calculatetNormal( triangle.vIndices[0], triangle.vIndices[1], triangle.vIndices[2] );
+				triangle.v1 = this.generateVertex( v1 );
+				triangle.v2 = this.generateVertex( v2 );
+				triangle.v3 = this.generateVertex( v3 );
 
 			var t1:IcosahedronTriangle = this.subdivide(  v1, v12, v31, triangle, depth, 0 );
 			var t2:IcosahedronTriangle = this.subdivide(  v2, v23, v12, triangle, depth, 1 );
@@ -151,17 +130,75 @@ class IcosahedronMesh extends EditableMesh
 
 	/**
 	 *
+	 */
+	private function generateVertex( position:Vector3 ):MeshVertex
+	{
+		var uv:Vector2 = new Vector2();
+			uv.x = 0.5 * ( 1.0 + Math.atan2( position.z, position.x ) * ( 1.0 / Math.PI ) );
+			uv.y = Math.acos( position.y ) * ( 1.0 / Math.PI );
+
+		var vertex:MeshVertex = new MeshVertex( position );
+			vertex.uv = uv;
+
+		return vertex;
+	}
+
+	/**
+	 *
 	 * @param	parent
 	 * @param	count
 	 * @return
 	 */
 	private function generateTriangle( parent:IcosahedronTriangle, count:Int ):IcosahedronTriangle
 	{
+		var ID:String = parent == null ? "T." + count : parent.ID + "." + count;
+
 		var triangle:IcosahedronTriangle = new IcosahedronTriangle();
-			triangle.ID = parent == null ? "T." + count : parent.ID + "." + count;
 			triangle.parent = parent;
+			triangle.ID = ID;
 
 		return triangle;
+	}
+
+	// ************************************************************************ //
+	// SetMesh
+	// ************************************************************************ //
+
+	/**
+	 *
+	 */
+	private function buildMeshGeometry():Void
+	{
+		this.addTriangleList( cast this.getGeometryTriangles() );
+		this.recalculateNormals( true );
+	}
+
+	/**
+	 *
+	 */
+	private function getGeometryTriangles( ?input:Vector<IcosahedronTriangle> = null, ?output:Array<IcosahedronTriangle> = null ):Array<IcosahedronTriangle>
+	{
+		if( input == null )
+			input = this.triangles;
+
+		if( output == null )
+			output = new Array<IcosahedronTriangle>();
+
+		// ----------- //
+
+		for( triangle in input )
+		{
+			if( triangle.children == null )
+			{
+				output.push( triangle );
+			}
+			else
+			{
+				this.getGeometryTriangles( triangle.children, output );
+			}
+		}
+
+		return output;
 	}
 
 	// ************************************************************************ //

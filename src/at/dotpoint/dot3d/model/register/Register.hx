@@ -34,44 +34,38 @@ class Register
 	// --------------------------------------------------- //
 	// --------------------------------------------------- //
 	
-	public static var VERTEX_POSITION:RegisterType 		= new RegisterType( "pos", 				VarType.TFloat3, 0 );
-	public static var VERTEX_NORMAL:RegisterType 		= new RegisterType( "normal", 			VarType.TFloat3, 2 );
-	public static var VERTEX_UV:RegisterType 			= new RegisterType( "uv", 				VarType.TFloat2, 1 );
-	public static var VERTEX_BARYCENTRIC:RegisterType 	= new RegisterType( "barycentric", 		VarType.TFloat3, 3 ); // wireframe
+	public static var VERTEX_POSITION:RegisterType 		= new RegisterType( "pos", 			VarType.TFloat3, 0 );
+	public static var VERTEX_NORMAL:RegisterType 		= new RegisterType( "normal", 		VarType.TFloat3, 2 );
+	public static var VERTEX_UV:RegisterType 			= new RegisterType( "uv", 			VarType.TFloat2, 1 );
+	public static var VERTEX_BARYCENTRIC:RegisterType 	= new RegisterType( "barycentric", 	VarType.TFloat3, 3 ); // wireframe
 	
 	// especially for lines/particles
 	public static var VERTEX_DIRECTION:RegisterType 	= new RegisterType( "dir", 			VarType.TFloat3, 1 );
 	public static var VERTEX_SIGN:RegisterType 			= new RegisterType( "sign", 		VarType.TFloat,  2 );
 	public static var VERTEX_COLOR:RegisterType 		= new RegisterType( "color", 		VarType.TFloat3, 3 );
-	
+
 	// --------------------------------------------------- //
 	// --------------------------------------------------- //
-	// Light	
-	
-	//private static var FORMAT_FIELD_DIRECTION 	= { name:"direction", 	type:VarType.TFloat3 };
-	//private static var FORMAT_FIELD_POSITION 		= { name:"position", 	type:VarType.TFloat3 };	
-	//private static var FORMAT_FIELD_COLOR 		= { name:"color", 		type:VarType.TFloat3 };
-	//
-	//public static var FORMAT_LIGHT_AMBIENT:VarType 	= VarType.TObject( [ FORMAT_FIELD_COLOR ] );
-	//public static var FORMAT_LIGHT_DIRECT:VarType 	= VarType.TObject( [ FORMAT_FIELD_DIRECTION,	FORMAT_FIELD_COLOR ] );
-	//public static var FORMAT_LIGHT_SPOT:VarType 	= VarType.TObject( [ FORMAT_FIELD_POSITION, 	FORMAT_FIELD_DIRECTION, FORMAT_FIELD_COLOR ] );
-	//public static var FORMAT_LIGHT_OMNI:VarType 	= VarType.TObject( [ FORMAT_FIELD_POSITION, 	FORMAT_FIELD_COLOR ] );
-	//
-	///**
-	 //* generates a Light-Collection VarType for the given LightSpecification
-	 //*/
-	//public static function getFormatLightCollection( specification:LightSpecification ):VarType
-	//{
-		//var directList:VarType 	= VarType.TArray( FORMAT_LIGHT_DIRECT, 	specification.maxDirect );
-		//var spotList:VarType 	= VarType.TArray( FORMAT_LIGHT_SPOT, 	specification.maxSpot );		
-		//var omniList:VarType 	= VarType.TArray( FORMAT_LIGHT_OMNI, 	specification.maxOmni );		
-		//
-		//var ambient = { name:"ambient", type:FORMAT_LIGHT_AMBIENT 	};
-		//var direct 	= { name:"direct", 	type:directList  			};
-		//var spot 	= { name:"spot", 	type:spotList 				};
-		//var omni 	= { name:"omni", 	type:omniList 				};
-		//
-		//return VarType.TObject( [ ambient, direct, spot, omni ] );
-	//}
+
+	public static var INDEX:RegisterType 				= new RegisterType( "index", 		VarType.TInt, 	-1 );
+
+	// --------------------------------------------------- //
+	// --------------------------------------------------- //
+
+	/**
+	 *
+	 */
+	public static function getRegisterType( id:String ):RegisterType
+	{
+		var list:Array<RegisterType> = [VERTEX_POSITION,VERTEX_NORMAL,VERTEX_UV,VERTEX_BARYCENTRIC,VERTEX_COLOR,VERTEX_DIRECTION,VERTEX_SIGN];
+
+		for( type in list )
+		{
+			if( type != null && type.ID == id )
+				return type;
+		}
+
+		return null;
+	}
 	
 }

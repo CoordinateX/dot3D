@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.primitives;
 
-import at.dotpoint.dot3d.model.mesh.EditableMesh;
+import at.dotpoint.dot3d.model.mesh.editable.EditableMesh;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;

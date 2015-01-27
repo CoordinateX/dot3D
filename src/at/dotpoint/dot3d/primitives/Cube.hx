@@ -1,18 +1,18 @@
 package at.dotpoint.dot3d.primitives;
 
-import at.dotpoint.dot3d.model.mesh.EditableMesh;
-import at.dotpoint.dot3d.model.mesh.MeshSignature;
+import at.dotpoint.dot3d.model.mesh.editable.CustomMesh;
+import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
 
 /**
- * 
- */
+ * primitive cube
+ **/
 class Cube extends Model
 {
 	public function new( w:Float, h:Float, l:Float ) 
 	{
-		super( new CubeMesh( w, h, l ) );
+		super( new CubeMesh( w, h, l ).buildMesh() );
 	}
 }
 
@@ -22,18 +22,13 @@ class Cube extends Model
  * 
  * @author RK
  */
-class CubeMesh extends EditableMesh
+class CubeMesh extends CustomMesh
 {
 
 	
 	public function new( w:Float, h:Float, l:Float ) 
 	{
-		var signature:MeshSignature = new MeshSignature( 24, 12, 3 );		
-			signature.addType( Register.VERTEX_POSITION, 8 ); 
-			signature.addType( Register.VERTEX_UV, 		 4 ); 
-			signature.addType( Register.VERTEX_NORMAL,   6 ); 
-			
-		super( signature );
+		super();
 		
 		w = w * 0.5;
 		h = h * 0.5;
@@ -55,40 +50,34 @@ class CubeMesh extends EditableMesh
 	 */
 	private function setupVertices( w:Float, h:Float, l:Float ):Void
 	{
-		this.startVertexData( Register.VERTEX_POSITION );
+		this.addRegisterData( [ -w, -h, -l ], Register.VERTEX_POSITION  );
+		this.addRegisterData( [ -w,  h, -l ], Register.VERTEX_POSITION  );
+		this.addRegisterData( [  w,  h, -l ], Register.VERTEX_POSITION  );
+		this.addRegisterData( [  w, -h, -l ], Register.VERTEX_POSITION  );
 		
-		this.addVertexData( [ -w, -h, -l ] );
-		this.addVertexData( [ -w,  h, -l ] );
-		this.addVertexData( [  w,  h, -l ] );
-		this.addVertexData( [  w, -h, -l ] );
-		
-		this.addVertexData( [ -w, -h,  l ] );
-		this.addVertexData( [  w, -h,  l ] );
-		this.addVertexData( [  w,  h,  l ] );
-		this.addVertexData( [ -w,  h,  l ] );	
+		this.addRegisterData( [ -w, -h,  l ], Register.VERTEX_POSITION  );
+		this.addRegisterData( [  w, -h,  l ], Register.VERTEX_POSITION  );
+		this.addRegisterData( [  w,  h,  l ], Register.VERTEX_POSITION  );
+		this.addRegisterData( [ -w,  h,  l ], Register.VERTEX_POSITION  );
 		
 		// ------------------ //
 		// UV:
-		
-		this.startVertexData( Register.VERTEX_UV );
-		
-		this.addVertexData( [ 1., 0. ] );
-		this.addVertexData( [ 1., 1. ] );
-		this.addVertexData( [ 0., 1. ] );
-		this.addVertexData( [ 0., 0. ] );
+
+		this.addRegisterData( [ 1., 0. ], Register.VERTEX_UV  );
+		this.addRegisterData( [ 1., 1. ], Register.VERTEX_UV  );
+		this.addRegisterData( [ 0., 1. ], Register.VERTEX_UV  );
+		this.addRegisterData( [ 0., 0. ], Register.VERTEX_UV  );
 		
 		// ------------------ //
 		// Normal:
+
+		this.addRegisterData( [  0.,  0., -1. ], Register.VERTEX_NORMAL );
+		this.addRegisterData( [  0.,  0.,  1. ], Register.VERTEX_NORMAL );
+		this.addRegisterData( [  0., -1.,  0. ], Register.VERTEX_NORMAL );
 		
-		this.startVertexData( Register.VERTEX_NORMAL );
-		
-		this.addVertexData( [  0.,  0., -1. ] );
-		this.addVertexData( [  0.,  0.,  1. ] );
-		this.addVertexData( [  0., -1.,  0. ] );
-		
-		this.addVertexData( [  1.,  0.,  0. ] );
-		this.addVertexData( [  0.,  1.,  0. ] );
-		this.addVertexData( [ -1.,  0.,  0. ] );
+		this.addRegisterData( [  1.,  0.,  0. ], Register.VERTEX_NORMAL );
+		this.addRegisterData( [  0.,  1.,  0. ], Register.VERTEX_NORMAL );
+		this.addRegisterData( [ -1.,  0.,  0. ], Register.VERTEX_NORMAL );
 	}
 	
 	// ------------------------------------------------------------------ //
@@ -100,23 +89,23 @@ class CubeMesh extends EditableMesh
 	 */
 	private function setupFaces():Void
 	{
-		this.createFace( [0,0,0, 1,1,0, 2,2,0] );
-		this.createFace( [2,2,0, 3,3,0, 0,0,0] );
+		this.addFaceIndices( [0,0,0, 1,1,0, 2,2,0] );
+		this.addFaceIndices( [2,2,0, 3,3,0, 0,0,0] );
 		
-		this.createFace( [4,3,1, 5,0,1, 6,1,1] );
-		this.createFace( [6,1,1, 7,2,1, 4,3,1] );
+		this.addFaceIndices( [4,3,1, 5,0,1, 6,1,1] );
+		this.addFaceIndices( [6,1,1, 7,2,1, 4,3,1] );
 		
-		this.createFace( [0,3,2, 3,0,2, 5,1,2] );
-		this.createFace( [5,1,2, 4,2,2, 0,3,2] );
+		this.addFaceIndices( [0,3,2, 3,0,2, 5,1,2] );
+		this.addFaceIndices( [5,1,2, 4,2,2, 0,3,2] );
 		
-		this.createFace( [3,3,3, 2,0,3, 6,1,3] );
-		this.createFace( [6,1,3, 5,2,3, 3,3,3] );
+		this.addFaceIndices( [3,3,3, 2,0,3, 6,1,3] );
+		this.addFaceIndices( [6,1,3, 5,2,3, 3,3,3] );
 		
-		this.createFace( [2,3,4, 1,0,4, 7,1,4] );
-		this.createFace( [7,1,4, 6,2,4, 2,3,4] );
+		this.addFaceIndices( [2,3,4, 1,0,4, 7,1,4] );
+		this.addFaceIndices( [7,1,4, 6,2,4, 2,3,4] );
 		
-		this.createFace( [1,3,5, 0,0,5, 4,1,5] );
-		this.createFace( [4,1,5, 7,2,5, 1,3,5] );	
+		this.addFaceIndices( [1,3,5, 0,0,5, 4,1,5] );
+		this.addFaceIndices( [4,1,5, 7,2,5, 1,3,5] );
 	}
 		
 }

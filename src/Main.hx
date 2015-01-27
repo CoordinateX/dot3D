@@ -1,5 +1,8 @@
 package;
 
+import at.dotpoint.math.vector.Vector3;
+import at.dotpoint.dot3d.model.mesh.editable.CustomMesh;
+import at.dotpoint.dot3d.model.mesh.editable.MeshVertex;
 import at.dotpoint.dot3d.primitives.icosahedron.IcosahedronSettings;
 import at.dotpoint.dot3d.primitives.icosahedron.Icosahedron;
 import at.dotpoint.core.dispatcher.event.Event;
@@ -9,11 +12,9 @@ import at.dotpoint.dot3D.bootstrapper.Bootstrapper3D;
 import at.dotpoint.dot3d.bootstrapper.InitializeRenderSystemTask;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.Model;
-import at.dotpoint.dot3d.primitives.Cube.CubeMesh;
+import at.dotpoint.dot3d.primitives.Cube;
 import at.dotpoint.dot3d.primitives.Line;
-import at.dotpoint.dot3d.primitives.Plane.PlaneMesh;
 import at.dotpoint.dot3d.shader.LineShader;
-import at.dotpoint.dot3d.shader.PointShader;
 import at.dotpoint.dot3d.shader.TestShader;
 import at.dotpoint.loader.DataRequest;
 import at.dotpoint.math.geom.Space;
@@ -75,10 +76,10 @@ class Main extends Bootstrapper3D
 		super.initialize();
 		
 		// ------------ //
-		
+
 		//this.loadScene();
 		this.addIcosahedron();
-		
+
 		this.scene.camera.getTransform( Space.WORLD ).position.z -= 20;
 		
 		this.controller = new ModelController();
@@ -92,10 +93,40 @@ class Main extends Bootstrapper3D
 	 */
 	private function addIcosahedron():Void
 	{
-		var sphere:Icosahedron = new Icosahedron( IcosahedronSettings.CELLS_642 );
+		var mesh:IcosahedronMesh = new IcosahedronMesh( IcosahedronSettings.CELLS_642 );
+
+		var sphere:Model = new Model( mesh.buildMesh() );
 			sphere.material = cast new TestShader();
 
+		var normals:Model = this.drawNormals( mesh, 0.25 );
+
 		this.scene.modelList.push( sphere );
+		this.scene.modelList.push( normals );
+	}
+
+	/**
+	 *
+	 */
+	private function drawNormals( mesh:CustomMesh, scale:Float ):Model
+	{
+		var line:Line = new Line();
+
+		var vertices:Array<MeshVertex> = mesh.getVertexList();
+		var color:Vector3 = new Vector3( 1, 0, 0 );
+
+		for( vertex in vertices )
+		{
+			line.moveToVector( vertex.position, color );
+			line.lineToVector( Vector3.add( vertex.position, Vector3.scale( vertex.normal, scale ) ), color );
+		}
+
+		var shader:LineShader = new LineShader();
+			shader.thickness = 0.25;
+
+		var model:Model = new Model( line.buildMesh() );
+			model.material = cast shader;
+
+		return model;
 	}
 	
 	/**
@@ -217,35 +248,19 @@ class Main extends Bootstrapper3D
 	 */
 	private function createCube( scale:Float = 1. ):Model
 	{
+		var shader:TestShader = new TestShader();
+			shader.diffuseColor = new Vector3( 1, 0.5, 0.5 );
+
 		var w:Float = 1 * scale;
 		var h:Float = 1 * scale;
 		var l:Float = 1 * scale;
 		
-		var mesh:Mesh = new CubeMesh( w, h, l );
+		var model:Cube = new Cube( w, h, l );
+			model.material = cast shader;
 		
-		var shader:TestShader = new TestShader();
-			shader.diffuseColor = new Vector3( 1, 0.5, 0.5 );		
-		
-		return new Model( mesh, cast shader ); 
+		return model;
 	}
-	
-	/**
-	 * 
-	 * @param	scale
-	 * @return
-	 */
-	private function createPlane( scale:Float = 1. ):Model
-	{
-		var w:Float = 1 * scale;
-		var h:Float = 1 * scale;
-		
-		var mesh:Mesh = new PlaneMesh( w, h );
-		
-		var shader:PointShader = new PointShader();
-			shader.diffuseColor = new Vector3( 0.25, 1, 0.25 );		
-		
-		return new Model( mesh, cast shader ); 
-	}
+
 	
 	// ************************************************************************ //
 	// Boundings
@@ -261,17 +276,17 @@ class Main extends Bootstrapper3D
 		var color:Array<Float> = [1, 0, 0];
 		
 		var front:Float = bounds.min.z;
-		var back:Float = bounds.max.z;
+		var back:Float  = bounds.max.z;
 		
-		var left:Float = bounds.min.x;
+		var left:Float  = bounds.min.x;
 		var right:Float = bounds.max.x;
 		
-		var top:Float = bounds.min.y;
+		var top:Float    = bounds.min.y;
 		var bottom:Float = bounds.max.y;
 		
 		// ------------- //
 		
-		var line:Line = new Line( 12, 6 );
+		var line:Line = new Line();
 			line.moveTo( [left, 	top, 		front], color ); 
 			line.lineTo( [right, 	top, 		front], color ); 
 			line.lineTo( [right, 	bottom, 	front], color ); 
@@ -296,7 +311,7 @@ class Main extends Bootstrapper3D
 			line.moveTo( [right, 	bottom, 	front], color ); 
 			line.lineTo( [right, 	bottom, 	back], 	color );
 		
-		return line;
+		return line.buildMesh();
 	}
 }
 

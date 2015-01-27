@@ -1,7 +1,6 @@
 package at.dotpoint.dot3d.primitives;
 
-import at.dotpoint.dot3d.model.mesh.EditableMesh;
-import at.dotpoint.dot3d.model.mesh.MeshSignature;
+import at.dotpoint.dot3d.model.mesh.editable.CustomMesh;
 import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.math.vector.Vector3;
 
@@ -12,66 +11,60 @@ import at.dotpoint.math.vector.Vector3;
  * 
  * @author RK
  */
-class Line extends EditableMesh
+class Line extends CustomMesh
 {
 
-	private var previous:Vector3;
-	private var numDrawn:Int;
-	
-	private var numSegments:Int;
-	private var numSets:Int;
+	private var current:Array<Int>;
+	private var previous:Array<Int>;
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
-	
-	public function new( segments:Int, sets:Int = 1 ) 
+
+	/**
+	 *
+	 */
+	public function new()
 	{
-		this.numSegments = segments;
-		this.numSets = sets;
-		
-		var numVertices:Int = 5 * segments; // one of the 4 has to have a different sign
-		var numFaces:Int 	= 2 * segments;		
-		var numRegister:Int = 3;		
-		
-		var numUniquePos:Int   = segments + sets;
-		var numUniqueDirs:Int  = segments + sets;		
-		var numUniqueSigns:Int = 2;				// 1, -1
-		
-		var signature:MeshSignature = new MeshSignature( numVertices, numFaces, numRegister );		
-			signature.addType( Register.VERTEX_POSITION, 	numUniquePos 	); 
-			signature.addType( Register.VERTEX_DIRECTION, 	numUniqueDirs 	); 
-			signature.addType( Register.VERTEX_SIGN, 		numUniqueSigns 	); 
-			signature.addType( Register.VERTEX_COLOR, 		numUniquePos 	); 
-			
-		super( signature );
-		
-		this.init( segments );
-	}
-	
-	private function init( segments:Int ):Void
-	{
-		this.addVertexData( [ 0.5], Register.VERTEX_SIGN );
-		this.addVertexData( [-0.5], Register.VERTEX_SIGN );
+		super();
+
+		this.addRegisterData( [ 0.5], Register.VERTEX_SIGN );
+		this.addRegisterData( [-0.5], Register.VERTEX_SIGN );
 	}
 	
 	// ************************************************************************ //
 	// Methodes
 	// ************************************************************************ //
-	
+
+	public function moveToVector( pos:Vector3, color:Vector3 ):Void
+	{
+		this.moveTo( [pos.x, pos.y, pos.z], [color.x, color.y, color.z] );
+	}
+
+	public function lineToVector( pos:Vector3, color:Vector3 ):Void
+	{
+		this.lineTo( [pos.x, pos.y, pos.z], [color.x, color.y, color.z] );
+	}
+
+	// ************************************************************************ //
+	// Methodes
+	// ************************************************************************ //
+
 	/**
 	 * start a new set without drawing a line similar to flash.graphics.moveTo
 	 * position must be 3 values (x,y,z) and color aswell (r,g,b)
 	 */
 	public function moveTo( pos:Array<Float>, color:Array<Float> ):Void
 	{
-		this.previous = new Vector3( pos[0], pos[1], pos[2] );	
-		
-		this.addVertexData( pos, Register.VERTEX_POSITION 	);
-		this.addVertexData( pos, Register.VERTEX_DIRECTION  );		// could link to pos? ... 
-		this.addVertexData( color, Register.VERTEX_COLOR 	);		// could check if unique ... 
-		
-		this.numDrawn++;
+		if( this.current == null )
+			this.current = new Array<Int>();
+
+		if( this.previous == null )
+			this.previous = new Array<Int>();
+
+		// ------------------- //
+
+		this.addLine( pos, color, this.previous );
 	}
 	
 	/**
@@ -80,22 +73,48 @@ class Line extends EditableMesh
 	 */
 	public function lineTo( pos:Array<Float>, color:Array<Float> ):Void
 	{
-		if( (this.numDrawn-this.numSets) * 2 > this.data.signature.numFaces )
-			throw "already set max amount of segments";
-			
 		if( this.previous == null )
 			throw "must call moveTo first";
+
+		this.addLine( pos, color, this.current );
+
+		// -------------- //
+
+		var pP:Int = this.previous[0];	// previous pos
+		var pD:Int = this.previous[1];  // previous dir
+		var pC:Int = this.previous[2];  // previous color
+
+		var cP:Int = this.current[0];	// current pos
+		var cD:Int = this.current[1];   // current dir
+		var cC:Int = this.current[2];   // current color
+
+		this.addFaceIndices( [pP,cD,1,pC, cP,pD,0,cC, cP,pD,1,cC] );	// pos, dir, sign, color
+		this.addFaceIndices( [cP,pD,1,cC, pP,cD,1,pC, pP,cD,0,pC] );
 		
 		// -------------- //
 		
-		var c:Int = this.numDrawn;
-		var p:Int = this.numDrawn - 1;			
-		
-		this.createFace( [p,c,1,p, c,p,0,c, c,p,1,c] );	// pos, dir, sign, color	
-		this.createFace( [c,p,1,c, p,c,1,p, p,c,0,p] );		
-		
-		// -------------- //
-		
-		this.moveTo( pos, color );
+		this.swap();
 	}
+
+	/**
+	 *
+	 */
+	private function addLine( pos:Array<Float>, color:Array<Float>, data:Array<Int> ):Void
+	{
+		data[0] = this.addRegisterData( pos,   Register.VERTEX_POSITION 	);
+		data[1] = this.addRegisterData( pos,   Register.VERTEX_DIRECTION    );
+		data[2] = this.addRegisterData( color, Register.VERTEX_COLOR 	    );
+	}
+
+	/**
+	 *
+	 */
+	private function swap():Void
+	{
+		var temporary:Array<Int> = this.current;
+
+		this.current  = this.previous;
+		this.previous = temporary;
+	}
+
 }

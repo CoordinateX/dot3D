@@ -1,27 +1,15 @@
 package at.dotpoint.dot3d.primitives.icosahedron;
 
-import at.dotpoint.math.vector.Vector3;
+import at.dotpoint.dot3d.model.mesh.editable.MeshTriangle;
 import haxe.ds.Vector;
 
 /**
  * ...
  * @author RK
  */
-class IcosahedronTriangle
+class IcosahedronTriangle extends MeshTriangle
 {
 
-	/**
-	 * indices pointing to the vertex positions, clockwise order ...
-	 */
-	public var vIndices(default, null):Vector<Int>;	
-	
-	/**
-	 * normal of the triangle, not the same as its vertices
-	 */
-	public var normal:Vector3;
-	
-	// ------------- //
-	
 	/**
 	 * index of the face
 	 */
@@ -43,13 +31,19 @@ class IcosahedronTriangle
 	
 	public function new() 
 	{
-		this.vIndices = new Vector<Int>( 3 );
+		super();
 	}
 	
 	// ************************************************************************ //
 	// Methods
-	// ************************************************************************ //	
-	
-	
+	// ************************************************************************ //
+
+	/**
+	 *
+	 */
+	public function toString():String
+	{
+		return "[Triangle:" + this.ID + "]";
+	}
 
 }
