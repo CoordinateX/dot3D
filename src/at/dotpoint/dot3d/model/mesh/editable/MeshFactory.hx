@@ -2,9 +2,7 @@ package at.dotpoint.dot3d.model.mesh.editable;
 
 import at.dotpoint.dot3d.model.register.RegisterType;
 import at.dotpoint.math.MathUtil;
-import haxe.ds.Vector;
 import at.dotpoint.dot3d.model.register.Register;
-import at.dotpoint.math.vector.Vector3;
 import at.dotpoint.dot3d.model.register.RegisterType;
 import haxe.ds.StringMap;
 
@@ -189,12 +187,14 @@ class MeshFactory
 	 */
 	public function setIndexData( data:Array<Int>, index:Int ):Int
 	{
-		var list:Array<Int> = this.indexData[index];
+		var lookup:StringMap<Int>   = this.getLookup( Register.INDEX );
+		var list:Array<Int>         = this.indexData[index];
 
 		if( list == null )
 			index = this.indexData.length;
 
 		this.indexData[index] = data;
+		lookup.set( this.getLookupSignature(data), index );
 
 		return this.indexData.length;
 	}
