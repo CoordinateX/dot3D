@@ -71,7 +71,7 @@ class IcosahedronMesh extends CustomMesh
 			this.triangles[j] = this.subdivide( v1, v2, v3, null, settings.tesselationDepth, j );
 		}
 
-		this.buildMeshGeometry();
+		this.buildIcosahedronGeometry();
 	}
 
 	/**
@@ -133,12 +133,8 @@ class IcosahedronMesh extends CustomMesh
 	 */
 	private function generateVertex( position:Vector3 ):MeshVertex
 	{
-		var uv:Vector2 = new Vector2();
-			uv.x = 0.5 * ( 1.0 + Math.atan2( position.z, position.x ) * ( 1.0 / Math.PI ) );
-			uv.y = Math.acos( position.y ) * ( 1.0 / Math.PI );
-
 		var vertex:MeshVertex = new MeshVertex( position );
-			vertex.uv = uv;
+			vertex.uv = this.calculateUV( position );
 
 		return vertex;
 	}
@@ -160,6 +156,18 @@ class IcosahedronMesh extends CustomMesh
 		return triangle;
 	}
 
+	/**
+	 *
+	 */
+	private function calculateUV( position:Vector3 ):Vector2
+	{
+		var uv:Vector2 = new Vector2();
+			uv.x = 0.5 * ( 1.0 + Math.atan2( position.z, position.x ) * ( 1.0 / Math.PI ) );
+			uv.y = Math.acos( position.y ) * ( 1.0 / Math.PI );
+
+		return uv;
+	}
+
 	// ************************************************************************ //
 	// SetMesh
 	// ************************************************************************ //
@@ -167,7 +175,7 @@ class IcosahedronMesh extends CustomMesh
 	/**
 	 *
 	 */
-	private function buildMeshGeometry():Void
+	private function buildIcosahedronGeometry():Void
 	{
 		this.addTriangleList( cast this.getGeometryTriangles() );
 		this.recalculateNormals( true );

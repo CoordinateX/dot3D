@@ -60,13 +60,7 @@ class MeshTriangle
 	 */
 	public function calculatetNormal():Vector3
 	{
-		var sub1:Vector3 = Vector3.subtract( v2.position, v1.position, new Vector3() );
-		var sub2:Vector3 = Vector3.subtract( v3.position, v1.position, new Vector3() );
-
-		var cross:Vector3 = Vector3.cross( sub1, sub2 );
-			cross.normalize();
-
-		return cross;
+		return Vector3.calculatetNormal( v1.position, v2.position, v3.position );
 	}
 
 }

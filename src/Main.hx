@@ -1,5 +1,8 @@
 package;
 
+import at.dotpoint.dot3d.primitives.geodesic.GeodesicCell;
+import at.dotpoint.dot3d.primitives.geodesic.GeodesicSettings;
+import at.dotpoint.dot3d.primitives.geodesic.GeodesicSphere.GeodesicSphereMesh;
 import at.dotpoint.math.vector.Vector3;
 import at.dotpoint.dot3d.model.mesh.editable.CustomMesh;
 import at.dotpoint.dot3d.model.mesh.editable.MeshVertex;
@@ -80,7 +83,7 @@ class Main extends Bootstrapper3D
 		//this.loadScene();
 		this.addIcosahedron();
 
-		this.scene.camera.getTransform( Space.WORLD ).position.z -= 20;
+		this.scene.camera.getTransform( Space.WORLD ).position.z += 6;
 		
 		this.controller = new ModelController();
 		this.controller.moveSpeed = 0.25;	
@@ -93,15 +96,48 @@ class Main extends Bootstrapper3D
 	 */
 	private function addIcosahedron():Void
 	{
-		var mesh:IcosahedronMesh = new IcosahedronMesh( IcosahedronSettings.CELLS_642 );
+		var mesh:GeodesicSphereMesh = new GeodesicSphereMesh( GeodesicSettings.CELLS_42 );
 
 		var sphere:Model = new Model( mesh.buildMesh() );
 			sphere.material = cast new TestShader();
 
 		var normals:Model = this.drawNormals( mesh, 0.25 );
+		var cells:Model = this.drawCells( mesh );
 
 		this.scene.modelList.push( sphere );
 		this.scene.modelList.push( normals );
+		this.scene.modelList.push( cells );
+	}
+
+	/**
+	 *
+	 */
+	private function drawCells( mesh:GeodesicSphereMesh ):Model
+	{
+		var line:Line = new Line();
+
+		var cells:Array<GeodesicCell> = mesh.cells;
+		var color:Vector3 = new Vector3( 0, 1, 0 );
+
+		for( cell in cells )
+		{
+			for( j in 0...cell.vertices.length )
+			{
+				var p1:Vector3 = cell.vertices[(j + 0) % cell.vertices.length];
+				var p2:Vector3 = cell.vertices[(j + 1) % cell.vertices.length];
+
+				line.moveToVector( p1, color );
+				line.lineToVector( p2, color );
+			}
+		}
+
+		var shader:LineShader = new LineShader();
+			shader.thickness = 0.25;
+
+		var model:Model = new Model( line.buildMesh() );
+			model.material = cast shader;
+
+		return model;
 	}
 
 	/**
