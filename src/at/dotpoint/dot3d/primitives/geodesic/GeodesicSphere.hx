@@ -2,7 +2,6 @@ package at.dotpoint.dot3d.primitives.geodesic;
 
 import Math;
 import at.dotpoint.dot3d.model.mesh.editable.MeshTriangle;
-import at.dotpoint.dot3d.model.register.Register;
 import at.dotpoint.dot3d.model.mesh.editable.MeshVertex;
 import at.dotpoint.math.MathUtil;
 import at.dotpoint.math.vector.Vector3;
@@ -46,10 +45,12 @@ class GeodesicSphereMesh extends IcosahedronMesh
 	// Constructor
 	// ************************************************************************ //
 
-	public function new( settings:GeodesicSettings )
+	public function new( settings:GeodesicSettings, startGeneration:Bool = true )
 	{
 		super( settings );
-		this.generateGeodesic();
+
+		if( startGeneration )
+			this.generateGeodesic();
 	}
 
 	// ************************************************************************ //
@@ -59,7 +60,7 @@ class GeodesicSphereMesh extends IcosahedronMesh
 	/**
 	 *
 	 */
-	private function generateGeodesic():Void
+	public function generateGeodesic():Void
 	{
 		this.vertices   = this.getVertexList();
 		this.cells      = this.generateCells();
@@ -70,7 +71,7 @@ class GeodesicSphereMesh extends IcosahedronMesh
 	/**
 	 * cCells
 	 */
-	public function generateCells():Array<GeodesicCell>
+	private function generateCells():Array<GeodesicCell>
 	{
 		var cells:Array<GeodesicCell> = new Array<GeodesicCell>();
 
@@ -97,10 +98,10 @@ class GeodesicSphereMesh extends IcosahedronMesh
 			var v1:MeshVertex = new MeshVertex( cell.center );
 				v1.uv = this.calculateUV( cell.center );
 
-			for( j in 0...cell.vertices.length )
+			for( j in 0...cell.corners.length )
 			{
-				var p2:Vector3 = cell.vertices[(j + 1) % cell.vertices.length];
-				var p3:Vector3 = cell.vertices[(j + 0) % cell.vertices.length];
+				var p2:Vector3 = cell.corners[(j + 1) % cell.corners.length];
+				var p3:Vector3 = cell.corners[(j + 0) % cell.corners.length];
 
 				// -------------------- //
 
@@ -187,8 +188,8 @@ class GeodesicSphereMesh extends IcosahedronMesh
 	private function createCell( vertex:MeshVertex, triangles:Array<IcosahedronTriangle> ):GeodesicCell
 	{
 		var cell:GeodesicCell = new GeodesicCell();
-			cell.vertices   = this.getCorners( vertex, triangles );
-			cell.center     = this.calculateCellCenter( cell.vertices );
+			cell.corners   = this.getCorners( vertex, triangles );
+			cell.center     = this.calculateCellCenter( cell.corners );
 			cell.normal     = vertex.normal;
 
 		return cell;

@@ -219,8 +219,8 @@ class IcosahedronMesh extends CustomMesh
 	 */
 	private function getInitialVertices():Vector<Vector3>
 	{
-		var X:Float = 0.525731112119133606;
-		var Z:Float = 0.850650808352039932;
+		var X:Float = Math.sqrt( 2.0 / ( 5.0 + Math.sqrt( 5.0 ) ) ); //0.525731112119133606;
+		var Z:Float = Math.sqrt( 2.0 / ( 5.0 - Math.sqrt( 5.0 ) ) ); // 0.850650808352039932;
 
 		var vList:Vector<Vector3> = new Vector<Vector3>( IcosahedronMesh.MIN_VERTICES );
 
