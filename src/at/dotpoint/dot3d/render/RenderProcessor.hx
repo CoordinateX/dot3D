@@ -3,7 +3,7 @@ package at.dotpoint.dot3d.render;
 import haxe.io.BytesData;
 import at.dotpoint.core.dispatcher.event.Event;
 import at.dotpoint.core.dispatcher.event.EventDispatcher;
-import at.dotpoint.core.event.StatusEvent;
+import at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import at.dotpoint.dot3d.model.material.ContextSettings;
 import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.model.mesh.Mesh;

@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
-import at.dotpoint.core.event.StatusEvent;
+import at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import at.dotpoint.dot3d.model.mesh.Mesh;
 import at.dotpoint.dot3d.model.mesh.MeshSignature;
 import at.dotpoint.dot3d.model.register.Register;

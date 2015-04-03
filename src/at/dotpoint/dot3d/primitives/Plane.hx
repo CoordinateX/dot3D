@@ -1,7 +1,6 @@
 package at.dotpoint.dot3d.primitives;
 
-import at.dotpoint.dot3d.model.mesh.editable.EditableMesh;
-import at.dotpoint.dot3d.model.mesh.MeshSignature;
+import at.dotpoint.dot3d.model.mesh.editable.CustomMesh;
 import at.dotpoint.dot3d.model.Model;
 import at.dotpoint.dot3d.model.register.Register;
 
@@ -12,7 +11,7 @@ class Plane extends Model
 {
 	public function new( w:Float, h:Float, backface:Bool = false ) 
 	{
-		super( new PlaneMesh( w, h, backface ) );
+		super( new PlaneMesh( w, h, backface ).buildMesh() );
 	}
 }
 
@@ -22,16 +21,13 @@ class Plane extends Model
  * 
  * @author RK
  */
-class PlaneMesh extends EditableMesh
+class PlaneMesh extends CustomMesh
 {
 
 	
 	public function new( w:Float, h:Float, backface:Bool = false ) 
 	{
-		var signature:MeshSignature = new MeshSignature( 4, 2, 1 );		
-			signature.addType( Register.VERTEX_POSITION, 4 ); 
-			
-		super( signature );
+		super();
 		
 		w = w * 0.5;
 		h = h * 0.5;
@@ -52,12 +48,17 @@ class PlaneMesh extends EditableMesh
 	 */
 	private function setupVertices( w:Float, h:Float ):Void
 	{
-		this.startVertexData( Register.VERTEX_POSITION );
-		
-		this.addVertexData( [ -w, -h, 0 ] );
-		this.addVertexData( [ -w,  h, 0 ] );
-		this.addVertexData( [  w,  h, 0 ] );
-		this.addVertexData( [  w, -h, 0 ] );
+		this.addRegisterData( [ -w, -h, 0 ], Register.VERTEX_POSITION );
+		this.addRegisterData( [ -w,  h, 0 ], Register.VERTEX_POSITION );
+		this.addRegisterData( [  w,  h, 0 ], Register.VERTEX_POSITION );
+		this.addRegisterData( [  w, -h, 0 ], Register.VERTEX_POSITION );
+
+		this.addRegisterData( [ 0, 0, 1 ], Register.VERTEX_NORMAL );
+
+		this.addRegisterData( [ 0, 0 ], Register.VERTEX_UV );
+		this.addRegisterData( [ 0, 1 ], Register.VERTEX_UV );
+		this.addRegisterData( [ 1, 1 ], Register.VERTEX_UV );
+		this.addRegisterData( [ 1, 0 ], Register.VERTEX_UV );
 	}
 	
 	// ------------------------------------------------------------------ //
@@ -69,7 +70,7 @@ class PlaneMesh extends EditableMesh
 	 */
 	private function setupFaces( backface:Bool ):Void
 	{
-		this.createFace( [0, 1, 2] );
-		this.createFace( [2, 3, 0] );
+		this.addFaceIndices( [0,0,0, 1,1,0, 2,2,0] );
+		this.addFaceIndices( [2,2,0, 3,3,0, 0,0,0] );
 	}		
 }

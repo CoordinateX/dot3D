@@ -1,5 +1,7 @@
 package ;
 
+import at.dotpoint.math.vector.Matrix44;
+import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.core.KeyInput;
 import at.dotpoint.display.components.transform.Position;
 import at.dotpoint.display.components.transform.Rotation;

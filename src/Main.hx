@@ -1,5 +1,15 @@
 package;
 
+import at.dotpoint.math.vector.Matrix44;
+import at.dotpoint.display.components.transform.Transform;
+import flash.display.BitmapData;
+import at.dotpoint.dot3d.primitives.Plane;
+import flash.display.Bitmap;
+import at.dotpoint.dot3d.model.material.Texture;
+import at.dotpoint.dot3d.loader.format.TextureFormat;
+import at.dotpoint.core.dispatcher.event.generic.StatusEvent;
+import at.dotpoint.loader.DataRequest;
+import at.dotpoint.dot3d.model.material.Texture;
 import at.dotpoint.dot3d.primitives.geodesic.GeodesicGrid;
 import at.dotpoint.display.DisplayObject;
 import at.dotpoint.dot3d.primitives.geodesic.GeodesicCell;
@@ -33,9 +43,15 @@ class Main extends Bootstrapper3D
 
 	private var controller:ModelController;	
 	private var rotateList:Array<DisplayObject>;
-	
+	private var lookAtList:Array<DisplayObject>;
+
 	private var t:Float;
 	
+	// --------------- //
+
+	private var loader:DataRequest;
+	private var texture:Texture;
+
 	// --------------- //
 
 	private var container:ModelContainer;
@@ -76,6 +92,11 @@ class Main extends Bootstrapper3D
 
 		// ------------ //
 
+		this.loader = DataRequest.createFromURL( "../assets/textures/grid.jpg", TextureFormat.instance );
+		this.loader.load( this.onTexture );
+
+		// ------------ //
+
 		this.initSteps = 0;
 
 		this.scene.camera.getTransform( Space.WORLD ).position.z += 6;
@@ -84,6 +105,21 @@ class Main extends Bootstrapper3D
 		this.controller.moveSpeed = 0.25;	
 		
 		this.t = 0;
+	}
+
+	/**
+	 *
+	 * @param	event
+	 */
+	private function onTexture( event:StatusEvent ):Void
+	{
+		var bitmap:Bitmap = cast this.loader.result;
+
+		var w:Int = Std.int( bitmap.width );
+		var h:Int = Std.int( bitmap.height );
+
+		this.texture = new Texture("texture", w, h );
+		this.texture.bitmaps.push( bitmap.bitmapData );
 	}
 	
 	/**
@@ -113,6 +149,9 @@ class Main extends Bootstrapper3D
 	 */
 	private function initializeScene():Void
 	{
+		if( this.texture == null )
+			return;
+
 		switch( this.initSteps )
 		{
 			case 0: this.createIcosahedron();
@@ -120,6 +159,7 @@ class Main extends Bootstrapper3D
 			case 2: this.createGeodesicModel();
 			case 3: this.createGeodesicGrid();
 			case 4: this.drawDebugInformation();
+			case 5: this.precalculateGrid();
 
 			default:
 			{
@@ -152,8 +192,11 @@ class Main extends Bootstrapper3D
 	 */
 	private function createGeodesicModel():Void
 	{
+		var shader:TestShader = new TestShader();
+			shader.diffuseMap = this.texture;
+
 		this.geodesicModel = new Model( this.geodesicMesh.buildMesh() );
-		this.geodesicModel.material = cast new TestShader();
+		this.geodesicModel.material = cast shader;
 
 		this.container = new ModelContainer();
 		this.container.addChild( this.geodesicModel );
@@ -174,6 +217,14 @@ class Main extends Bootstrapper3D
 		this.geodesicGrid = new GeodesicGrid( this.geodesicMesh );
 	}
 
+	/**
+	 *
+	 */
+	private function precalculateGrid():Void
+	{
+		this.geodesicGrid.precalculate();
+	}
+
 	// ************************************************************************ //
 	// UPDATE
 	// ************************************************************************ //
@@ -185,12 +236,17 @@ class Main extends Bootstrapper3D
 	{		
 		this.controller.update( this.scene.camera );	
 		
-		if( this.rotateList == null )
-			return;
-		
-		for( model in this.rotateList )
+		if( this.rotateList != null )
 		{
-			model.getTransform( Space.LOCAL ).rotation.yaw( this.controller.rotateSpeed * 0.05 );
+			for( model in this.rotateList )
+			{
+				//model.getTransform( Space.LOCAL ).rotation.yaw( this.controller.rotateSpeed * 1.85 );
+			}
+		}
+
+		if( this.lookAtList != null )
+		{
+
 		}
 	}
 	
@@ -214,7 +270,7 @@ class Main extends Bootstrapper3D
 	 */
 	private function drawDebugInformation():Void
 	{
-		var normals:Model   = this.drawNormals( this.geodesicMesh, 0.25 );
+		var normals:Model   = this.drawNormals( this.geodesicMesh, 0.05 );
 		var cells:Model     = this.drawCells( this.geodesicMesh );
 
 		this.container.addChild( normals );
@@ -222,6 +278,8 @@ class Main extends Bootstrapper3D
 
 		this.scene.modelList.push( normals );
 		this.scene.modelList.push( cells );
+
+		this.drawLabels( this.geodesicMesh );
 	}
 
 	/**
@@ -272,13 +330,35 @@ class Main extends Bootstrapper3D
 		}
 
 		var shader:LineShader = new LineShader();
-		shader.thickness = 0.25;
+			shader.thickness = 0.25;
 
 		var model:Model = new Model( line.buildMesh() );
-		model.material = cast shader;
+			model.material = cast shader;
 
 		return model;
 	}
+
+	/**
+	 *
+	 */
+	private function drawLabels( mesh:GeodesicSphereMesh ):Void
+	{
+		var shader:TestShader = new TestShader();
+			shader.diffuseMap = this.texture;
+
+		var model:Model = new Plane( 0.5, 0.5 );
+			model.material = cast shader;
+
+		model.getTransform( Space.LOCAL ).x += 1;
+
+		// ------------ //
+
+		this.lookAtList = new Array<DisplayObject>();
+		this.lookAtList.push( model );
+
+		this.scene.modelList.push( model );
+	}
+
 }
 
 class ModelContainer extends DisplayObjectContainer

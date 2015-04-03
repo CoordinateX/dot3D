@@ -1,6 +1,6 @@
 package at.dotpoint.dot3d.loader.parser.wavefront;
 
-import at.dotpoint.core.event.StatusEvent;
+import at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import at.dotpoint.dot3d.model.material.Material;
 import at.dotpoint.loader.processor.ADataProcessor;
 import at.dotpoint.loader.processor.IDataProcessor;

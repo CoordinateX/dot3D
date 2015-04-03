@@ -98,7 +98,7 @@ class Camera extends DisplayObject
 	//
 	private function validate():Void
 	{
-		Matrix44.multiply( this.lense.getProjectionMatrix(), this.getTransform( Space.WORLD ).getMatrix(), this.projectionMatrix );	
+		Matrix44.multiply( this.lense.getProjectionMatrix(), this.getTransform( Space.WORLD ).getMatrix(), this.projectionMatrix );
 		this.invalidMatrix = false;
 	}
 		

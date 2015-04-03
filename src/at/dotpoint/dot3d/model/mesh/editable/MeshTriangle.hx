@@ -1,5 +1,6 @@
 package at.dotpoint.dot3d.model.mesh.editable;
 
+import at.dotpoint.math.Trigonometry;
 import at.dotpoint.math.vector.Vector3;
 
 class MeshTriangle
@@ -60,7 +61,7 @@ class MeshTriangle
 	 */
 	public function calculatetNormal():Vector3
 	{
-		return Vector3.calculatetNormal( v1.position, v2.position, v3.position );
+		return Trigonometry.calculatetNormal( v1.position, v2.position, v3.position );
 	}
 
 }

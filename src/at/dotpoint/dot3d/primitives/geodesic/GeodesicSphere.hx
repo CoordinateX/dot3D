@@ -1,5 +1,6 @@
 package at.dotpoint.dot3d.primitives.geodesic;
 
+import at.dotpoint.math.Trigonometry;
 import Math;
 import at.dotpoint.dot3d.model.mesh.editable.MeshTriangle;
 import at.dotpoint.dot3d.model.mesh.editable.MeshVertex;
@@ -62,18 +63,17 @@ class GeodesicSphereMesh extends IcosahedronMesh
 	 */
 	public function generateGeodesic():Void
 	{
-		this.vertices   = this.getVertexList();
-		this.cells      = this.generateCells();
-
+		this.generateCells();
 		this.buildGeodesicGeometry();
 	}
 
 	/**
 	 * cCells
 	 */
-	private function generateCells():Array<GeodesicCell>
+	private function generateCells():Void
 	{
-		var cells:Array<GeodesicCell> = new Array<GeodesicCell>();
+		this.vertices = this.getVertexList();
+		this.cells = new Array<GeodesicCell>();
 
 		for( vertex in this.vertices )
 		{
@@ -82,8 +82,6 @@ class GeodesicSphereMesh extends IcosahedronMesh
 
 			cells.push( cell );
 		}
-
-		return cells;
 	}
 
 	/**
@@ -189,8 +187,10 @@ class GeodesicSphereMesh extends IcosahedronMesh
 	{
 		var cell:GeodesicCell = new GeodesicCell();
 			cell.corners   = this.getCorners( vertex, triangles );
-			cell.center     = this.calculateCellCenter( cell.corners );
-			cell.normal     = vertex.normal;
+			cell.center    = this.calculateCellCenter( cell.corners );
+			cell.normal    = vertex.normal;
+
+		cell.ID = "C." + this.cells.length +":" + cell.corners.length;
 
 		return cell;
 	}
@@ -244,8 +244,8 @@ class GeodesicSphereMesh extends IcosahedronMesh
 			var line1:Vector3 	= Vector3.subtract( cPosition, v1 );
 			var line2:Vector3 	= Vector3.subtract( cPosition, v2 );
 
-			var angle1:Float = Vector3.getAngle( guide, line1, cNormal ) * MathUtil.RAD_DEG;
-			var angle2:Float = Vector3.getAngle( guide, line2, cNormal ) * MathUtil.RAD_DEG;
+			var angle1:Float = Trigonometry.getRadianAngle( guide, line1, cNormal ) * MathUtil.RAD_DEG;
+			var angle2:Float = Trigonometry.getRadianAngle( guide, line2, cNormal ) * MathUtil.RAD_DEG;
 
 			return Math.round(angle2 - angle1);
 		}
