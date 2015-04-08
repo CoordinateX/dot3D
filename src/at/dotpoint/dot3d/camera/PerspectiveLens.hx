@@ -48,8 +48,8 @@ class PerspectiveLens extends CameraLens
 		this.viewport.addListener( DisplayEvent.VIEWPORT_RESIZE, this.onProjectionChanged );
 		
 		this.zNear 	= 1;
-		this.zFar 	= 100;
-		this.yFOV 	= yFOV != null ? yFOV : 45 * MathUtil.DEG_RAD;
+		this.zFar 	= 20;
+		this.yFOV 	= yFOV != null ? yFOV : 90 * MathUtil.DEG_RAD;
 	}
 	
 	// ************************************************************************ //
@@ -118,6 +118,8 @@ class PerspectiveLens extends CameraLens
 		this.projectionMatrix.m43 = (2 * this.zFar * this.zNear) / depth;	
 		this.projectionMatrix.m34 = -1;											
 		this.projectionMatrix.m44 = 0;
+		
+		//this.projectionMatrix.transpose();
 	}
 	
 	// ************************************************************************ //

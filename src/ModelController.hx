@@ -1,14 +1,15 @@
 package ;
 
-import at.dotpoint.math.vector.Matrix44;
-import at.dotpoint.dot3d.camera.Camera;
 import at.dotpoint.core.KeyInput;
-import at.dotpoint.display.components.transform.Position;
-import at.dotpoint.display.components.transform.Rotation;
-import at.dotpoint.display.components.transform.Scale;
-import at.dotpoint.display.components.transform.Transform;
-import at.dotpoint.display.DisplayObject;
-import at.dotpoint.math.geom.Space;
+import at.dotpoint.display.camera.ICameraEntity;
+import at.dotpoint.display.IDisplayObject;
+import at.dotpoint.dot3d.camera.Stage3DCamera;
+import at.dotpoint.math.MathUtil;
+import at.dotpoint.math.vector.IQuaternion;
+import at.dotpoint.math.vector.IVector3;
+import at.dotpoint.math.vector.Quaternion;
+import at.dotpoint.math.vector.Vector3;
+import at.dotpoint.spatial.transform.Transform;
 import flash.events.KeyboardEvent;
 import flash.Lib;
 import flash.ui.Keyboard;
@@ -20,8 +21,8 @@ import flash.ui.Keyboard;
 class ModelController
 {
 
-	public var moveSpeed:Float = 1.;
-	public var rotateSpeed:Float = 0.025;
+	public var moveSpeed:Float = 0.05;
+	public var rotateSpeed:Float = 1 * MathUtil.DEG_RAD;
 	
 	public var isKeyDown:Bool;
 	
@@ -41,13 +42,11 @@ class ModelController
 	/**
 	 * 
 	 */
-	public function update( container:DisplayObject ):Void
+	public function update( camera:IDisplayObject ):Void
 	{
-		var transform:Transform 	= container.getTransform( Space.WORLD );
-		
-		var position:Position 		= transform.position;
-		var rotation:Rotation 		= transform.rotation;
-		var scale:Scale 			= transform.scale;
+		var position:IVector3 		= camera.transform.position;
+		var rotation:IQuaternion	= camera.transform.rotation;
+		var scale:IVector3 			= camera.transform.scale;
 		
 		// ---------------------------- //
 		// translation
@@ -79,23 +78,38 @@ class ModelController
 		if ( KeyInput.isDown( Keyboard.SHIFT ) )
 		{
 			if ( KeyInput.isDown( Keyboard.W ) )
-				rotation.pitch( this.rotateSpeed );
+				this.appendRotation( new Vector3( 1, 0, 0 ),  this.rotateSpeed, rotation );
 			
 			if ( KeyInput.isDown( Keyboard.S ) )
-				rotation.pitch( -this.rotateSpeed );
+				this.appendRotation( new Vector3( 1, 0, 0 ), -this.rotateSpeed, rotation );
 			
 			if ( KeyInput.isDown( Keyboard.A ) )
-				rotation.roll( this.rotateSpeed );
+				this.appendRotation( new Vector3( 0, 0, 1 ),  this.rotateSpeed, rotation );
 			
 			if ( KeyInput.isDown( Keyboard.D ) )
-				rotation.roll( -this.rotateSpeed );
+				this.appendRotation( new Vector3( 0, 0, 1 ), -this.rotateSpeed, rotation );
 			
 			if ( KeyInput.isDown( Keyboard.R ) )
-				rotation.yaw( this.rotateSpeed );
+				this.appendRotation( new Vector3( 0, 1, 0 ),  this.rotateSpeed, rotation );
 			
 			if ( KeyInput.isDown( Keyboard.F ) )
-				rotation.yaw( -this.rotateSpeed );
+				this.appendRotation( new Vector3( 0, 1, 0 ), -this.rotateSpeed, rotation );
 		}
-
+	}
+	
+	/**
+	 * 
+	 * @param	axis
+	 * @param	radians
+	 */
+	private function appendRotation( axis:Vector3, radians:Float, origin:IQuaternion ):Void 
+	{
+		var rotation:Quaternion = Quaternion.setAxisAngle( axis, radians, new Quaternion() );
+			rotation.normalize();
+			
+		var new_rotation:Quaternion = Quaternion.multiply( origin, rotation, new Quaternion() );
+			new_rotation.normalize();
+		
+		new_rotation.clone( origin );
 	}
 }

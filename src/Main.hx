@@ -12,6 +12,8 @@ import at.dotpoint.dot3d.render.renderable.Stage3DRenderableFactory;
 import at.dotpoint.dot3d.render.Stage3DContext;
 import at.dotpoint.dot3d.render.Stage3DRenderer;
 import at.dotpoint.dot3d.scene.Stage3DScene;
+import flash.events.Event;
+import flash.Lib;
 
 /**
  * ...
@@ -24,7 +26,20 @@ class Main
 	
 	// ---------------- //
 	
+	/**
+	 * 
+	 */
+	private var controller:ModelController;
 	
+	/**
+	 * 
+	 */
+	private var camera:Stage3DCamera;
+	
+	/**
+	 * 
+	 */
+	private var cube:IDisplayObject;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -62,16 +77,33 @@ class Main
 	private function onContextComplete( event:StatusEvent ):Void
 	{
 		var scene:Stage3DScene = cast DisplayEngine.renderer.getScene();
-			scene.camera = new Stage3DCamera( new PerspectiveLens( DisplayEngine.renderer.getContext().getViewport() ) );
+			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( DisplayEngine.renderer.getContext().getViewport() ) );				
 		
-		var cube:IDisplayObject = cast new DisplayObject( new CubeMesh( 1, 1, 1 ), new DiffuseColorMaterial() );
-			cube.transform.position.z = 0;
+		//this.camera.transform.position.z -= 10.5;	
+			
+		this.controller = new ModelController();	
+		this.createCube();
 		
-		scene.getSpatialTree().addChildNode( cube.getSpatialNode() );
+		Lib.current.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );
+	}
+	
+	private function createCube():Void
+	{
+		this.cube = cast new DisplayObject( new CubeMesh( 1, 1, 1 ), new DiffuseColorMaterial() );
+		this.cube.transform.position.z -= 6;
 		
-		DisplayEngine.renderer.render( [cube] );
+		DisplayEngine.renderer.getScene().getSpatialTree().addChildNode( cube.getSpatialNode() );
+	}
+	
+	/**
+	 * 
+	 * @param	event
+	 */
+	private function onEnterFrame( event:Event ):Void
+	{
+		this.controller.update( this.cube );
 		
-		trace("done");
+		DisplayEngine.renderer.render( [this.cube] );
 	}
 }
 

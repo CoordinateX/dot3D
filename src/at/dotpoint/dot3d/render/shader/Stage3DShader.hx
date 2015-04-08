@@ -98,7 +98,10 @@ class Stage3DShader implements IShader
 		var signature:ShaderSignature = new ShaderSignature( shaderID, registers.length );
 		
 		for( type in registers )
-			signature.addRegisterType( type );
+		{
+			if( type != null )
+				signature.addRegisterType( type );
+		}
 		
 		return signature;
 	}
