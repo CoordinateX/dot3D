@@ -5,9 +5,9 @@
     <movie outputType="Application" />
     <movie input="" />
     <movie path="bin\standalone.swf" />
-    <movie fps="30" />
-    <movie width="800" />
-    <movie height="600" />
+    <movie fps="200" />
+    <movie width="960" />
+    <movie height="540" />
     <movie version="14" />
     <movie minorVersion="0" />
     <movie platform="Flash Player" />
@@ -18,6 +18,7 @@
     <class path="src" />
     <class path="lib\hxsl" />
     <class path="..\dotCore\src" />
+    <class path="..\dot2D\src" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -26,7 +27,7 @@
     <option noInlineOnDebug="False" />
     <option mainClass="Main" />
     <option enabledebug="True" />
-    <option additional="-debug&#xA;-D fdb&#xA;-D dotpoint" />
+    <option additional="-debug&#xA;-D fdb&#xA;-D dotpoint&#xA;-resource assets/dshader.pbj@dshader" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>

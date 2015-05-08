@@ -63,14 +63,31 @@ class Stage3DContext extends EventDispatcher implements IRenderContext
 	// getter/setter
 	// ************************************************************************ //	
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public function getViewport():RenderViewport 
 	{
 		return this.viewport;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public function getSettings():RenderSettings 
 	{
 		return this.settings;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public function isInitialized():Bool
+	{
+		return this.context3D != null;
 	}
 	
 	// ************************************************************************ //

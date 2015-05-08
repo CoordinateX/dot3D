@@ -27,18 +27,6 @@ class Stage3DRenderer implements IRenderer
 	/**
 	 * 
 	 */
-	private var context(default, null):Stage3DContext;
-	
-	/**
-	 * 
-	 */
-	private var scene(default, null):IScene<IDisplayObject>;
-	
-	// ------------------------- //
-	
-	/**
-	 * 
-	 */
 	private var currentShader:ShaderInstance;
 	
 	/**
@@ -65,38 +53,21 @@ class Stage3DRenderer implements IRenderer
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( context:Stage3DContext, scene:IScene<IDisplayObject> ) 
+	public function new() 
 	{
-		this.context = context;
-		this.scene = scene;
+		
 	}
 	
 	// ************************************************************************ //
 	// getter / setter
-	// ************************************************************************ //	
-	
-	/**
-	 * 
-	 */
-	public function getContext():Stage3DContext
-	{
-		return this.context;
-	}
-	
-	/**
-	 * 
-	 */
-	public function getScene():IScene<IDisplayObject>
-	{
-		return this.scene;
-	}
-	
+	// ************************************************************************ //		
+
 	/**
 	 * 
 	 */
 	inline public function getContext3D():Context3D
 	{
-		return this.context.context3D;
+		return Stage3DEngine.instance.getContext().context3D;
 	}	
 
 	// ************************************************************************ //
@@ -113,7 +84,7 @@ class Stage3DRenderer implements IRenderer
 		
 		for ( entity in entities )
 		{
-			entity.getRenderable().render();
+			entity.getRenderer().render();
 		}
 		
 		this.getContext3D().present();
@@ -239,8 +210,8 @@ class Stage3DRenderer implements IRenderer
 	 */
 	public function selectMesh( mesh:IMeshData, buffer:Stage3DMeshBuffer ):Void
 	{
-		if( !buffer.isAllocated )
-			 buffer.allocate( this.getContext3D(), mesh );
+		if(!buffer.isAllocated )
+			buffer.allocate( this.getContext3D(), mesh );
 		
 		this.setVertexBuffer( buffer );
 		this.currentMesh = buffer;		

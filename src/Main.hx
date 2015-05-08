@@ -3,15 +3,21 @@ package;
 import at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import at.dotpoint.display.DisplayEngine;
 import at.dotpoint.display.DisplayObject;
+import at.dotpoint.display.geometry.Model;
 import at.dotpoint.display.IDisplayObject;
+import at.dotpoint.display.rendering.shader.ShaderSignature;
+import at.dotpoint.display.Sprite;
+import at.dotpoint.dot2d.scene.Stage2DScene;
+import at.dotpoint.dot2d.Stage2DEngine;
 import at.dotpoint.dot3d.camera.PerspectiveLens;
 import at.dotpoint.dot3d.camera.Stage3DCamera;
 import at.dotpoint.dot3d.geometry.material.DiffuseColorMaterial;
+import at.dotpoint.dot3d.primitives.Cube;
 import at.dotpoint.dot3d.primitives.Cube.CubeMesh;
-import at.dotpoint.dot3d.render.renderable.Stage3DRenderableFactory;
 import at.dotpoint.dot3d.render.Stage3DContext;
 import at.dotpoint.dot3d.render.Stage3DRenderer;
 import at.dotpoint.dot3d.scene.Stage3DScene;
+import at.dotpoint.dot3d.Stage3DEngine;
 import flash.events.Event;
 import flash.Lib;
 
@@ -39,7 +45,8 @@ class Main
 	/**
 	 * 
 	 */
-	private var cube:IDisplayObject;
+	private var cube2D:Cube;
+	private var cube3D:Cube;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -63,11 +70,9 @@ class Main
 	 * 
 	 */
 	private function initialize():Void
-	{
-		DisplayEngine.factory = new DisplayObjectFactory( new Stage3DRenderableFactory() );
-		DisplayEngine.renderer = new Stage3DRenderer( new Stage3DContext(), new Stage3DScene() );
-		
-		DisplayEngine.renderer.getContext().initialize( this.onContextComplete );
+	{	
+		Stage2DEngine.instance.initialize( this.onContextComplete );
+		Stage3DEngine.instance.initialize( this.onContextComplete );
 	}
 	
 	/**
@@ -76,24 +81,53 @@ class Main
 	 */
 	private function onContextComplete( event:StatusEvent ):Void
 	{
-		var scene:Stage3DScene = cast DisplayEngine.renderer.getScene();
-			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( DisplayEngine.renderer.getContext().getViewport() ) );				
+		if( !Stage2DEngine.instance.isInitialized() )	return;
+		if( !Stage3DEngine.instance.isInitialized() )	return;
 		
-		//this.camera.transform.position.z -= 10.5;	
-			
-		this.controller = new ModelController();	
-		this.createCube();
+		// ------------------------- //
+		
+		this.init2D();
+		this.init3D();
 		
 		Lib.current.addEventListener( Event.ENTER_FRAME, this.onEnterFrame );
 	}
 	
-	private function createCube():Void
+	/**
+	 * 
+	 */
+	private function init2D():Void
 	{
-		this.cube = cast new DisplayObject( new CubeMesh( 1, 1, 1 ), new DiffuseColorMaterial() );
-		this.cube.transform.position.z -= 6;
+		var scene:Stage2DScene = cast Stage2DEngine.instance.getScene();
 		
-		DisplayEngine.renderer.getScene().getSpatialTree().addChildNode( cube.getSpatialNode() );
+		// ------------- //
+		
+		this.cube2D = new Cube( 60, 60, 60 );
+		this.cube2D.transform.position.x += 100;
+		this.cube2D.transform.position.y += 100;
+		
+		Stage2DEngine.instance.getScene().getSpatialTree().addChildNode( cube2D.getSpatialNode() );
 	}
+	
+	/**
+	 * 
+	 */
+	private function init3D():Void
+	{
+		var scene:Stage3DScene = cast Stage3DEngine.instance.getScene();
+			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( Stage3DEngine.instance.getContext().getViewport() ) );				
+		
+		this.camera.transform.position.x += 0.5;	
+		
+		this.controller = new ModelController();	
+		
+		// --------------- //
+		
+		this.cube3D = new Cube();
+		this.cube3D.transform.position.z -= 6;
+		
+		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cube3D.getSpatialNode() );
+	}
+
 	
 	/**
 	 * 
@@ -101,9 +135,11 @@ class Main
 	 */
 	private function onEnterFrame( event:Event ):Void
 	{
-		this.controller.update( this.cube );
+		this.controller.update( this.cube2D );
+		this.controller.update( this.cube3D );
 		
-		DisplayEngine.renderer.render( [this.cube] );
+		Stage2DEngine.instance.getRenderer().render( [this.cube2D] );
+		Stage3DEngine.instance.getRenderer().render( [this.cube3D] );
 	}
 }
 

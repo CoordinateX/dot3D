@@ -58,6 +58,16 @@ class Stage3DShader implements IShader
 	 * @param	type
 	 * @param	data
 	 */
+	public function getRegisterData<T:Dynamic>( type:RegisterType ):T
+	{
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param	type
+	 * @param	data
+	 */
 	public function setRegisterData( type:RegisterType, data:Dynamic ):Void 
 	{
 		return;

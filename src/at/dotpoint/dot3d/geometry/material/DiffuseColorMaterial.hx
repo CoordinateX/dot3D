@@ -61,4 +61,14 @@ class DiffuseColorMaterial implements IMaterial
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param	type
+	 * @param	data
+	 */
+	public function setRegisterData( type:RegisterType, data:Dynamic ):Void
+	{
+		return;
+	}
+	
 }

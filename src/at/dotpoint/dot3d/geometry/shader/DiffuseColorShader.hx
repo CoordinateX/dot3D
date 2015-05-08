@@ -36,9 +36,7 @@ class TDiffuseColorShader extends Shader
 		
 		function vertex( E_MODEL2WORLD_TRANSFORM:M44, W_WORLD2CAMERA_TRANSFORM:M44, light:Float3 ) 
 		{
-			out = input.V_POSITION.xyzw * E_MODEL2WORLD_TRANSFORM * W_WORLD2CAMERA_TRANSFORM;		
-			//out = input.V_POSITION.xyzw * W_WORLD2CAMERA_TRANSFORM * E_MODEL2WORLD_TRANSFORM;
-			
+			out = input.V_POSITION.xyzw * E_MODEL2WORLD_TRANSFORM * W_WORLD2CAMERA_TRANSFORM;			
 			lpow = light.dot( (input.V_NORMAL * E_MODEL2WORLD_TRANSFORM).normalize() ).max(0);
 		}
 		
@@ -112,11 +110,6 @@ class DiffuseColorShader extends Stage3DShader
 			this.shader.W_WORLD2CAMERA_TRANSFORM = cast data;				
 		
 		if( type.ID == RegisterHelper.E_MODEL2WORLD_TRANSFORM.ID )
-		{
-			var matrix:Matrix44 = new Matrix44( cast( data, IMatrix44 ) );
-			//	matrix.transpose();
-			
-			this.shader.E_MODEL2WORLD_TRANSFORM = matrix;			
-		}
+			this.shader.E_MODEL2WORLD_TRANSFORM = cast data;		
 	}
 }
