@@ -1,8 +1,3 @@
-[submodule "lib/dotCore"]
-	path = lib/dotCore
-	
-	url = https://github.com/ScrambledRK/dotCore.git
-
 [submodule "lib/hxsl"]
 	path = lib/hxsl
 	url = https://github.com/ScrambledRK/hxsl.git
