@@ -4,7 +4,7 @@ import at.dotpoint.display.geometry.material.IMaterial;
 import at.dotpoint.display.geometry.mesh.IMeshData;
 import at.dotpoint.display.geometry.mesh.MeshData;
 import at.dotpoint.display.geometry.mesh.util.editing.MeshEditingTools;
-import at.dotpoint.display.geometry.Model;
+import at.dotpoint.display.geometry.ModelRenderData;
 import at.dotpoint.display.register.RegisterHelper;
 import at.dotpoint.display.rendering.shader.ShaderSignature;
 import at.dotpoint.display.Sprite;
@@ -27,7 +27,7 @@ class Cube extends Sprite
 		var mesh:IMeshData 			= new CubeMesh( w, h, l );
 		var material:IMaterial 		= new DiffuseColorMaterial();
 		
-		super( new Model( shader, mesh, material ) );
+		super( new ModelRenderData( shader, mesh, material ) );
 	}
 	
 	// ************************************************************************ //

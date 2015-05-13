@@ -5,7 +5,7 @@ import at.dotpoint.display.DisplayEngine;
 import at.dotpoint.display.geometry.material.IMaterial;
 import at.dotpoint.display.geometry.material.MaterialSignature;
 import at.dotpoint.display.geometry.mesh.IMeshData;
-import at.dotpoint.display.geometry.Model;
+import at.dotpoint.display.geometry.ModelRenderData;
 import at.dotpoint.display.IDisplayObject;
 import at.dotpoint.display.register.RegisterHelper;
 import at.dotpoint.display.rendering.renderable.IEntityRenderer;
@@ -43,7 +43,7 @@ class Stage3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	/**
 	 * 
 	 */
-	public var model:Model;
+	public var model:ModelRenderData;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -66,7 +66,7 @@ class Stage3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	 */
 	override function onEntityAdded():Void 
 	{
-		this.model = this.entity.getComponent( Model );
+		this.model = this.entity.getComponent( ModelRenderData );
 	}
 	
 	/**

@@ -3,10 +3,13 @@ package;
 import at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import at.dotpoint.display.DisplayEngine;
 import at.dotpoint.display.DisplayObject;
-import at.dotpoint.display.geometry.Model;
+import at.dotpoint.display.geometry.ModelRenderData;
 import at.dotpoint.display.IDisplayObject;
 import at.dotpoint.display.rendering.shader.ShaderSignature;
 import at.dotpoint.display.Sprite;
+import at.dotpoint.display.text.TextFormat;
+import at.dotpoint.display.text.TextRenderData;
+import at.dotpoint.display.TextField;
 import at.dotpoint.dot2d.scene.Stage2DScene;
 import at.dotpoint.dot2d.Stage2DEngine;
 import at.dotpoint.dot3d.camera.PerspectiveLens;
@@ -47,6 +50,11 @@ class Main
 	 */
 	private var cube2D:Cube;
 	private var cube3D:Cube;
+	
+	/**
+	 * 
+	 */
+	private var text:TextField;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -101,11 +109,15 @@ class Main
 		
 		// ------------- //
 		
+		this.text = new TextField( new TextRenderData( null, new TextFormat( "Arial" ) ) );
+		this.text.text = "some little text making little little what?";
+		
 		this.cube2D = new Cube( 60, 60, 60 );
 		this.cube2D.transform.position.x += 100;
 		this.cube2D.transform.position.y += 100;
 		
 		Stage2DEngine.instance.getScene().getSpatialTree().addChildNode( cube2D.getSpatialNode() );
+		Stage2DEngine.instance.getScene().getSpatialTree().addChildNode( this.text.getSpatialNode() );
 	}
 	
 	/**
@@ -138,7 +150,7 @@ class Main
 		this.controller.update( this.cube2D );
 		this.controller.update( this.cube3D );
 		
-		Stage2DEngine.instance.getRenderer().render( [this.cube2D] );
+		Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text] );
 		Stage3DEngine.instance.getRenderer().render( [this.cube3D] );
 	}
 }
