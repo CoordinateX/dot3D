@@ -1,13 +1,13 @@
-package at.dotpoint.dot3d.camera;
+package haxe.at.dotpoint.dot3d.camera;
 
-import at.dotpoint.core.dispatcher.event.Event;
-import at.dotpoint.core.lazy.LazyStatus;
-import at.dotpoint.display.camera.CameraLens;
-import at.dotpoint.display.camera.ICameraFrustum;
-import at.dotpoint.display.event.DisplayEvent;
-import at.dotpoint.display.rendering.context.RenderViewport;
-import at.dotpoint.math.MathUtil;
-import at.dotpoint.math.vector.IMatrix44;
+import haxe.at.dotpoint.core.dispatcher.event.Event;
+import haxe.at.dotpoint.core.lazy.LazyStatus;
+import haxe.at.dotpoint.display.camera.CameraLens;
+import haxe.at.dotpoint.display.camera.ICameraFrustum;
+import haxe.at.dotpoint.display.event.DisplayEvent;
+import haxe.at.dotpoint.display.rendering.context.RenderViewport;
+import haxe.at.dotpoint.math.MathUtil;
+import haxe.at.dotpoint.math.vector.IMatrix44;
 
 /**
  * ...

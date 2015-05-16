@@ -1,20 +1,20 @@
-package at.dotpoint.dot3d.render.renderable;
+package haxe.at.dotpoint.dot3d.render.renderable;
 
-import at.dotpoint.core.entity.Component;
-import at.dotpoint.display.DisplayEngine;
-import at.dotpoint.display.geometry.material.IMaterial;
-import at.dotpoint.display.geometry.material.MaterialSignature;
-import at.dotpoint.display.geometry.mesh.IMeshData;
-import at.dotpoint.display.geometry.ModelRenderData;
-import at.dotpoint.display.IDisplayObject;
-import at.dotpoint.display.register.RegisterHelper;
-import at.dotpoint.display.rendering.renderable.IEntityRenderer;
-import at.dotpoint.display.rendering.shader.IShader;
-import at.dotpoint.dot3d.render.shader.Stage3DShader;
-import at.dotpoint.dot3d.render.Stage3DRenderer;
-import at.dotpoint.dot3d.Stage3DEngine;
-import at.dotpoint.math.geom.Space;
-import at.dotpoint.math.vector.IMatrix44;
+import haxe.at.dotpoint.core.entity.Component;
+import haxe.at.dotpoint.display.DisplayEngine;
+import haxe.at.dotpoint.display.geometry.material.IMaterial;
+import haxe.at.dotpoint.display.geometry.material.MaterialSignature;
+import haxe.at.dotpoint.display.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.geometry.ModelRenderData;
+import haxe.at.dotpoint.display.IDisplayObject;
+import haxe.at.dotpoint.display.register.RegisterHelper;
+import haxe.at.dotpoint.display.rendering.renderable.IEntityRenderer;
+import haxe.at.dotpoint.display.rendering.shader.IShader;
+import haxe.at.dotpoint.dot3d.render.shader.Stage3DShader;
+import haxe.at.dotpoint.dot3d.render.Stage3DRenderer;
+import haxe.at.dotpoint.dot3d.Stage3DEngine;
+import haxe.at.dotpoint.math.geom.Space;
+import haxe.at.dotpoint.math.vector.IMatrix44;
 
 /**
  * ...

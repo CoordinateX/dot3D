@@ -15,19 +15,19 @@
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
-    <class path="src" />
     <class path="lib\hxsl" />
-    <class path="..\dotCore\src" />
-    <class path="..\dot2D\src" />
+    <class path="src\main" />
+    <class path="..\dot2D\src\main" />
+    <class path="..\dotCore\src\main" />
   </classpaths>
   <!-- Build options -->
   <build>
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="Main" />
+    <option mainClass="haxe.Main" />
     <option enabledebug="True" />
-    <option additional="-debug&#xA;-D fdb&#xA;-D dotpoint&#xA;-resource assets/dshader.pbj@dshader" />
+    <option additional="-debug&#xA;-D fdb&#xA;-D dotpoint&#xA;-resource ../dot2D/res/flash/dshader.pbj@dshader" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -39,6 +39,7 @@
   <compileTargets>
     <compile path="unit\TestStandalone.hx" />
     <compile path="src\Main.hx" />
+    <compile path="src\main\haxe\Main.hx" />
   </compileTargets>
   <!-- Assets to embed into the output SWF -->
   <library>

@@ -1,10 +1,10 @@
-package at.dotpoint.dot3d.geometry.material;
+package haxe.at.dotpoint.dot3d.geometry.material;
 
-import at.dotpoint.display.geometry.material.IMaterial;
-import at.dotpoint.display.geometry.material.MaterialSignature;
-import at.dotpoint.display.register.RegisterHelper;
-import at.dotpoint.display.register.RegisterType;
-import at.dotpoint.math.vector.Vector3;
+import haxe.at.dotpoint.display.geometry.material.IMaterial;
+import haxe.at.dotpoint.display.geometry.material.MaterialSignature;
+import haxe.at.dotpoint.display.register.RegisterHelper;
+import haxe.at.dotpoint.display.register.RegisterType;
+import haxe.at.dotpoint.math.vector.Vector3;
 
 /**
  * ...

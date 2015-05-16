@@ -12,3 +12,6 @@
 /build/build.properties
 /bak
 /obj
+/.gradle
+/build/src
+/build/res

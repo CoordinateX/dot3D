@@ -1,11 +1,11 @@
-package at.dotpoint.dot3d.scene;
+package haxe.at.dotpoint.dot3d.scene;
 
-import at.dotpoint.core.datastructure.graph.TreeNode;
-import at.dotpoint.display.IDisplayObject;
-import at.dotpoint.display.register.RegisterHelper;
-import at.dotpoint.display.register.RegisterType;
-import at.dotpoint.display.scene.IScene;
-import at.dotpoint.dot3d.camera.Stage3DCamera;
+import haxe.at.dotpoint.core.datastructure.graph.TreeNode;
+import haxe.at.dotpoint.display.IDisplayObject;
+import haxe.at.dotpoint.display.register.RegisterHelper;
+import haxe.at.dotpoint.display.register.RegisterType;
+import haxe.at.dotpoint.display.scene.IScene;
+import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
 
 /**
  * ...

@@ -1,15 +1,15 @@
-package at.dotpoint.dot3d.render;
+package haxe.at.dotpoint.dot3d.render;
 
-import at.dotpoint.display.geometry.mesh.IMeshData;
-import at.dotpoint.display.geometry.mesh.MeshSignature;
-import at.dotpoint.display.IDisplayObject;
-import at.dotpoint.display.register.RegisterFormat;
-import at.dotpoint.display.register.RegisterType;
-import at.dotpoint.display.rendering.IRenderer;
-import at.dotpoint.display.scene.IScene;
-import at.dotpoint.dot3d.render.renderable.Stage3DMeshBuffer;
-import at.dotpoint.dot3d.render.shader.Stage3DShader;
-import at.dotpoint.dot3d.render.shader.Stage3DShaderContext;
+import haxe.at.dotpoint.display.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.geometry.mesh.MeshSignature;
+import haxe.at.dotpoint.display.IDisplayObject;
+import haxe.at.dotpoint.display.register.RegisterFormat;
+import haxe.at.dotpoint.display.register.RegisterType;
+import haxe.at.dotpoint.display.rendering.IRenderer;
+import haxe.at.dotpoint.display.scene.IScene;
+import haxe.at.dotpoint.dot3d.render.renderable.Stage3DMeshBuffer;
+import haxe.at.dotpoint.dot3d.render.shader.Stage3DShader;
+import haxe.at.dotpoint.dot3d.render.shader.Stage3DShaderContext;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DVertexBufferFormat;

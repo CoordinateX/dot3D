@@ -1,0 +1,11 @@
+-lib munit
+-lib hamcrest
+-cp src/main
+-cp src/test
+-main haxe.TestMain
+-swf bin/test.swf
+-swf-version 11
+-debug
+-D fdb
+-D munit_server
+-D dotpoint

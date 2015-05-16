@@ -1,0 +1,36 @@
+task copySource(type:Copy) {
+	from 'src'
+	from 'lib'
+	from '../dotCore/src'
+	from '../dot2D/src'
+	into 'build/src'
+}
+
+task copyResource(type:Copy) {
+	from 'res'
+	from '../dotCore/res'
+	from '../dot2D/res'
+	into 'build/res'
+}
+
+task compileDocumentation(type:Exec){
+	dependsOn copySource
+	dependsOn copyResource
+	
+	workingDir 'build'
+	commandLine 'haxe', 'build_doc.hxml'
+}
+
+task generateDocumentation(type:Exec) {
+	dependsOn compileDocumentation
+
+	commandLine 'haxelib', 'run', 'dox', '-i', 'bin/doc/', '-o', 'bin/doc/html'
+}
+
+task generateTestReport(type:Exec) {
+	dependsOn copySource
+	dependsOn copyResource
+	
+	workingDir 'build'
+	commandLine 'haxelib', 'run', 'munit', 'test', 'build_test.hxml'
+}

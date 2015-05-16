@@ -1,10 +1,10 @@
-package at.dotpoint.dot3d.camera;
-import at.dotpoint.display.camera.CameraComponent;
-import at.dotpoint.display.camera.ICameraComponent;
-import at.dotpoint.display.camera.ICameraEntity;
-import at.dotpoint.display.camera.ICameraLens;
-import at.dotpoint.display.rendering.context.RenderViewport;
-import at.dotpoint.spatial.SpatialEntity;
+package haxe.at.dotpoint.dot3d.camera;
+import haxe.at.dotpoint.display.camera.CameraComponent;
+import haxe.at.dotpoint.display.camera.ICameraComponent;
+import haxe.at.dotpoint.display.camera.ICameraEntity;
+import haxe.at.dotpoint.display.camera.ICameraLens;
+import haxe.at.dotpoint.display.rendering.context.RenderViewport;
+import haxe.at.dotpoint.spatial.SpatialEntity;
 
 /**
  * ...

@@ -1,26 +1,16 @@
-package;
+package haxe;
 
-import at.dotpoint.core.dispatcher.event.generic.StatusEvent;
-import at.dotpoint.display.DisplayEngine;
-import at.dotpoint.display.DisplayObject;
-import at.dotpoint.display.geometry.ModelRenderData;
-import at.dotpoint.display.IDisplayObject;
-import at.dotpoint.display.rendering.shader.ShaderSignature;
-import at.dotpoint.display.Sprite;
-import at.dotpoint.display.text.TextFormat;
-import at.dotpoint.display.text.TextRenderData;
-import at.dotpoint.display.TextField;
-import at.dotpoint.dot2d.scene.Stage2DScene;
-import at.dotpoint.dot2d.Stage2DEngine;
-import at.dotpoint.dot3d.camera.PerspectiveLens;
-import at.dotpoint.dot3d.camera.Stage3DCamera;
-import at.dotpoint.dot3d.geometry.material.DiffuseColorMaterial;
-import at.dotpoint.dot3d.primitives.Cube;
-import at.dotpoint.dot3d.primitives.Cube.CubeMesh;
-import at.dotpoint.dot3d.render.Stage3DContext;
-import at.dotpoint.dot3d.render.Stage3DRenderer;
-import at.dotpoint.dot3d.scene.Stage3DScene;
-import at.dotpoint.dot3d.Stage3DEngine;
+import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
+import haxe.at.dotpoint.display.text.TextFormat;
+import haxe.at.dotpoint.display.text.TextRenderData;
+import haxe.at.dotpoint.display.TextField;
+import haxe.at.dotpoint.dot2d.scene.Stage2DScene;
+import haxe.at.dotpoint.dot2d.Stage2DEngine;
+import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
+import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
+import haxe.at.dotpoint.dot3d.primitives.Cube;
+import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
+import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import flash.events.Event;
 import flash.Lib;
 

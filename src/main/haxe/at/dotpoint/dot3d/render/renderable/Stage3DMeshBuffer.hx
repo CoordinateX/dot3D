@@ -1,7 +1,7 @@
-package at.dotpoint.dot3d.render.renderable;
-import at.dotpoint.display.geometry.mesh.IMeshData;
-import at.dotpoint.display.geometry.mesh.MeshSignature;
-import at.dotpoint.display.register.RegisterType;
+package haxe.at.dotpoint.dot3d.render.renderable;
+import haxe.at.dotpoint.display.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.geometry.mesh.MeshSignature;
+import haxe.at.dotpoint.display.register.RegisterType;
 import flash.display3D.Context3D;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.VertexBuffer3D;

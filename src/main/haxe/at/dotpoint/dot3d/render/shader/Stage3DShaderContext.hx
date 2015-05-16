@@ -1,4 +1,4 @@
-package at.dotpoint.dot3d.render.shader;
+package haxe.at.dotpoint.dot3d.render.shader;
 
 import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DCompareMode;

@@ -1,11 +1,11 @@
-package at.dotpoint.dot3d.render.shader;
+package haxe.at.dotpoint.dot3d.render.shader;
 
-import at.dotpoint.display.register.RegisterContext;
-import at.dotpoint.display.register.RegisterFormat;
-import at.dotpoint.display.register.RegisterHelper;
-import at.dotpoint.display.register.RegisterType;
-import at.dotpoint.display.rendering.shader.IShader;
-import at.dotpoint.display.rendering.shader.ShaderSignature;
+import haxe.at.dotpoint.display.register.RegisterContext;
+import haxe.at.dotpoint.display.register.RegisterFormat;
+import haxe.at.dotpoint.display.register.RegisterHelper;
+import haxe.at.dotpoint.display.register.RegisterType;
+import haxe.at.dotpoint.display.rendering.shader.IShader;
+import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
 import hxsl.Data;
 import hxsl.Data.Variable;
 import hxsl.Data.VarType;

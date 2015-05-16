@@ -1,14 +1,14 @@
-package at.dotpoint.dot3d.geometry.shader;
+package haxe.at.dotpoint.dot3d.geometry.shader;
 
-import at.dotpoint.display.register.RegisterHelper;
-import at.dotpoint.display.register.RegisterType;
-import at.dotpoint.display.rendering.shader.ShaderSignature;
-import at.dotpoint.dot3d.render.shader.Stage3DShader;
-import at.dotpoint.dot3d.render.shader.Stage3DShaderContext;
-import at.dotpoint.math.vector.IMatrix44;
-import at.dotpoint.math.vector.IVector3;
-import at.dotpoint.math.vector.Matrix44;
-import at.dotpoint.math.vector.Vector3;
+import haxe.at.dotpoint.display.register.RegisterHelper;
+import haxe.at.dotpoint.display.register.RegisterType;
+import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
+import haxe.at.dotpoint.dot3d.render.shader.Stage3DShader;
+import haxe.at.dotpoint.dot3d.render.shader.Stage3DShaderContext;
+import haxe.at.dotpoint.math.vector.IMatrix44;
+import haxe.at.dotpoint.math.vector.IVector3;
+import haxe.at.dotpoint.math.vector.Matrix44;
+import haxe.at.dotpoint.math.vector.Vector3;
 import flash.display3D.Context3DTriangleFace;
 import hxsl.Shader;
 

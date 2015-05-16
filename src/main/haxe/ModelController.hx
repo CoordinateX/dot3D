@@ -1,15 +1,15 @@
-package ;
+package haxe;
 
-import at.dotpoint.core.KeyInput;
-import at.dotpoint.display.camera.ICameraEntity;
-import at.dotpoint.display.IDisplayObject;
-import at.dotpoint.dot3d.camera.Stage3DCamera;
-import at.dotpoint.math.MathUtil;
-import at.dotpoint.math.vector.IQuaternion;
-import at.dotpoint.math.vector.IVector3;
-import at.dotpoint.math.vector.Quaternion;
-import at.dotpoint.math.vector.Vector3;
-import at.dotpoint.spatial.transform.Transform;
+import haxe.at.dotpoint.core.KeyInput;
+import haxe.at.dotpoint.display.camera.ICameraEntity;
+import haxe.at.dotpoint.display.IDisplayObject;
+import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
+import haxe.at.dotpoint.math.MathUtil;
+import haxe.at.dotpoint.math.vector.IQuaternion;
+import haxe.at.dotpoint.math.vector.IVector3;
+import haxe.at.dotpoint.math.vector.Quaternion;
+import haxe.at.dotpoint.math.vector.Vector3;
+import haxe.at.dotpoint.spatial.transform.Transform;
 import flash.events.KeyboardEvent;
 import flash.Lib;
 import flash.ui.Keyboard;

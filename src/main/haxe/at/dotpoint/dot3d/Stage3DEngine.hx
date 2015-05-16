@@ -1,14 +1,14 @@
-package at.dotpoint.dot3d;
-import at.dotpoint.display.DisplayEngine;
-import at.dotpoint.display.IDisplayObject;
-import at.dotpoint.display.rendering.IRenderer;
-import at.dotpoint.display.Sprite;
-import at.dotpoint.dot3d.geometry.shader.DiffuseColorShader;
-import at.dotpoint.dot3d.render.renderable.Stage3DMeshBuffer;
-import at.dotpoint.dot3d.render.renderable.Stage3DRenderable;
-import at.dotpoint.dot3d.render.Stage3DContext;
-import at.dotpoint.dot3d.render.Stage3DRenderer;
-import at.dotpoint.dot3d.scene.Stage3DScene;
+package haxe.at.dotpoint.dot3d;
+import haxe.at.dotpoint.display.DisplayEngine;
+import haxe.at.dotpoint.display.IDisplayObject;
+import haxe.at.dotpoint.display.rendering.IRenderer;
+import haxe.at.dotpoint.display.Sprite;
+import haxe.at.dotpoint.dot3d.geometry.shader.DiffuseColorShader;
+import haxe.at.dotpoint.dot3d.render.renderable.Stage3DMeshBuffer;
+import haxe.at.dotpoint.dot3d.render.renderable.Stage3DRenderable;
+import haxe.at.dotpoint.dot3d.render.Stage3DContext;
+import haxe.at.dotpoint.dot3d.render.Stage3DRenderer;
+import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
 
 /**
  * ...
