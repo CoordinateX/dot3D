@@ -1,0 +1,5 @@
+include ":dotCore"
+include ":dot2D"
+
+project(":dotCore").projectDir = file("../dotCore")
+project(":dot2D").projectDir = file("../dot2D")

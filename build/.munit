@@ -1,7 +1,0 @@
-version=2.1.0
-src=src/test
-bin=../bin
-report=../bin/report
-hxml=build_test.hxml
-classPaths=src/main
-resources=res/main

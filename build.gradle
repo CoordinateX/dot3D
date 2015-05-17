@@ -1,36 +1,47 @@
-task copySource(type:Copy) {
-	from 'src'
-	from 'lib'
-	from '../dotCore/src'
-	from '../dot2D/src'
-	into 'build/src'
+apply from: '../dotGradle/header.gradle'
+
+group = "dotpoint"
+version = "1.0.0"
+
+repositories {
+	mavenLocal()
 }
 
-task copyResource(type:Copy) {
-	from 'res'
-	from '../dotCore/res'
-	from '../dot2D/res'
-	into 'build/res'
-}
-
-task compileDocumentation(type:Exec){
-	dependsOn copySource
-	dependsOn copyResource
+dependencies {
+	source elastic("dotpoint:dot2D:1.0.+","dot2D")
 	
-	workingDir 'build'
-	commandLine 'haxe', 'build_doc.hxml'
 }
 
-task generateDocumentation(type:Exec) {
-	dependsOn compileDocumentation
+apply from: '../dotGradle/methods.gradle'
 
-	commandLine 'haxelib', 'run', 'dox', '-i', 'bin/doc/', '-o', 'bin/doc/html'
-}
+// /////////////////////////////////////////////// //
+// /////////////////////////////////////////////// //
 
-task generateTestReport(type:Exec) {
-	dependsOn copySource
-	dependsOn copyResource
+tasks.compileDocumentation {
+	inputs.files { 
+		project.fileTree( dir:'build', includes: ['src/main/**/*', 'res/main/**/*', 'lib/**/*'] ) 
+	}
 	
+	outputs.files( "build/doc/flash.xml" )
+}
+
+tasks.compileDocumentation.doFirst {	
 	workingDir 'build'
-	commandLine 'haxelib', 'run', 'munit', 'test', 'build_test.hxml'
+	commandLine "haxe",	
+		"-cp", "src/main",
+		"-cp", "lib/hxsl",
+		"-lib", "format",
+		"-D", "doc-gen",
+		"-D", "doc",
+		"-D", "dotpoint",
+		"--macro", "allowPackage('sys')",
+		"--macro", "include('flash.at.dotpoint')",
+		"--macro", "include('haxe.at.dotpoint')",
+		"--macro", "include('haxe.org.ds.VectorSort')",
+		"--no-output",
+		"--each",
+		"--next",
+		"-xml", "doc/flash.xml",
+		"-swf", "doc/flash.swf",
+		"-swf-version", "11"
 }
