@@ -16,9 +16,9 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="lib\hxsl" />
-    <class path="src\main" />
-    <class path="..\dot2D\src\main" />
     <class path="..\dotCore\src\main" />
+    <class path="..\dot2D\src\main" />
+    <class path="src\main" />
     <class path="src\samples\simple" />
   </classpaths>
   <!-- Build options -->
@@ -26,14 +26,14 @@
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="" />
+    <option mainClass="Main" />
     <option enabledebug="True" />
-    <option additional="-debug&#xA;-D fdb&#xA;-D dotpoint&#xA;-resource ../dot2D/res/flash/dshader.pbj@dshader" />
+    <option additional="-debug&#xA;-D fdb&#xA;-D dotpoint&#xA;-resource ../dot2D/res/main/flash/dshader.pbj@dshader&#xA;--macro allowPackage('sys')" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
-    <library name="munit" />
-    <library name="hamcrest" />
+    <library name="" />
+    <library name="" />
     <library name="format" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->

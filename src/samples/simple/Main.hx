@@ -1,9 +1,9 @@
-package haxe;
+package;
 
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
-import haxe.at.dotpoint.display.text.TextFormat;
-import haxe.at.dotpoint.display.text.TextRenderData;
-import haxe.at.dotpoint.display.TextField;
+import haxe.at.dotpoint.display.renderable.text.TextFormat;
+import haxe.at.dotpoint.display.renderable.text.TextRenderData;
+import haxe.at.dotpoint.display.renderable.text.TextField;
 import haxe.at.dotpoint.dot2d.scene.Stage2DScene;
 import haxe.at.dotpoint.dot2d.Stage2DEngine;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
@@ -13,6 +13,7 @@ import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import flash.events.Event;
 import flash.Lib;
+import haxe.ModelController;
 
 /**
  * ...

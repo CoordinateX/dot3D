@@ -1,9 +1,8 @@
-package haxe.at.dotpoint.dot3d.render.shader;
+package flash.at.dotpoint.dot3d.rendering.shader;
 
-import haxe.at.dotpoint.display.register.RegisterContext;
-import haxe.at.dotpoint.display.register.RegisterFormat;
-import haxe.at.dotpoint.display.register.RegisterHelper;
-import haxe.at.dotpoint.display.register.RegisterType;
+import haxe.at.dotpoint.display.rendering.register.RegisterFormat;
+import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
+import haxe.at.dotpoint.display.rendering.register.RegisterType;
 import haxe.at.dotpoint.display.rendering.shader.IShader;
 import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
 import hxsl.Data;
@@ -18,13 +17,13 @@ import hxsl.Shader.ShaderInstance;
  */
 @:access(hxsl.Shader)
 //
-class Stage3DShader implements IShader
+class Flash3DShader implements IShader
 {
 	
 	/**
 	 * settings applied before rendering the material
 	 */
-	public var contextSetting:Stage3DShaderContext;	
+	public var contextSetting:Flash3DShaderContext;	
 	
 	/**
 	 * 

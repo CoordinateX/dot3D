@@ -1,17 +1,15 @@
-package haxe.at.dotpoint.dot3d.render.renderable;
+package flash.at.dotpoint.dot3d.rendering.renderable;
 
+import flash.at.dotpoint.dot3d.rendering.Flash3DRenderer;
+import flash.at.dotpoint.dot3d.rendering.shader.Flash3DShader;
 import haxe.at.dotpoint.core.entity.Component;
 import haxe.at.dotpoint.display.DisplayEngine;
-import haxe.at.dotpoint.display.geometry.material.IMaterial;
-import haxe.at.dotpoint.display.geometry.material.MaterialSignature;
-import haxe.at.dotpoint.display.geometry.mesh.IMeshData;
-import haxe.at.dotpoint.display.geometry.ModelRenderData;
-import haxe.at.dotpoint.display.IDisplayObject;
-import haxe.at.dotpoint.display.register.RegisterHelper;
+import haxe.at.dotpoint.display.renderable.geometry.material.IMaterial;
+import haxe.at.dotpoint.display.renderable.geometry.material.MaterialSignature;
+import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
+import haxe.at.dotpoint.display.renderable.IDisplayObject;
+import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
 import haxe.at.dotpoint.display.rendering.renderable.IEntityRenderer;
-import haxe.at.dotpoint.display.rendering.shader.IShader;
-import haxe.at.dotpoint.dot3d.render.shader.Stage3DShader;
-import haxe.at.dotpoint.dot3d.render.Stage3DRenderer;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.at.dotpoint.math.geom.Space;
 import haxe.at.dotpoint.math.vector.IMatrix44;
@@ -20,7 +18,7 @@ import haxe.at.dotpoint.math.vector.IMatrix44;
  * ...
  * @author RK
  */
-class Stage3DRenderable extends Component<IDisplayObject> implements IEntityRenderer<IDisplayObject>
+class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRenderer<IDisplayObject>
 {
 	
 	/**
@@ -31,14 +29,14 @@ class Stage3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	/**
 	 * 
 	 */
-	public var shader:Stage3DShader;
+	public var shader:Flash3DShader;
 	
 	// ------------- //
 	
 	/**
 	 * 
 	 */
-	public var buffer:Stage3DMeshBuffer;
+	public var buffer:Flash3DMeshBuffer;
 	
 	/**
 	 * 
@@ -49,7 +47,7 @@ class Stage3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( shader:Stage3DShader, buffer:Stage3DMeshBuffer ) 
+	public function new( shader:Flash3DShader, buffer:Flash3DMeshBuffer ) 
 	{
 		super();
 		
@@ -94,7 +92,7 @@ class Stage3DRenderable extends Component<IDisplayObject> implements IEntityRend
 		
 		this.applyShaderInput();
 		
-		var renderer:Stage3DRenderer = Stage3DEngine.instance.getRenderer();		
+		var renderer:Flash3DRenderer = Stage3DEngine.instance.getRenderer();		
 			renderer.selectShader( this.shader );			
 			renderer.selectShaderContext( this.shader.contextSetting );
 			renderer.selectMesh( this.model.mesh, this.buffer );		

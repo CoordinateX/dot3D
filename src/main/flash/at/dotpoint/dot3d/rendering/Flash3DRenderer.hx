@@ -1,19 +1,20 @@
-package haxe.at.dotpoint.dot3d.render;
+package flash.at.dotpoint.dot3d.rendering;
 
-import haxe.at.dotpoint.display.geometry.mesh.IMeshData;
-import haxe.at.dotpoint.display.geometry.mesh.MeshSignature;
-import haxe.at.dotpoint.display.IDisplayObject;
-import haxe.at.dotpoint.display.register.RegisterFormat;
-import haxe.at.dotpoint.display.register.RegisterType;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
+import haxe.at.dotpoint.display.renderable.IDisplayObject;
+import haxe.at.dotpoint.display.rendering.register.RegisterFormat;
+import haxe.at.dotpoint.display.rendering.register.RegisterType;
 import haxe.at.dotpoint.display.rendering.IRenderer;
 import haxe.at.dotpoint.display.scene.IScene;
-import haxe.at.dotpoint.dot3d.render.renderable.Stage3DMeshBuffer;
-import haxe.at.dotpoint.dot3d.render.shader.Stage3DShader;
-import haxe.at.dotpoint.dot3d.render.shader.Stage3DShaderContext;
+import flash.at.dotpoint.dot3d.rendering.renderable.Flash3DMeshBuffer;
+import flash.at.dotpoint.dot3d.rendering.shader.Flash3DShader;
+import flash.at.dotpoint.dot3d.rendering.shader.Flash3DShaderContext;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DVertexBufferFormat;
 import flash.utils.Endian;
+import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.io.BytesData;
 import hxsl.Shader.ShaderInstance;
 
@@ -21,7 +22,7 @@ import hxsl.Shader.ShaderInstance;
  * ...
  * @author RK
  */
-class Stage3DRenderer implements IRenderer
+class Flash3DRenderer implements IRenderer
 {
 	
 	/**
@@ -32,12 +33,12 @@ class Stage3DRenderer implements IRenderer
 	/**
 	 * 
 	 */
-	private var currentMesh:Stage3DMeshBuffer;
+	private var currentMesh:Flash3DMeshBuffer;
 	
 	/**
 	 * 
 	 */
-	private var currentContext:Stage3DShaderContext;
+	private var currentContext:Flash3DShaderContext;
 	
 	/**
 	 * 
@@ -97,7 +98,7 @@ class Stage3DRenderer implements IRenderer
 	/**
 	 * 
 	 */
-	public function selectShader( shader:Stage3DShader ):Void 
+	public function selectShader( shader:Flash3DShader ):Void 
 	{
 		var instance:ShaderInstance = shader.getShaderInstance(); 	// call only once before drawing!
 		
@@ -177,7 +178,7 @@ class Stage3DRenderer implements IRenderer
 	/**
 	 * 
 	 */
-	public function selectShaderContext( settings:Stage3DShaderContext ):Void 
+	public function selectShaderContext( settings:Flash3DShaderContext ):Void 
 	{
 		if( this.currentContext == null )
 		{
@@ -208,7 +209,7 @@ class Stage3DRenderer implements IRenderer
 	 * 
 	 * @param	mesh
 	 */
-	public function selectMesh( mesh:IMeshData, buffer:Stage3DMeshBuffer ):Void
+	public function selectMesh( mesh:IMeshData, buffer:Flash3DMeshBuffer ):Void
 	{
 		if(!buffer.isAllocated )
 			buffer.allocate( this.getContext3D(), mesh );
@@ -221,7 +222,7 @@ class Stage3DRenderer implements IRenderer
 	 * 
 	 * @param	mesh
 	 */
-	private function setVertexBuffer( buffer:Stage3DMeshBuffer ):Void
+	private function setVertexBuffer( buffer:Flash3DMeshBuffer ):Void
 	{
 		var signature:MeshSignature = buffer.signature;
 		var context3D:Context3D = this.getContext3D();

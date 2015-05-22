@@ -1,47 +1,152 @@
-apply from: '../dotGradle/header.gradle'
-
 group = "dotpoint"
 version = "1.0.0"
 
-repositories {
+// /////////////////////////////////////////////// //
+// /////////////////////////////////////////////// //
+
+//
+apply plugin:'maven'
+
+//
+ext.elastic = { notation, projectName ->
+
+	if( allprojects.find{ it.name == projectName } ) 
+	{
+		return  dependencies.create(notation) //project(projectName)
+	} 
+	else 
+	{
+		return  dependencies.create(notation)
+	}
+}
+
+task createSourceArtifact(type:Zip) {
+	from( '.' ) { 
+		 include 'src/main/**/*'
+		 include 'res/main/**/*' 
+	 } 
+}
+
+// /////////////////////////////////////////////// //
+// /////////////////////////////////////////////// //
+
+repositories
+{
 	mavenLocal()
 }
 
-dependencies {
-	source elastic("dotpoint:dot2D:1.0.+","dot2D")
-	
+configurations 
+{
+	source {
+		description = 'project source, excluding tests'
+		transitive = true
+	}
 }
 
-apply from: '../dotGradle/methods.gradle'
+artifacts {
+	source file: createSourceArtifact.archivePath, type: 'zip', builtBy: createSourceArtifact
+}
+
+dependencies {
+	source elastic( "dotpoint:dot2D:1.0.+", "dot2D" )	
+}
 
 // /////////////////////////////////////////////// //
 // /////////////////////////////////////////////// //
 
-tasks.compileDocumentation {
+task publishSource(type:Upload) {
+	description "creates source-code artifact using 'createSourceArtifact' and publishes it to the repository"
+	
+	configuration = configurations.source
+	
+	repositories {
+		mavenDeployer {
+			repository(url: mavenLocal().url)	
+			
+			pom.withXml {
+			
+				def dependencies = asNode().appendNode('dependencies')	
+				
+				configurations.source.getResolvedConfiguration().getFirstLevelModuleDependencies().each {
+				
+					def dependency = dependencies.appendNode('dependency')
+						dependency.appendNode('groupId', 	it.moduleGroup)
+						dependency.appendNode('artifactId', it.moduleName)
+						dependency.appendNode('version', 	it.moduleVersion)
+						dependency.appendNode('packaging', 	'zip')
+				}
+			}
+		}
+	}
+}
+
+// /////////////////////////////////////////////// //
+// /////////////////////////////////////////////// //
+
+//
+task installProject(type:Copy) {		
+	description "copies required sources into the build folder"
+	
+	from( '.' ) { 
+		 include 'src/main/**/*'
+		 include 'res/main/**/*' 
+		 include 'lib/**/*' 
+	}
+	
+	configurations.source.each {
+		if( it.name.endsWith('.zip') ) {
+			from zipTree( it )
+		}		
+	}
+	
+	into 'build'
+}
+
+//
+task compileDocumentation(type:Exec) {
+	description "compiles a platform specific doc.xml using hxml from which the docs can be generated"
+	dependsOn installProject
+
 	inputs.files { 
 		project.fileTree( dir:'build', includes: ['src/main/**/*', 'res/main/**/*', 'lib/**/*'] ) 
 	}
 	
-	outputs.files( "build/doc/flash.xml" )
+	outputs.files {
+		project.fileTree( dir:'build/doc', includes: ['*.xml'] ) 
+	}	
+	
+	doFirst {	
+		workingDir 'build'
+		commandLine "haxe",	
+			"-cp", "src/main",
+			"-cp", "lib/hxsl",
+			"-lib", "format",
+			"-D", "doc-gen",
+			"-D", "doc",
+			"-D", "dotpoint",
+			"--macro", "allowPackage('sys')",
+			"--macro", "include('flash.at.dotpoint')",
+			"--macro", "include('haxe.at.dotpoint')",
+			"--macro", "include('haxe.org.ds.VectorSort')",
+			"--no-output",
+			"--each",
+			"--next",
+			"-xml", "doc/flash.xml",
+			"-swf", "doc/flash.swf",
+			"-swf-version", "11"		
+	}
 }
 
-tasks.compileDocumentation.doFirst {	
-	workingDir 'build'
-	commandLine "haxe",	
-		"-cp", "src/main",
-		"-cp", "lib/hxsl",
-		"-lib", "format",
-		"-D", "doc-gen",
-		"-D", "doc",
-		"-D", "dotpoint",
-		"--macro", "allowPackage('sys')",
-		"--macro", "include('flash.at.dotpoint')",
-		"--macro", "include('haxe.at.dotpoint')",
-		"--macro", "include('haxe.org.ds.VectorSort')",
-		"--no-output",
-		"--each",
-		"--next",
-		"-xml", "doc/flash.xml",
-		"-swf", "doc/flash.swf",
-		"-swf-version", "11"
+//
+task generateDocumentation(type:Exec) {
+	description "generates html documentation from all platform specific doc.xml found"
+	dependsOn compileDocumentation		
+	
+	inputs.files compileDocumentation.outputs.files	
+	outputs.dir( "build/doc/html" )	
+	
+	doFirst {	
+		workingDir 'build'
+		commandLine 'haxelib', 'run', 'dox', '-i', 'doc/', '-o', 'doc/html'
+	}
 }

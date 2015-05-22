@@ -1,14 +1,14 @@
 package haxe.at.dotpoint.dot3d.primitives;
-import haxe.at.dotpoint.display.DisplayObject;
-import haxe.at.dotpoint.display.geometry.material.IMaterial;
-import haxe.at.dotpoint.display.geometry.mesh.IMeshData;
-import haxe.at.dotpoint.display.geometry.mesh.MeshData;
-import haxe.at.dotpoint.display.geometry.mesh.util.editing.MeshEditingTools;
-import haxe.at.dotpoint.display.geometry.ModelRenderData;
-import haxe.at.dotpoint.display.register.RegisterHelper;
+
+import haxe.at.dotpoint.display.renderable.geometry.material.IMaterial;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshEditingTools;
+import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
+import haxe.at.dotpoint.display.renderable.geometry.Sprite;
+import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
 import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
-import haxe.at.dotpoint.display.Sprite;
-import haxe.at.dotpoint.dot2d.geometry.material.DiffuseColorMaterial;
+import haxe.at.dotpoint.display.material.DiffuseColorMaterial;
 
 /**
  * ...

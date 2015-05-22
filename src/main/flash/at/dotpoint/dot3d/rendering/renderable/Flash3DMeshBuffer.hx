@@ -1,7 +1,8 @@
-package haxe.at.dotpoint.dot3d.render.renderable;
-import haxe.at.dotpoint.display.geometry.mesh.IMeshData;
-import haxe.at.dotpoint.display.geometry.mesh.MeshSignature;
-import haxe.at.dotpoint.display.register.RegisterType;
+package flash.at.dotpoint.dot3d.rendering.renderable;
+
+import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
+import haxe.at.dotpoint.display.rendering.register.RegisterType;
 import flash.display3D.Context3D;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.VertexBuffer3D;
@@ -11,7 +12,7 @@ import flash.Vector;
  * ...
  * @author RK
  */
-class Stage3DMeshBuffer
+class Flash3DMeshBuffer
 {
 	
 	/**

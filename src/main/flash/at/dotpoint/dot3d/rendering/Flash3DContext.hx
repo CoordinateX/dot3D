@@ -1,4 +1,4 @@
-package haxe.at.dotpoint.dot3d.render;
+package flash.at.dotpoint.dot3d.rendering;
 
 import haxe.at.dotpoint.core.dispatcher.event.Event;
 import haxe.at.dotpoint.core.dispatcher.event.EventDispatcher;
@@ -6,7 +6,7 @@ import haxe.at.dotpoint.core.dispatcher.event.generic.ErrorEvent;
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import haxe.at.dotpoint.core.lazy.event.LazyEvent;
 import haxe.at.dotpoint.display.event.DisplayEvent;
-import haxe.at.dotpoint.display.IDisplayObject;
+import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.display.rendering.context.IRenderContext;
 import haxe.at.dotpoint.display.rendering.context.RenderSettings;
 import haxe.at.dotpoint.display.rendering.context.RenderViewport;
@@ -22,7 +22,7 @@ import flash.Lib;
  * ...
  * @author RK
  */
-class Stage3DContext extends EventDispatcher implements IRenderContext
+class Flash3DContext extends EventDispatcher implements IRenderContext
 {
 
 	/**

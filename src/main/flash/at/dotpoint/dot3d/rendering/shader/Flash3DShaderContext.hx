@@ -1,4 +1,4 @@
-package haxe.at.dotpoint.dot3d.render.shader;
+package flash.at.dotpoint.dot3d.rendering.shader;
 
 import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DCompareMode;
@@ -11,7 +11,7 @@ import flash.display3D.Context3DTriangleFace;
  *
  * @author Gerald Hattensauer
  */
-class Stage3DShaderContext
+class Flash3DShaderContext
 {
 
 	/**
@@ -50,9 +50,9 @@ class Stage3DShaderContext
 	 * 
 	 * @return
 	 */
-	public function clone():Stage3DShaderContext
+	public function clone():Flash3DShaderContext
 	{
-		var settings:Stage3DShaderContext = new Stage3DShaderContext();		
+		var settings:Flash3DShaderContext = new Flash3DShaderContext();		
 			settings.blendSRC 		= this.blendSRC;
 			settings.blendDST 		= this.blendDST;			
 			settings.depthTest 		= this.depthTest;
