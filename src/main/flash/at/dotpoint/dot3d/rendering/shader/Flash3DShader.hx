@@ -216,6 +216,7 @@ class Flash3DShader implements IShader
 			case VarType.TFloat3:	return RegisterFormat.TFLOAT_3;
 			case VarType.TFloat4:	return RegisterFormat.TFLOAT_4;
 			case VarType.TMatrix:	return RegisterFormat.TMATRIX_44;
+			case VarType.TTexture:	return RegisterFormat.TTexture;
 			
 			default:
 				throw "Shader VarType not supported: " + varType;

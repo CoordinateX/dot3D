@@ -1,19 +1,21 @@
 package flash.at.dotpoint.dot3d.rendering;
 
-import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
-import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
-import haxe.at.dotpoint.display.renderable.IDisplayObject;
-import haxe.at.dotpoint.display.rendering.register.RegisterFormat;
-import haxe.at.dotpoint.display.rendering.register.RegisterType;
-import haxe.at.dotpoint.display.rendering.IRenderer;
-import haxe.at.dotpoint.display.scene.IScene;
 import flash.at.dotpoint.dot3d.rendering.renderable.Flash3DMeshBuffer;
+import flash.at.dotpoint.dot3d.rendering.renderable.Flash3DTextureBuffer;
 import flash.at.dotpoint.dot3d.rendering.shader.Flash3DShader;
 import flash.at.dotpoint.dot3d.rendering.shader.Flash3DShaderContext;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DVertexBufferFormat;
+import flash.display3D.textures.Texture;
 import flash.utils.Endian;
+import haxe.at.dotpoint.display.renderable.bitmap.BitmapData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
+import haxe.at.dotpoint.display.renderable.IDisplayObject;
+import haxe.at.dotpoint.display.rendering.IRenderer;
+import haxe.at.dotpoint.display.rendering.register.RegisterFormat;
+import haxe.at.dotpoint.display.rendering.register.RegisterType;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.io.BytesData;
 import hxsl.Shader.ShaderInstance;
@@ -48,7 +50,7 @@ class Flash3DRenderer implements IRenderer
 	/**
 	 * 
 	 */
-	//private var currentTextures:Array<Texture>;
+	private var currentTextures:Array<Flash3DTextureBuffer>;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -56,7 +58,7 @@ class Flash3DRenderer implements IRenderer
 	
 	public function new() 
 	{
-		
+		this.currentTextures = new Array<Flash3DTextureBuffer>();
 	}
 	
 	// ************************************************************************ //
@@ -146,20 +148,20 @@ class Flash3DRenderer implements IRenderer
 		this.currentShader.varsChanged = false;
 		
 		this.getContext3D().setProgramConstantsFromVector( Context3DProgramType.VERTEX,   0, this.currentShader.vertexVars.toData()   );
-		this.getContext3D().setProgramConstantsFromVector( Context3DProgramType.FRAGMENT, 0, this.currentShader.fragmentVars.toData() );
+		this.getContext3D().setProgramConstantsFromVector( Context3DProgramType.FRAGMENT, 0, this.currentShader.fragmentVars.toData() );		
 		
 		// --------------------------- //
 		
-		/*for( i in 0...this.currentShader.textures.length ) 
+		for( i in 0...this.currentShader.textures.length ) 
 		{
-			var texture:Texture = this.currentShader.textures[i];
+			var texture:Flash3DTextureBuffer = this.currentShader.textures[i];
 			
 			if( texture != this.currentTextures[i] ) 
 			{
-				if( !texture.isAllocated )
-					texture.allocate( this.context );
+				if(!texture.isAllocated )
+					texture.allocate( this.getContext3D() );
 				
-				this.getContext3D().setTextureAt( i, texture.texture );
+				this.getContext3D().setTextureAt( i, texture.buffer );
 				this.currentTextures[i] = texture;
 			}
 		}	
@@ -168,8 +170,8 @@ class Flash3DRenderer implements IRenderer
 		{
 			this.getContext3D().setTextureAt( this.currentTextures.length - 1, null );
 			this.currentTextures.pop();
-		}*/
-	}
+		}
+	}	
 	
 	// ------------------------------------------------------------------------ //
 	// ------------------------------------------------------------------------ //

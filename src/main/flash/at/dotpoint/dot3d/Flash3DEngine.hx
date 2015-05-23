@@ -4,7 +4,7 @@ import flash.at.dotpoint.dot3d.rendering.Flash3DContext;
 import flash.at.dotpoint.dot3d.rendering.Flash3DRenderer;
 import flash.at.dotpoint.dot3d.rendering.renderable.Flash3DMeshBuffer;
 import flash.at.dotpoint.dot3d.rendering.renderable.Flash3DRenderable;
-import flash.at.dotpoint.dot3d.shader.DiffuseColorShader;
+import flash.at.dotpoint.dot3d.shader.DiffuseShader;
 import haxe.at.dotpoint.display.DisplayEngine;
 import haxe.at.dotpoint.display.renderable.geometry.Sprite;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
@@ -90,7 +90,7 @@ class Flash3DEngine extends DisplayEngine
 	{
 		if( Std.is( entity, Sprite ) )
 		{
-			entity.setRenderer( new Flash3DRenderable( new DiffuseColorShader(), new Flash3DMeshBuffer() ) );
+			entity.setRenderer( new Flash3DRenderable( new DiffuseShader(), new Flash3DMeshBuffer() ) );
 		}
 	}
 	

@@ -36,7 +36,7 @@ class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	/**
 	 * 
 	 */
-	public var buffer:Flash3DMeshBuffer;
+	public var mesh:Flash3DMeshBuffer;
 	
 	/**
 	 * 
@@ -47,12 +47,12 @@ class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( shader:Flash3DShader, buffer:Flash3DMeshBuffer ) 
+	public function new( shader:Flash3DShader, mesh:Flash3DMeshBuffer ) 
 	{
 		super();
 		
-		this.shader = shader;
-		this.buffer = buffer;		
+		this.shader 	= shader;
+		this.mesh 		= mesh;		
 	}
 	
 	// ************************************************************************ //
@@ -85,7 +85,7 @@ class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	 */
 	public function render():Void
 	{
-		if( this.shader == null || this.buffer == null )
+		if( this.shader == null || this.mesh == null )
 			throw "Renderable not setup correctly";
 		
 		// --------------- //
@@ -95,8 +95,9 @@ class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRend
 		var renderer:Flash3DRenderer = Stage3DEngine.instance.getRenderer();		
 			renderer.selectShader( this.shader );			
 			renderer.selectShaderContext( this.shader.contextSetting );
-			renderer.selectMesh( this.model.mesh, this.buffer );		
-			renderer.getContext3D().drawTriangles( this.buffer.indexBuffer );
+			renderer.selectMesh( this.model.mesh, this.mesh );		
+		
+		renderer.getContext3D().drawTriangles( this.mesh.indexBuffer );
 	}
 	
 	// ************************************************************************ //

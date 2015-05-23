@@ -7,6 +7,7 @@ import flash.display3D.Context3D;
 import flash.display3D.IndexBuffer3D;
 import flash.display3D.VertexBuffer3D;
 import flash.Vector;
+import haxe.at.dotpoint.logger.Log;
 
 /**
  * ...
@@ -64,7 +65,7 @@ class Flash3DMeshBuffer
 	{
 		if ( this.isAllocated ) 
 		{
-			trace( "already allocated" );
+			Log.warn( "already allocated: " + Log.getCallstack() );
 			this.dispose();
 		}
 		
