@@ -48,8 +48,8 @@ class PerspectiveLens extends CameraLens
 		this.viewport.addListener( DisplayEvent.VIEWPORT_RESIZE, this.onProjectionChanged );
 		
 		this.zNear 	= 1;
-		this.zFar 	= 20;
-		this.yFOV 	= yFOV != null ? yFOV : 90 * MathUtil.DEG_RAD;
+		this.zFar 	= 30;
+		this.yFOV 	= yFOV != null ? yFOV : 45 * MathUtil.DEG_RAD;
 	}
 	
 	// ************************************************************************ //
