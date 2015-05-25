@@ -129,9 +129,13 @@ class Main
 		// ------------- //
 		
 		this.bitmap = new Bitmap( new BitmapRenderData( null, cast this.loader.result ) );		
+		this.bitmap.transform.scale.y = 0.5;	
+		this.bitmap.transform.scale.x = 0.5;	
+		this.bitmap.transform.position.x = 400;	
 		
 		this.text = new TextField( new TextRenderData( null, new TextFormat( "Arial" ) ) );
 		this.text.text = "some little text making little little what?";
+		this.text.transform.position.y += 100;
 		
 		this.cube2D = new Cube( 60, 60, 60 );
 		this.cube2D.transform.position.x += 100;
@@ -189,7 +193,7 @@ class Main
 			this.cube3D2.material = new DiffuseTextureMaterial( new Texture( cast this.loader.result ) );
 		}
 		
-		Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text,/*this.bitmap*/] );
+		Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text,this.bitmap] );
 		Stage3DEngine.instance.getRenderer().render( [this.cube3D,this.cube3D2] );
 	}
 }

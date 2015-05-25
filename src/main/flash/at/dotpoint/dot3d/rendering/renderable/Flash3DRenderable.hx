@@ -21,7 +21,7 @@ import haxe.at.dotpoint.math.vector.IMatrix44;
  */
 @:access(haxe.at.dotpoint.display.renderable.geometry.material.IMaterial)
 @:access(haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData)
- //
+//
 class Flash3DRenderable extends ARenderable<IDisplayObject,ModelRenderData> implements IEntityRenderer<IDisplayObject>
 {
 	
