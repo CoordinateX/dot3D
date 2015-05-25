@@ -1,6 +1,7 @@
 package haxe.at.dotpoint.dot3d.material;
 
 import haxe.at.dotpoint.display.renderable.bitmap.BitmapData;
+import haxe.at.dotpoint.display.renderable.geometry.material.AMaterial;
 import haxe.at.dotpoint.display.renderable.geometry.material.IMaterial;
 import haxe.at.dotpoint.display.renderable.geometry.material.MaterialSignature;
 import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
@@ -12,15 +13,8 @@ import haxe.at.dotpoint.math.vector.Vector3;
  * ...
  * @author RK
  */
-class DiffuseTextureMaterial implements IMaterial
+class DiffuseTextureMaterial extends AMaterial implements IMaterial
 {
-
-	/**
-	 * 
-	 */
-	private var signature:MaterialSignature;
-	
-	// ------------ //
 	
 	/**
 	 * 
@@ -33,6 +27,8 @@ class DiffuseTextureMaterial implements IMaterial
 	
 	public function new( diffuse:Texture ) 
 	{
+		super();
+		
 		this.signature = new MaterialSignature( "DiffuseTexture", 1 );
 		this.signature.addRegisterType( RegisterHelper.M_TEXTURE_DIFFUSE );
 		
@@ -42,15 +38,6 @@ class DiffuseTextureMaterial implements IMaterial
 	// ************************************************************************ //
 	// Methods
 	// ************************************************************************ //	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	inline public function getMaterialSignature():MaterialSignature
-	{
-		return this.signature;
-	}
 
 	/**
 	 * 

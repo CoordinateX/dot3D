@@ -31,6 +31,8 @@ class Main
 	
 	// ---------------- //
 	
+	private var counter:Int;
+	
 	/**
 	 * 
 	 */
@@ -51,6 +53,7 @@ class Main
 	 */
 	private var cube2D:Cube;
 	private var cube3D:Cube;
+	private var cube3D2:Cube;
 	
 	/**
 	 * 
@@ -95,6 +98,8 @@ class Main
 	{	
 		Stage2DEngine.instance.initialize( this.onContextComplete );
 		Stage3DEngine.instance.initialize( this.onContextComplete );
+		
+		this.counter = 0;
 	}
 	
 	/**
@@ -151,12 +156,18 @@ class Main
 		
 		// --------------- //
 		
+		this.cube3D2 = new Cube( 0.5, 0.5, 0.5 );
+		this.cube3D2.transform.position.z -= 6;
+		
+		
 		this.cube3D = new Cube();
 		this.cube3D.material = new DiffuseTextureMaterial( new Texture( cast this.loader.result ) );
 		
 		this.cube3D.transform.position.z -= 6;
 		
+		
 		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cube3D.getSpatialNode() );
+		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cube3D2.getSpatialNode() );
 		
 	}
 
@@ -170,8 +181,16 @@ class Main
 		this.controller.update( this.cube2D );
 		this.controller.update( this.cube3D );
 		
+		this.cube3D2.transform.position.x = Math.sin( this.counter++ / 100 );
+		this.cube3D2.transform.position.y = Math.cos( this.counter / 100 );
+		
+		if( this.counter == 200 )
+		{
+			this.cube3D2.material = new DiffuseTextureMaterial( new Texture( cast this.loader.result ) );
+		}
+		
 		Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text,/*this.bitmap*/] );
-		Stage3DEngine.instance.getRenderer().render( [this.cube3D] );
+		Stage3DEngine.instance.getRenderer().render( [this.cube3D,this.cube3D2] );
 	}
 }
 

@@ -2,13 +2,14 @@ package flash.at.dotpoint.dot3d.rendering.renderable;
 
 import flash.at.dotpoint.dot3d.rendering.Flash3DRenderer;
 import flash.at.dotpoint.dot3d.rendering.shader.Flash3DShader;
-import haxe.at.dotpoint.core.entity.Component;
+import haxe.at.dotpoint.core.lazy.LazyStatus;
 import haxe.at.dotpoint.display.DisplayEngine;
 import haxe.at.dotpoint.display.renderable.geometry.material.IMaterial;
 import haxe.at.dotpoint.display.renderable.geometry.material.MaterialSignature;
 import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
+import haxe.at.dotpoint.display.rendering.renderable.ARenderable;
 import haxe.at.dotpoint.display.rendering.renderable.IEntityRenderer;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.at.dotpoint.math.geom.Space;
@@ -18,30 +19,21 @@ import haxe.at.dotpoint.math.vector.IMatrix44;
  * ...
  * @author RK
  */
-class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRenderer<IDisplayObject>
+@:access(haxe.at.dotpoint.display.renderable.geometry.material.IMaterial)
+@:access(haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData)
+ //
+class Flash3DRenderable extends ARenderable<IDisplayObject,ModelRenderData> implements IEntityRenderer<IDisplayObject>
 {
 	
 	/**
 	 * 
 	 */
-	public var engine:DisplayEngine;
+	public var shader:Flash3DShader;	
 	
 	/**
 	 * 
 	 */
-	public var shader:Flash3DShader;
-	
-	// ------------- //
-	
-	/**
-	 * 
-	 */
-	public var mesh:Flash3DMeshBuffer;
-	
-	/**
-	 * 
-	 */
-	public var model:ModelRenderData;
+	public var mesh:Flash3DMeshBuffer;	
 	
 	// ************************************************************************ //
 	// Constructor
@@ -53,26 +45,6 @@ class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRend
 		
 		this.shader 	= shader;
 		this.mesh 		= mesh;		
-	}
-	
-	// ************************************************************************ //
-	// Entity
-	// ************************************************************************ //	
-	
-	/**
-	 * 
-	 */
-	override function onEntityAdded():Void 
-	{
-		this.model = this.entity.getComponent( ModelRenderData );
-	}
-	
-	/**
-	 * 
-	 */
-	override function onEntityRemoved():Void 
-	{
-		this.model = null;
 	}
 	
 	// ************************************************************************ //
@@ -109,8 +81,12 @@ class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	 */
 	private function applyShaderInput():Void
 	{
-		this.applyMaterialInput();
-		this.applyEntityInput();
+		if( this.model.material.lazy.status == LazyStatus.INVALID )
+			this.applyMaterialInput();
+		
+		if( this.statusTransform == LazyStatus.INVALID )	
+			this.applyEntityInput();
+		
 		this.applySceneInput();
 	}
 	
@@ -126,6 +102,8 @@ class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRend
 		{
 			this.shader.setRegisterData( register, material.getRegisterData( register ) );
 		}
+		
+		this.model.material.lazy.validate();
 	}
 	
 	/**
@@ -134,7 +112,9 @@ class Flash3DRenderable extends Component<IDisplayObject> implements IEntityRend
 	private function applyEntityInput():Void 
 	{
 		var transform:IMatrix44 = this.entity.transform.getMatrix( null, Space.WORLD );			
-		this.shader.setRegisterData( RegisterHelper.E_MODEL2WORLD_TRANSFORM, transform );		
+		this.shader.setRegisterData( RegisterHelper.E_MODEL2WORLD_TRANSFORM, transform );	
+		
+		this.statusTransform = LazyStatus.VALID;
 	}
 	
 	/**
