@@ -105,28 +105,28 @@ class PerspectiveLens extends CameraLens
 	private function validateProjectionMatrix():Void 
 	{
 		var cotan:Float = 1 / Math.tan( this.yFOV * 0.5 );				
-		//var depth:Float = this.zNear - this.zFar;
-		var depth:Float = this.zFar - this.zNear;
+		var depth:Float = this.zNear - this.zFar;
+		//var depth:Float = this.zFar - this.zNear;
 		
 		// -------------------- //
 		
 		this.projectionMatrix.toIdentity();
 		
-		/*this.projectionMatrix.m11 = cotan / this.viewport.ratio;			// opengl	
+		this.projectionMatrix.m11 = cotan / this.viewport.ratio;			// opengl	
 		this.projectionMatrix.m22 = cotan;									
 		this.projectionMatrix.m33 = (this.zFar + this.zNear) / depth;		
 		
 		this.projectionMatrix.m43 = (2 * this.zFar * this.zNear) / depth;	
 		this.projectionMatrix.m34 = -1;											
-		this.projectionMatrix.m44 = 0;*/
+		this.projectionMatrix.m44 = 0;
 		
-		this.projectionMatrix.m11 = cotan / this.viewport.ratio;			// directx		
+		/*this.projectionMatrix.m11 = cotan / this.viewport.ratio;			// directx		
 		this.projectionMatrix.m22 = cotan;									
 		this.projectionMatrix.m33 = this.zFar / depth;		
 		
 		this.projectionMatrix.m43 = - ((this.zFar * this.zNear) / depth);	
 		this.projectionMatrix.m34 = 1;											
-		this.projectionMatrix.m44 = 0;
+		this.projectionMatrix.m44 = 0;*/
 		
 		//this.projectionMatrix.transpose();
 	}
