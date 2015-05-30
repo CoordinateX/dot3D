@@ -5,6 +5,7 @@ import flash.Lib;
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import haxe.at.dotpoint.display.renderable.bitmap.Bitmap;
 import haxe.at.dotpoint.display.renderable.bitmap.BitmapRenderData;
+import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.display.renderable.text.TextField;
 import haxe.at.dotpoint.display.renderable.text.TextFormat;
 import haxe.at.dotpoint.display.renderable.text.TextRenderData;
@@ -13,11 +14,20 @@ import haxe.at.dotpoint.dot2d.Stage2DEngine;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
 import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
 import haxe.at.dotpoint.dot3d.material.DiffuseTextureMaterial;
+import haxe.at.dotpoint.dot3d.primitives.AxisTrident;
 import haxe.at.dotpoint.dot3d.primitives.Cube;
+import haxe.at.dotpoint.dot3d.primitives.Plane;
 import haxe.at.dotpoint.dot3d.rendering.renderable.Texture;
 import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.at.dotpoint.loader.DataRequest;
+import haxe.at.dotpoint.math.geom.Space;
+import haxe.at.dotpoint.math.Limit;
+import haxe.at.dotpoint.math.MathUtil;
+import haxe.at.dotpoint.math.vector.IQuaternion;
+import haxe.at.dotpoint.math.vector.IVector3;
+import haxe.at.dotpoint.math.vector.Quaternion;
+import haxe.at.dotpoint.math.vector.Vector3;
 import haxe.ModelController;
 
 /**
@@ -51,9 +61,17 @@ class Main
 	/**
 	 * 
 	 */
-	private var cube2D:Cube;
-	private var cube3D:Cube;
-	private var cube3D2:Cube;
+	private var cubes:Array<IDisplayObject>;
+	
+	/**
+	 * 
+	 */
+	private var trident:AxisTrident;
+	
+	/**
+	 * 
+	 */
+	private var plane:Plane;
 	
 	/**
 	 * 
@@ -124,7 +142,7 @@ class Main
 	 */
 	private function init2D():Void
 	{
-		var scene:Stage2DScene = cast Stage2DEngine.instance.getScene();
+		/*var scene:Stage2DScene = cast Stage2DEngine.instance.getScene();
 		
 		// ------------- //
 		
@@ -143,7 +161,7 @@ class Main
 		
 		Stage2DEngine.instance.getScene().getSpatialTree().addChildNode( this.cube2D.getSpatialNode() );
 		Stage2DEngine.instance.getScene().getSpatialTree().addChildNode( this.bitmap.getSpatialNode() );
-		Stage2DEngine.instance.getScene().getSpatialTree().addChildNode( this.text.getSpatialNode() );
+		Stage2DEngine.instance.getScene().getSpatialTree().addChildNode( this.text.getSpatialNode() );*/
 	}
 	
 	/**
@@ -154,25 +172,38 @@ class Main
 		var scene:Stage3DScene = cast Stage3DEngine.instance.getScene();
 			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( Stage3DEngine.instance.getContext().getViewport() ) );				
 		
-		this.camera.transform.position.x += 0.5;	
+		this.camera.transform.position.z += 1;	
 		
 		this.controller = new ModelController();	
 		
 		// --------------- //
 		
-		this.cube3D2 = new Cube( 0.5, 0.5, 0.5 );
-		this.cube3D2.transform.position.z -= 6;
+		this.cubes = new Array<IDisplayObject>();
 		
+		for( j in 0...20 )
+		{
+			var cube:Cube = new Cube( 0.25, 0.25, 0.25 );
+				cube.transform.position.x = -4 + Math.random() * 8;
+				cube.transform.position.y = -4 + Math.random() * 8;
+				cube.transform.position.z = -4 + Math.random() * 8;
+			
+			this.cubes.push( cube );
+			
+			Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cube.getSpatialNode() );
+		}
 		
-		this.cube3D = new Cube();
-		this.cube3D.material = new DiffuseTextureMaterial( new Texture( cast this.loader.result ) );
+		// --------------- //
 		
-		this.cube3D.transform.position.z -= 6;
+		var worldTrident:AxisTrident = new AxisTrident( 10, 0.025 );
+		var cameraTrident:AxisTrident = new AxisTrident();		
 		
+		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( worldTrident.getSpatialNode() );
+		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cameraTrident.getSpatialNode() );
 		
-		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cube3D.getSpatialNode() );
-		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cube3D2.getSpatialNode() );
+		this.cubes.push( worldTrident );
+		this.cubes.push( cameraTrident );
 		
+		this.trident = cameraTrident;
 	}
 
 	
@@ -182,19 +213,46 @@ class Main
 	 */
 	private function onEnterFrame( event:Event ):Void
 	{
-		this.controller.update( this.cube2D );
-		this.controller.update( this.cube3D );
+		this.controller.update( this.camera.transform );
+		//this.controller.update( this.trident.transform );	
 		
-		this.cube3D2.transform.position.x = Math.sin( this.counter++ / 100 );
-		this.cube3D2.transform.position.y = Math.cos( this.counter / 100 );
+		//this.trident.transform.setMatrix( this.camera.transform.getMatrix( Space.WORLD ), Space.WORLD );
+		this.trident.transform.rotation = this.lookAt( this.trident.transform.position, this.camera.transform.position );
 		
-		if( this.counter == 200 )
-		{
-			this.cube3D2.material = new DiffuseTextureMaterial( new Texture( cast this.loader.result ) );
-		}
+		trace( this.camera.transform.position.z );
 		
-		Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text,this.bitmap] );
-		Stage3DEngine.instance.getRenderer().render( [this.cube3D,this.cube3D2] );
+		//Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text,this.bitmap] );
+		Stage3DEngine.instance.getRenderer().render( this.cubes );
+	}
+	
+	/** 
+	 * @param	source
+	 * @param	destination
+	 * @return
+	 */
+	private function lookAt( source:IVector3, destination:IVector3 ):IQuaternion
+	{
+		var direction:Vector3 = Vector3.subtract( destination, source );
+			direction.normalize();
+		
+		var dot:Float = Vector3.dot( new Vector3( 0, 0, 1 ), direction );
+		
+		// --------------- //
+		
+		if( Math.abs( dot + 1 ) < MathUtil.ZERO_TOLERANCE )
+			return new Quaternion( 0, 1, 0, 3.1415926535897932 );
+			
+		if( Math.abs( dot - 1 ) < MathUtil.ZERO_TOLERANCE )
+			return new Quaternion();
+		
+		// --------------- //	
+	
+		var radian:Float = Math.acos( dot );
+		
+		var axis:Vector3 = Vector3.cross( new Vector3( 0, 0, 1 ), direction );
+			axis.normalize();
+		
+		return Quaternion.setAxisAngle( axis, radian );	
 	}
 }
 

@@ -10,6 +10,9 @@ import haxe.at.dotpoint.math.vector.IQuaternion;
 import haxe.at.dotpoint.math.vector.IVector3;
 import haxe.at.dotpoint.math.vector.Quaternion;
 import haxe.at.dotpoint.math.vector.Vector3;
+import haxe.at.dotpoint.spatial.ISpatialEntity;
+import haxe.at.dotpoint.spatial.transform.ITransform;
+import haxe.at.dotpoint.spatial.transform.Transform;
 
 /**
  * ...
@@ -39,11 +42,11 @@ class ModelController
 	/**
 	 * 
 	 */
-	public function update( camera:IDisplayObject ):Void
+	public function update( transform:ITransform ):Void
 	{
-		var position:IVector3 		= camera.transform.position;
-		var rotation:IQuaternion	= camera.transform.rotation;
-		var scale:IVector3 			= camera.transform.scale;
+		var position:IVector3 		= transform.position;
+		var rotation:IQuaternion	= transform.rotation;
+		var scale:IVector3 			= transform.scale;
 		
 		// ---------------------------- //
 		// translation

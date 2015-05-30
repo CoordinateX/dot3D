@@ -4,8 +4,11 @@ import flash.at.dotpoint.dot3d.rendering.Flash3DContext;
 import flash.at.dotpoint.dot3d.rendering.Flash3DRenderer;
 import flash.at.dotpoint.dot3d.rendering.renderable.Flash3DMeshBuffer;
 import flash.at.dotpoint.dot3d.rendering.renderable.Flash3DRenderable;
+import flash.at.dotpoint.dot3d.rendering.shader.Flash3DShader;
 import flash.at.dotpoint.dot3d.shader.DiffuseShader;
+import flash.at.dotpoint.dot3d.shader.MeshColorShader;
 import haxe.at.dotpoint.display.DisplayEngine;
+import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
 import haxe.at.dotpoint.display.renderable.geometry.Sprite;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.dot3d.rendering.Stage3DContext;
@@ -90,7 +93,12 @@ class Flash3DEngine extends DisplayEngine
 	{
 		if( Std.is( entity, Sprite ) )
 		{
-			entity.setRenderer( new Flash3DRenderable( new DiffuseShader(), new Flash3DMeshBuffer() ) );
+			var shader:Flash3DShader = new DiffuseShader();
+			
+			if( entity.getComponent( ModelRenderData ).signature.ID == "MeshColor" )
+				shader = new MeshColorShader();	
+			
+			entity.setRenderer( new Flash3DRenderable( shader, new Flash3DMeshBuffer() ) );
 		}
 	}
 	
