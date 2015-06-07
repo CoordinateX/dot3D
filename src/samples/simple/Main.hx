@@ -5,10 +5,17 @@ import flash.Lib;
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import haxe.at.dotpoint.display.renderable.bitmap.Bitmap;
 import haxe.at.dotpoint.display.renderable.bitmap.BitmapRenderData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshEditingTools;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshRegisterData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshTriangle;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshVertex;
+import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.display.renderable.text.TextField;
 import haxe.at.dotpoint.display.renderable.text.TextFormat;
 import haxe.at.dotpoint.display.renderable.text.TextRenderData;
+import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
+import haxe.at.dotpoint.display.rendering.register.RegisterType;
 import haxe.at.dotpoint.dot2d.scene.Stage2DScene;
 import haxe.at.dotpoint.dot2d.Stage2DEngine;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
@@ -17,6 +24,7 @@ import haxe.at.dotpoint.dot3d.material.DiffuseTextureMaterial;
 import haxe.at.dotpoint.dot3d.primitives.AxisTrident;
 import haxe.at.dotpoint.dot3d.primitives.Cube;
 import haxe.at.dotpoint.dot3d.primitives.Plane;
+import haxe.at.dotpoint.dot3d.renderable.Shape;
 import haxe.at.dotpoint.dot3d.rendering.renderable.Texture;
 import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
@@ -24,6 +32,7 @@ import haxe.at.dotpoint.loader.DataRequest;
 import haxe.at.dotpoint.math.geom.Space;
 import haxe.at.dotpoint.math.Limit;
 import haxe.at.dotpoint.math.MathUtil;
+import haxe.at.dotpoint.math.Trigonometry;
 import haxe.at.dotpoint.math.vector.IQuaternion;
 import haxe.at.dotpoint.math.vector.IVector3;
 import haxe.at.dotpoint.math.vector.Quaternion;
@@ -72,6 +81,11 @@ class Main
 	 * 
 	 */
 	private var plane:Plane;
+	
+	/**
+	 * 
+	 */
+	private var line:Shape;
 	
 	/**
 	 * 
@@ -172,7 +186,9 @@ class Main
 		var scene:Stage3DScene = cast Stage3DEngine.instance.getScene();
 			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( Stage3DEngine.instance.getContext().getViewport() ) );				
 		
-		this.camera.transform.position.z += 1;	
+		this.camera.transform.position.z += 4;	
+		this.camera.transform.position.y += 1;	
+		this.camera.transform.position.x += 1;
 		
 		this.controller = new ModelController();	
 		
@@ -187,21 +203,36 @@ class Main
 				cube.transform.position.y = -4 + Math.random() * 8;
 				cube.transform.position.z = -4 + Math.random() * 8;
 			
-			this.cubes.push( cube );
+			//this.cubes.push( cube );
 			
 			Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cube.getSpatialNode() );
 		}
 		
+		this.line = new Shape();
+		this.line.moveTo( [0,0,0], [1,0,0] );
+		
+		for( k in 0...240 )
+		{
+			var x:Float = Math.sin( k / 10 ) * (2 - 1.5 * (k/240) );
+			var y:Float = Math.cos( k / 10 ) * (2 - 1.5 * (k / 240) );
+			var z:Float = (k / 120) * 2;
+			
+			this.line.lineTo( [x,z,y], [1,0,0] );
+		}
+		
+		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( line.getSpatialNode() );
+		this.cubes.push( this.line );
+		
 		// --------------- //
 		
-		var worldTrident:AxisTrident = new AxisTrident( 10, 0.025 );
+		var worldTrident:AxisTrident = new AxisTrident( 10, 0.025 );			
 		var cameraTrident:AxisTrident = new AxisTrident();		
 		
 		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( worldTrident.getSpatialNode() );
 		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cameraTrident.getSpatialNode() );
 		
 		this.cubes.push( worldTrident );
-		this.cubes.push( cameraTrident );
+		//this.cubes.push( cameraTrident );
 		
 		this.trident = cameraTrident;
 	}
@@ -214,15 +245,14 @@ class Main
 	private function onEnterFrame( event:Event ):Void
 	{
 		this.controller.update( this.camera.transform );
-		//this.controller.update( this.trident.transform );	
+		//this.controller.update( this.line.transform );	
 		
 		//this.trident.transform.setMatrix( this.camera.transform.getMatrix( Space.WORLD ), Space.WORLD );
 		this.trident.transform.rotation = this.lookAt( this.trident.transform.position, this.camera.transform.position );
 		
-		trace( this.camera.transform.position.z );
-		
 		//Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text,this.bitmap] );
 		Stage3DEngine.instance.getRenderer().render( this.cubes );
+		
 	}
 	
 	/** 

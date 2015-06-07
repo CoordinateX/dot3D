@@ -14,6 +14,7 @@ import haxe.at.dotpoint.display.rendering.renderable.IEntityRenderer;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.at.dotpoint.math.geom.Space;
 import haxe.at.dotpoint.math.vector.IMatrix44;
+import haxe.at.dotpoint.math.vector.IVector3;
 
 /**
  * ...
@@ -124,6 +125,9 @@ class Flash3DRenderable extends ARenderable<IDisplayObject,ModelRenderData> impl
 	{
 		var projection:IMatrix44 = Stage3DEngine.instance.getScene().getRegisterData( this.entity, RegisterHelper.W_WORLD2CAMERA_TRANSFORM );		
 		this.shader.setRegisterData( RegisterHelper.W_WORLD2CAMERA_TRANSFORM, projection );		
+		
+		var camera:IVector3 = Stage3DEngine.instance.getScene().getRegisterData( this.entity, RegisterHelper.W_CAMERA_POSITION );		
+		this.shader.setRegisterData( RegisterHelper.W_CAMERA_POSITION, camera );		
 	}
 	
 }

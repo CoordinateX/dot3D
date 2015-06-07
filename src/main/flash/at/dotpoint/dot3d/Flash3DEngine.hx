@@ -14,6 +14,7 @@ import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.dot3d.rendering.Stage3DContext;
 import haxe.at.dotpoint.dot3d.rendering.Stage3DRenderer;
 import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
+import flash.at.dotpoint.dot3d.shader.LineShader;
 
 /**
  * ...
@@ -98,6 +99,9 @@ class Flash3DEngine extends DisplayEngine
 			if( entity.getComponent( ModelRenderData ).signature.ID == "MeshColor" )
 				shader = new MeshColorShader();	
 			
+			if( entity.getComponent( ModelRenderData ).signature.ID == "line" )
+				shader = new LineShader();		
+				
 			entity.setRenderer( new Flash3DRenderable( shader, new Flash3DMeshBuffer() ) );
 		}
 	}
