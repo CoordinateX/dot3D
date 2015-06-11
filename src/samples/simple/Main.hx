@@ -10,6 +10,7 @@ import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshRegist
 import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshTriangle;
 import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshVertex;
 import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
+import haxe.at.dotpoint.display.renderable.geometry.Sprite;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.display.renderable.text.TextField;
 import haxe.at.dotpoint.display.renderable.text.TextFormat;
@@ -23,6 +24,7 @@ import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
 import haxe.at.dotpoint.dot3d.material.DiffuseTextureMaterial;
 import haxe.at.dotpoint.dot3d.primitives.AxisTrident;
 import haxe.at.dotpoint.dot3d.primitives.Cube;
+import haxe.at.dotpoint.dot3d.primitives.Frustum;
 import haxe.at.dotpoint.dot3d.primitives.Plane;
 import haxe.at.dotpoint.dot3d.renderable.Shape;
 import haxe.at.dotpoint.dot3d.rendering.renderable.Texture;
@@ -33,8 +35,10 @@ import haxe.at.dotpoint.math.geom.Space;
 import haxe.at.dotpoint.math.Limit;
 import haxe.at.dotpoint.math.MathUtil;
 import haxe.at.dotpoint.math.Trigonometry;
+import haxe.at.dotpoint.math.vector.IMatrix44;
 import haxe.at.dotpoint.math.vector.IQuaternion;
 import haxe.at.dotpoint.math.vector.IVector3;
+import haxe.at.dotpoint.math.vector.Matrix44;
 import haxe.at.dotpoint.math.vector.Quaternion;
 import haxe.at.dotpoint.math.vector.Vector3;
 import haxe.ModelController;
@@ -96,6 +100,16 @@ class Main
 	 * 
 	 */
 	private var bitmap:Bitmap;
+	
+	/**
+	 * 
+	 */
+	private var frustum:Shape;
+	
+	/**
+	 * 
+	 */
+	private var worldAxis:Shape;
 	
 	// ************************************************************************ //
 	// Constructor
@@ -187,8 +201,8 @@ class Main
 			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( Stage3DEngine.instance.getContext().getViewport() ) );				
 		
 		this.camera.transform.position.z += 4;	
-		this.camera.transform.position.y += 1;	
-		this.camera.transform.position.x += 1;
+		this.camera.transform.position.y += 0;	
+		this.camera.transform.position.x += 0;
 		
 		this.controller = new ModelController();	
 		
@@ -225,13 +239,28 @@ class Main
 		
 		// --------------- //
 		
+		var wal:Float = 10;
+		var wac:Array<Float> = [0.2, 0.2, 0.2];
+		
+		this.worldAxis = new Shape();
+		this.worldAxis.moveTo( [ -wal, 0, 0], wac );
+		this.worldAxis.lineTo( [  wal, 0, 0], wac );
+		this.worldAxis.moveTo( [ 0, -wal, 0], wac );
+		this.worldAxis.lineTo( [ 0,  wal, 0], wac );
+		this.worldAxis.moveTo( [ 0, 0, -wal], wac );
+		this.worldAxis.lineTo( [ 0, 0,  wal], wac );
+		
+		// --------------- //
+		
 		var worldTrident:AxisTrident = new AxisTrident( 10, 0.025 );			
 		var cameraTrident:AxisTrident = new AxisTrident();		
 		
 		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( worldTrident.getSpatialNode() );
 		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( cameraTrident.getSpatialNode() );
+		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( this.worldAxis.getSpatialNode() );
 		
 		this.cubes.push( worldTrident );
+		this.cubes.push( this.worldAxis );
 		//this.cubes.push( cameraTrident );
 		
 		this.trident = cameraTrident;
@@ -250,9 +279,28 @@ class Main
 		//this.trident.transform.setMatrix( this.camera.transform.getMatrix( Space.WORLD ), Space.WORLD );
 		this.trident.transform.rotation = this.lookAt( this.trident.transform.position, this.camera.transform.position );
 		
+		this.renderFrustum();
+		
 		//Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text,this.bitmap] );
 		Stage3DEngine.instance.getRenderer().render( this.cubes );
 		
+	}
+	
+	/**
+	 * 
+	 */
+	private function renderFrustum():Void 
+	{
+		if( this.frustum == null )
+		{			
+			this.frustum = new Frustum( this.camera.getCamera().getCameraLens() );
+			
+			// -------------- //
+			
+			this.cubes.push( this.frustum );
+			
+			Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( this.frustum.getSpatialNode() );
+		}
 	}
 	
 	/** 
