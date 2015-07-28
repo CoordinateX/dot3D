@@ -19,13 +19,53 @@ class DiffuseTextureMaterial extends AMaterial implements IMaterial
 	/**
 	 * 
 	 */
-	public var diffuseTexture:Texture;
+	public var name:String;
+	
+	/**
+	 * 
+	 */
+	public var ambientColor:Vector3;
+	
+	/**
+	 * 
+	 */
+	public var diffuseColor:Vector3;
+	
+	/**
+	 * 
+	 */
+	public var specularColor:Vector3;
+	
+	/**
+	 * 
+	 */
+	public var specularWeight:Vector3;
+	
+	/**
+	 * 
+	 */
+	public var alpha:Float;
+	
+	/**
+	 * 
+	 */
+	public var ambientMap:Texture;
+	
+	/**
+	 * 
+	 */
+	public var diffuseMap:Texture;
+	
+	/**
+	 * 
+	 */
+	public var normalMap:Texture;
 	
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //	
 	
-	public function new( diffuse:Texture ) 
+	public function new( ?diffuse:Texture ) 
 	{
 		super();
 		
