@@ -19,20 +19,20 @@ class Plane extends Sprite
 
 	// ************************************************************************ //
 	// Constructor
-	// ************************************************************************ //	
-	
-	public function new( ?w:Float = 1, ?h:Float = 1 ) 
-	{	
+	// ************************************************************************ //
+
+	public function new( ?w:Float = 1, ?h:Float = 1 )
+	{
 		var shader:ShaderSignature 	= new ShaderSignature( "DiffuseColor", 1 );
 		var mesh:IMeshData 			= new PlaneMesh( w, h );
 		var material:IMaterial 		= new DiffuseColorMaterial();
-		
+
 		super( new ModelRenderData( shader, mesh, material ) );
 	}
-	
+
 	// ************************************************************************ //
 	// Methods
-	// ************************************************************************ //	
+	// ************************************************************************ //
 }
 
 /**
@@ -41,30 +41,30 @@ class Plane extends Sprite
  */
 class PlaneMesh extends MeshData
 {
-	
+
 	/**
-	 * 
+	 *
 	 * @param	w
 	 * @param	h
 	 * @param	l
 	 */
-	public function new( w:Float, h:Float ) 
+	public function new( w:Float, h:Float )
 	{
 		super();
-		
+
 		w = w * 0.5;
-		h = h * 0.5;	
-		
-		this.setupVertices( w, h );	
+		h = h * 0.5;
+
+		this.setupVertices( w, h );
 		this.setupFaces();
 	}
-	
+
 	// ************************************************************************ //
 	// Methodes
 	// ************************************************************************ //
-	
+
 	/**
-	 * 
+	 *
 	 * @param	w
 	 * @param	h
 	 * @param	l
@@ -75,31 +75,32 @@ class PlaneMesh extends MeshData
 		this.addRegisterIndex( [ -w,  h, 0 ], RegisterHelper.V_POSITION  );
 		this.addRegisterIndex( [  w,  h, 0 ], RegisterHelper.V_POSITION  );
 		this.addRegisterIndex( [  w, -h, 0 ], RegisterHelper.V_POSITION  );
-		
+
 		// ------------------ //
 		// UV:
-		
+
+
 		this.addRegisterIndex( [ 1., 0. ], RegisterHelper.V_UV_COORDINATES );
 		this.addRegisterIndex( [ 1., 1. ], RegisterHelper.V_UV_COORDINATES );
 		this.addRegisterIndex( [ 0., 1. ], RegisterHelper.V_UV_COORDINATES );
 		this.addRegisterIndex( [ 0., 0. ], RegisterHelper.V_UV_COORDINATES );
-		
+
 		// ------------------ //
 		// Normal:
-		
+
 		this.addRegisterIndex( [  0.,  0.,  1. ], RegisterHelper.V_NORMAL );
 	}
-	
+
 	// ------------------------------------------------------------------ //
 	// ------------------------------------------------------------------ //
 	// FACE:
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private function setupFaces():Void
-	{		
+	{
 		MeshEditingTools.addTriangleByVertexIndices( this, [0,0,0, 1,1,0, 2,2,0] );
-		MeshEditingTools.addTriangleByVertexIndices( this, [2,2,0, 3,3,0, 0,0,0] );		
+		MeshEditingTools.addTriangleByVertexIndices( this, [2,2,0, 3,3,0, 0,0,0] );
 	}
 }

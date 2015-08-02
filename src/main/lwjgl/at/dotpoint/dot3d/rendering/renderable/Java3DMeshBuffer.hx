@@ -1,4 +1,4 @@
-package java.at.dotpoint.dot3d.rendering.renderable;
+package lwjgl.at.dotpoint.dot3d.rendering.renderable;
 
 import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
 import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
@@ -6,13 +6,16 @@ import haxe.at.dotpoint.display.rendering.register.RegisterFormat;
 import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
 import haxe.at.dotpoint.display.rendering.register.RegisterType;
 import haxe.at.dotpoint.logger.Log;
+import java.NativeArray;
+import java.types.Int16;
+import java.types.Int8;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.BufferUtils;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
+import java.nio.ByteBuffer;
 
 /**
  * ...
@@ -90,27 +93,50 @@ class Java3DMeshBuffer
 
 		// --------------------------- //
 
-		var iBuffer:ShortBuffer = this.createIndexBuffer( data );
-		var vBuffer:FloatBuffer = this.createVertexBuffer( data );
-
-		this.ptr_vertexArray  = GL30.glGenVertexArrays();
-		this.ptr_indexBuffer  = GL15.glGenBuffers();
-		this.ptr_vertexBuffer = GL15.glGenBuffers();
-
-		GL30.glBindVertexArray( this.ptr_vertexArray );
-
-		GL15.glBindBuffer( GL15.GL_ELEMENT_ARRAY_BUFFER, this.ptr_indexBuffer );
-        GL15.glBufferData( GL15.GL_ELEMENT_ARRAY_BUFFER, iBuffer, GL15.GL_STATIC_DRAW );
-
-		GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, this.ptr_vertexBuffer );
-        GL15.glBufferData( GL15.GL_ARRAY_BUFFER, vBuffer, GL15.GL_STATIC_DRAW );
-
-		this.setVertexAttributes();
-
-		// --------------------------- //
+		this.allocateVertexArray();
+		this.allocateVertexBuffer( data );
 
 		GL30.glBindVertexArray( 0 );
-		GL30.glBindBuffer( 0 );
+
+		this.allocateIndexBuffer( data );
+
+		GL15.glBindBuffer( GL15.GL_ELEMENT_ARRAY_BUFFER, 0 );
+		GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, 0 );
+	}
+
+	/**
+	 *
+	 */
+	private function allocateVertexArray():Void
+	{
+		this.ptr_vertexArray  = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray( this.ptr_vertexArray );
+	}
+
+	/**
+	 *
+	 */
+	private function allocateVertexBuffer( data:IMeshData ):Void
+	{
+		this.ptr_vertexBuffer = GL15.glGenBuffers();
+
+		GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, this.ptr_vertexBuffer );
+        GL15.glBufferData( GL15.GL_ARRAY_BUFFER, this.createVertexBuffer( data ), GL15.GL_STATIC_DRAW );
+
+		GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, 0 );
+	}
+
+	/**
+	 *
+	 */
+	private function allocateIndexBuffer( data:IMeshData ):Void
+	{
+		this.ptr_indexBuffer  = GL15.glGenBuffers();
+
+		GL15.glBindBuffer( GL15.GL_ELEMENT_ARRAY_BUFFER, this.ptr_indexBuffer );
+        GL15.glBufferData( GL15.GL_ELEMENT_ARRAY_BUFFER, this.createIndexBuffer( data ), GL15.GL_STATIC_DRAW );
+
+		GL15.glBindBuffer( GL15.GL_ELEMENT_ARRAY_BUFFER, 0 );
 	}
 
 	/**
@@ -118,9 +144,9 @@ class Java3DMeshBuffer
 	 * @param	data
 	 * @return
 	 */
-	private function createIndexBuffer( data:IMeshData ):ShortBuffer
+	private function createIndexBuffer( data:IMeshData ):ByteBuffer
 	{
-		var stream:NativeArray<Int> = new NativeArray<Int>( this.signature.numTriangles * 3 );
+		var stream:NativeArray<Int8> = new NativeArray<Int8>( this.signature.numTriangles * 3 );
 
 		for( t in 0...signature.numTriangles )
 		{
@@ -132,7 +158,7 @@ class Java3DMeshBuffer
 
 		// -------------------- //
 
-		var iBuffer:FloatBuffer = BufferUtils.createFloatBuffer( stream.length );
+		var iBuffer:ByteBuffer = BufferUtils.createByteBuffer( stream.length );
 			iBuffer.put( stream, 0, stream.length );
 			iBuffer.flip();
 
@@ -184,47 +210,6 @@ class Java3DMeshBuffer
 			vBuffer.flip();
 
 		return vBuffer;
-	}
-
-	/**
-	 *
-	 * @param	data
-	 */
-	private function setVertexAttributes():Void
-	{
-		var stride:Int = RegisterHelper.getSignatureSize( this.signature );
-		var offset:Int = 0;
-
-		for ( t in 0...this.signature.numRegisters )
-		{
-			var register:RegisterType 	= this.signature.getRegisterTypeByIndex( t );
-			var format:Int 				= this.getVertexBufferFormat( register.format );
-
-			GL20.glVertexAttribPointer( t, register.size, format, false, stride, offset );
-
-			offset += register.size;
-		}
-	}
-
-	/**
-	 *
-	 * @param	format
-	 */
-	private function getVertexBufferFormat( format:RegisterFormat ):Int
-	{
-		switch( format )
-		{
-			case RegisterFormat.TFLOAT_1: 	return GL11.GL_FLOAT;
-			case RegisterFormat.TFLOAT_2: 	return GL11.GL_FLOAT;
-			case RegisterFormat.TFLOAT_3: 	return GL11.GL_FLOAT;
-			case RegisterFormat.TFLOAT_4: 	return GL11.GL_FLOAT;
-			case RegisterFormat.TINT: 		return GL11.GL_INT;
-
-			default:
-				throw "not a vertexbuffer format";
-		}
-
-		return GL11.GL_FLOAT;
 	}
 
 	// ----------------------------------------------------------------------- //

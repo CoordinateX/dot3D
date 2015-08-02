@@ -1,4 +1,4 @@
-package java.at.dotpoint.dot3d.rendering.shader;
+package lwjgl.at.dotpoint.dot3d.rendering.shader;
 
 import haxe.at.dotpoint.logger.Log;
 import org.lwjgl.opengl.GL11;
@@ -24,7 +24,12 @@ class Java3DShader
 	/**
 	 *
 	 */
-	public var ptr_shader(default,null):Int;
+	public var ptr_shader(default, null):Int;
+
+	/**
+	 *
+	 */
+	public var isCompiled(get,null):Bool;
 
 	// ************************************************************************ //
 	// Constructor
@@ -39,31 +44,40 @@ class Java3DShader
 	}
 
 	// ************************************************************************ //
-	// Methods
+	// Methodes
 	// ************************************************************************ //
+
+	private function get_isCompiled():Bool
+	{
+		return this.ptr_shader != -1;
+	}
+
+	// ----------------------------------------------------------------------- //
+	// ----------------------------------------------------------------------- //
+	// allocate
 
 	/**
 	 *
 	 */
 	public function compile():Void
 	{
-		if( this.ptr_shader != null )
+		if( this.isCompiled )
 		{
 			Log.warn( "already compiled: " + Log.getCallstack() );
 			this.dispose();
 		}
 
-		var vshader:Int = GL20.glCreateShader( GL20.GL_VERTEX_SHADER );
+		var shader:Int = GL20.glCreateShader( this.getGLShaderType() );
 
-		GL20.glShaderSource( vshader, this.source );
-		GL20.glCompileShader( vshader );
+		GL20.glShaderSource( shader, this.source );
+		GL20.glCompileShader( shader );
 
-		var vstatus:Int = GL20.glGetShaderi( vshader, GL20.GL_COMPILE_STATUS );
+		var status:Int = GL20.glGetShaderi( shader, GL20.GL_COMPILE_STATUS );
 
-		if( vstatus == GL11.GL_FALSE )
-			throw "error compiling vertex shader: " + GL20.glGetShaderInfoLog(vshader);
+		if( status == GL11.GL_FALSE )
+			throw "error compiling vertex shader: " + GL20.glGetShaderInfoLog( shader );
 
-		this.ptr_shader = vshader;
+		this.ptr_shader = shader;
 	}
 
 	/**

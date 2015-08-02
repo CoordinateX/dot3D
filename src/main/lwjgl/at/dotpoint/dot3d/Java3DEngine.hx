@@ -1,6 +1,15 @@
-package java.at.dotpoint.dot3d;
+package lwjgl.at.dotpoint.dot3d;
 
 import haxe.at.dotpoint.display.DisplayEngine;
+import haxe.at.dotpoint.display.renderable.geometry.Sprite;
+import haxe.at.dotpoint.display.renderable.IDisplayObject;
+import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
+import lwjgl.at.dotpoint.dot3d.rendering.Java3DContext;
+import lwjgl.at.dotpoint.dot3d.rendering.Java3DRenderer;
+import lwjgl.at.dotpoint.dot3d.rendering.renderable.Java3DMeshBuffer;
+import lwjgl.at.dotpoint.dot3d.rendering.renderable.Java3DRenderable;
+import lwjgl.at.dotpoint.dot3d.rendering.shader.Java3DShaderProgram;
+import lwjgl.at.dotpoint.dot3d.shader.TestShader;
 
 /**
  * ...
@@ -12,12 +21,12 @@ class Java3DEngine extends DisplayEngine
 	/**
 	 *
 	 */
-	private var renderer:Stage3DRenderer;
+	private var renderer:Java3DRenderer;
 
 	/**
 	 *
 	 */
-	private var context:Stage3DContext;
+	private var context:Java3DContext;
 
 	/**
 	 *
@@ -32,8 +41,8 @@ class Java3DEngine extends DisplayEngine
 	{
 		super();
 
-		this.renderer = new Flash3DRenderer();
-		this.context = new Flash3DContext();
+		this.renderer = new Java3DRenderer();
+		this.context = new Java3DContext();
 		this.scene = new Stage3DScene();
 	}
 
@@ -45,7 +54,7 @@ class Java3DEngine extends DisplayEngine
 	 *
 	 * @return
 	 */
-	public override function getRenderer():Flash3DRenderer
+	public override function getRenderer():Java3DRenderer
 	{
 		return this.renderer;
 	}
@@ -54,7 +63,7 @@ class Java3DEngine extends DisplayEngine
 	 *
 	 * @return
 	 */
-	public override function getContext():Flash3DContext
+	public override function getContext():Java3DContext
 	{
 		return this.context;
 	}
@@ -80,15 +89,9 @@ class Java3DEngine extends DisplayEngine
 	{
 		if( Std.is( entity, Sprite ) )
 		{
-			var shader:Flash3DShader = new DiffuseShader();
+			var shader:Java3DShaderProgram = new TestShader();
 
-			if( entity.getComponent( ModelRenderData ).signature.ID == "MeshColor" )
-				shader = new MeshColorShader();
-
-			if( entity.getComponent( ModelRenderData ).signature.ID == "line" )
-				shader = new LineShader();
-
-			entity.setRenderer( new Flash3DRenderable( shader, new Flash3DMeshBuffer() ) );
+			entity.setRenderer( new Java3DRenderable( shader, new Java3DMeshBuffer() ) );
 		}
 	}
 

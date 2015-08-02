@@ -1,4 +1,4 @@
-package java.at.dotpoint.dot3d.rendering.shader;
+package lwjgl.at.dotpoint.dot3d.rendering.shader;
 
 /**
  * @author RK

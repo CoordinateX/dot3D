@@ -191,7 +191,7 @@ class JavaMain
 
 		GL20.glShaderSource( vshader, vertex_program );
 		GL20.glCompileShader( vshader );
-GL20.
+
 		var vstatus:Int = GL20.glGetShaderi( vshader, GL20.GL_COMPILE_STATUS );
 
 		if( vstatus == GL11.GL_FALSE )
@@ -249,7 +249,7 @@ GL20.
 			GL30.glBindVertexArray( this.ptr_bufferA );
 			GL20.glEnableVertexAttribArray( 0 );
 
-			GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, 6 );
+			GL11.glDrawArrays( GL11.GL_LINES, 0, 6 );
 
 			GL20.glDisableVertexAttribArray(0);
 			GL30.glBindVertexArray(0);

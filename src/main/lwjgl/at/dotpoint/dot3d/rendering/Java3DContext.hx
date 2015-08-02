@@ -1,4 +1,4 @@
-package java.at.dotpoint.dot3d.rendering;
+package lwjgl.at.dotpoint.dot3d.rendering;
 
 import haxe.at.dotpoint.core.dispatcher.event.EventDispatcher;
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
@@ -37,9 +37,14 @@ class Java3DContext extends EventDispatcher implements IRenderContext
 	// ----------- //
 
 	/**
+	 *
+	 */
+	private var errorCallback:GLFWErrorCallback;
+
+	/**
 	 * pointer to the active window (only one supported)
 	 */
-	private var ptr_window:Long;
+	public var ptr_window(default,null):Long;
 
 	// ************************************************************************ //
 	// Constructor
