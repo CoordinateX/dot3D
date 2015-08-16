@@ -48,8 +48,8 @@ class PerspectiveLens extends CameraLens
 		this.viewport.addListener( DisplayEvent.VIEWPORT_RESIZE, this.onProjectionChanged );
 
 		this.zNear 	= 1;
-		this.zFar 	= 30;
-		this.yFOV 	= yFOV != null ? yFOV : 25 * MathUtil.DEG_RAD;
+		this.zFar 	= 1000;
+		this.yFOV 	= yFOV != null ? yFOV : 45 * MathUtil.DEG_RAD;
 	}
 
 	// ************************************************************************ //
@@ -106,18 +106,18 @@ class PerspectiveLens extends CameraLens
 	{
 		var cotan:Float = 1 / Math.tan( this.yFOV * 0.5 );
 		var depth:Float = this.zNear - this.zFar;
-		//var depth:Float = this.zFar - this.zNear;
+		var ratio:Float = this.viewport.width / this.viewport.height;
 
 		// -------------------- //
 
 		this.projectionMatrix.toIdentity();
 
-		this.projectionMatrix.m11 = cotan / this.viewport.ratio;			// opengl
+		this.projectionMatrix.m11 = cotan / ratio;			// opengl
 		this.projectionMatrix.m22 = cotan;
 		this.projectionMatrix.m33 = (this.zFar + this.zNear) / depth;
 
-		this.projectionMatrix.m43 = (2 * this.zFar * this.zNear) / depth;
-		this.projectionMatrix.m34 = -1;
+		this.projectionMatrix.m34 = (2 * this.zFar * this.zNear) / depth;
+		this.projectionMatrix.m43 = -1;
 		this.projectionMatrix.m44 = 0;
 
 		/*this.projectionMatrix.m11 = cotan / this.viewport.ratio;			// directx

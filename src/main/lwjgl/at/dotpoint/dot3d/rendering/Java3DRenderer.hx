@@ -108,6 +108,17 @@ class Java3DRenderer implements IRenderer
 		}
 	}
 
+	public function selectShaderContext():Void
+	{
+	/*	glEnable(GL_CULL_FACE);
+glCullFace(GL_BACK);
+glFrontFace(GL_CW);
+glEnable(GL_DEPTH_TEST);
+glDepthMask(true);
+glDepthFunc(GL_LEQUAL);
+glDepthRange(0.0f, 1.0f);*/
+	}
+
 	/**
 	 *
 	 * @param	mesh

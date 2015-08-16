@@ -106,7 +106,7 @@ class Java3DMain
 
 			while( GLFW.glfwWindowShouldClose( Stage3DEngine.instance.getContext().ptr_window ) == GL11.GL_FALSE )
 			{
-				if( count++ == 0 )
+				//if( count++ == 0 )
 					this.onEnterFrame();
 
 				GLFW.glfwPollEvents();
@@ -137,25 +137,20 @@ class Java3DMain
 		var scene:Stage3DScene = cast Stage3DEngine.instance.getScene();
 			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( Stage3DEngine.instance.getContext().getViewport() ) );
 
-		this.camera.transform.position.z += 4;
+		this.camera.transform.position.z += 0;
 		this.camera.transform.position.y += 0;
 		this.camera.transform.position.x += 0;
 
 		// --------------- //
 
 		var shader:ShaderSignature 	= new ShaderSignature( "TestShader", 1 );
-		var mesh:IMeshData 			= new CubeMesh( 0.5, 0.5 , 0.5 );
+		var mesh:IMeshData 			= new CubeMesh( 100.5, 100.5 , 100.5 );
 		var material:IMaterial 		= new DiffuseColorMaterial();
 
 		this.test = new Sprite( new ModelRenderData( shader, mesh, material ) );
-		this.test.transform.position.x -= 0.4;
-		this.test.transform.position.y -= 0.2;
-		this.test.transform.position.z -= 0.2;
-
-		// --------------- //
-
-		this.appendRotation( Axis.X, 30 * MathUtil.DEG_RAD, this.test.transform );
-		this.appendRotation( Axis.Y, 30 * MathUtil.DEG_RAD, this.test.transform );
+		//this.test.transform.position.x -= 0.4;
+		//this.test.transform.position.y -= 0.2;
+		this.test.transform.position.z -= 200.8;
 
 		// --------------- //
 
@@ -188,6 +183,9 @@ class Java3DMain
 	 */
 	private function onEnterFrame():Void
 	{
+		this.appendRotation( Axis.X, 1 * MathUtil.DEG_RAD, this.test.transform );
+		this.appendRotation( Axis.Y, 1 * MathUtil.DEG_RAD, this.test.transform );
+
 		Stage3DEngine.instance.getRenderer().render( [this.test] );
 	}
 

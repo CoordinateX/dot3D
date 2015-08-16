@@ -145,6 +145,14 @@ class Java3DContext extends EventDispatcher implements IRenderContext
 
 		var bgcolor:Vector3 = this.settings.colorBackground;
 
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
+		GL11.glFrontFace(GL11.GL_CCW);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDepthMask(true);
+		GL11.glDepthFunc(GL11.GL_LEQUAL);
+	//	GL11.glDepthRange(0.0, 1.0);
+
 		GL11.glViewport( 0, 0, this.viewport.width, this.viewport.height );
         GL11.glClearColor( bgcolor.x, bgcolor.y, bgcolor.z, 0.0 );
 

@@ -4,14 +4,15 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\standalone.swf" />
+    <movie path="bin\java" />
     <movie fps="200" />
     <movie width="960" />
     <movie height="540" />
-    <movie version="14" />
+    <movie version="0" />
     <movie minorVersion="0" />
-    <movie platform="Flash Player" />
-    <movie background="#FFFFFF" />
+    <movie platform="Java" />
+    <movie background="#323232" />
+    <movie preferredSDK="Haxe 3.3.0;3.3.0;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
@@ -26,9 +27,9 @@
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="Main" />
+    <option mainClass="Java3DMain" />
     <option enabledebug="True" />
-    <option additional="-debug&#xA;-D fdb&#xA;-D dotpoint&#xA;-resource ../dot2D/res/main/flash/dshader.pbj@dshader&#xA;--macro allowPackage('sys')" />
+    <option additional="-debug&#xA;-D fdb&#xA;-D dotpoint&#xA;-resource ../dot2D/res/main/flash/dshader.pbj@dshader&#xA;--macro allowPackage('sys')&#xA;-java-lib lib/lwjgl.jar" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -41,12 +42,8 @@
     <compile path="unit\TestStandalone.hx" />
     <compile path="src\Main.hx" />
     <compile path="src\main\haxe\Main.hx" />
-    <compile path="src\samples\simple\Main.hx" />
+    <compile path="src\samples\simple\Java3DMain.hx" />
   </compileTargets>
-  <!-- Assets to embed into the output SWF -->
-  <library>
-    <!-- example: <asset path="..." id="..." update="..." glyphs="..." mode="..." place="..." sharepoint="..." /> -->
-  </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
     <hidden path="obj" />
@@ -58,8 +55,8 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Default" />
-    <option testMovieCommand="bin/standalone.swf" />
+    <option testMovie="Custom" />
+    <option testMovieCommand="D:\Projects\Dotpoint\dot3D\bin\java\run.bat" />
   </options>
   <!-- Plugin storage -->
   <storage />

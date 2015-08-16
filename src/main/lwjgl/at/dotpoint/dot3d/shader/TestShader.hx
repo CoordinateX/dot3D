@@ -39,7 +39,7 @@ class TestShader extends Java3DShaderProgram
 			vertex_program += "    gl_Position= vec4(V_POSITION,1) * E_MODEL2WORLD_TRANSFORM * W_WORLD2CAMERA_TRANSFORM;        			\n";
 		//	vertex_program += "    vec4 a= vec4(1,1,1,1) * E_MODEL2WORLD_TRANSFORM;        			\n";
 		//	vertex_program += "    gl_Position= vec4(V_POSITION,1) + a;        			\n";
-			vertex_program += "    lpow = max( dot( vec3(3.0,2.0,-1.0), normalize(vec4(V_NORMAL,1) * E_MODEL2WORLD_TRANSFORM).xyz ), 0.0 ); 	\n";
+			vertex_program += "    lpow = max( dot( normalize(vec3(-3.0,2.0,1.0)), normalize(vec4(V_NORMAL,0) * E_MODEL2WORLD_TRANSFORM).xyz ), 0.0 ); 	\n";
 		//	vertex_program += "    tuv = V_UV_COORDINATES;        																	\n";
 			vertex_program += "}                                           															\n";
 

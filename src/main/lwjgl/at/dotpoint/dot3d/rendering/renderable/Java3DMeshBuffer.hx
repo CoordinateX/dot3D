@@ -5,7 +5,11 @@ import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
 import haxe.at.dotpoint.display.rendering.register.RegisterFormat;
 import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
 import haxe.at.dotpoint.display.rendering.register.RegisterType;
+import haxe.at.dotpoint.display.rendering.renderable.AMeshBuffer;
+import haxe.at.dotpoint.display.rendering.renderable.IMeshBuffer;
+import haxe.at.dotpoint.display.rendering.renderable.MeshBufferType;
 import haxe.at.dotpoint.logger.Log;
+import haxe.ds.Vector;
 import java.NativeArray;
 import java.types.Int16;
 import java.types.Int8;
@@ -21,20 +25,14 @@ import java.nio.ByteBuffer;
  * ...
  * @author RK
  */
-class Java3DMeshBuffer
+class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 {
 
-	/**
-	 *
-	 */
-	public var signature:MeshSignature;
 
 	/**
-	 *
+	 * true if the mesh buffer is currently active on the GPU (shader calls use this mesh right now)
 	 */
-	public var isAllocated(get, null):Bool;
-
-	// -------- //
+	public var isBound(get, null):Bool;
 
 	/**
 	 *
@@ -51,47 +49,42 @@ class Java3DMeshBuffer
 	 */
 	public var ptr_vertexBuffer(default, null):Int;
 
-
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
 
-	public function new()
+	public function new( ?storageType:MeshBufferType )
 	{
+		super( storageType );
+
 		this.ptr_vertexArray  = -1;
 		this.ptr_indexBuffer  = -1;
 		this.ptr_vertexBuffer = -1;
 	}
 
 	// ************************************************************************ //
-	// Methodes
+	// getter / setter
 	// ************************************************************************ //
 
-	private function get_isAllocated():Bool
+	private function get_isBound():Bool
 	{
-		return this.ptr_vertexArray != -1 && this.ptr_indexBuffer != -1 && this.ptr_vertexBuffer != -1;
+		return false;
 	}
 
-	// ----------------------------------------------------------------------- //
-	// ----------------------------------------------------------------------- //
+	// ************************************************************************ //
 	// allocate
+	// ************************************************************************ //
 
 	/**
 	 *
 	 * @param	context
 	 * @param	mesh
 	 */
-	public function allocate( data:IMeshData ):Void
+	override public function allocate( data:IMeshData ):Void
 	{
-		if ( this.isAllocated )
-		{
-			Log.warn( "already allocated: " + Log.getCallstack() );
-			this.dispose();
-		}
+		super.allocate( data );
 
-		this.signature = data.getMeshSignature();
-
-		// --------------------------- //
+		// -------------------- //
 
 		this.allocateVertexArray();
 		this.allocateVertexBuffer( data );
@@ -146,20 +139,19 @@ class Java3DMeshBuffer
 	 */
 	private function createIndexBuffer( data:IMeshData ):ByteBuffer
 	{
-		var stream:NativeArray<Int8> = new NativeArray<Int8>( this.signature.numTriangles * 3 );
+		var stream:Vector<Int8> = new Vector<Int8>( this.getIndexBufferSize() );
 
-		for( t in 0...signature.numTriangles )
+		function setStreamData( index:Int, value:Int ):Void
 		{
-			var indices:Array<Int> = data.getIndicesByTriangle( t );
-
-			for( i in 0...3 )
-				stream[t * 3 + i] = indices[i];
+			stream[index] = value;
 		}
+
+		this.populateIndexStream( data, setStreamData );
 
 		// -------------------- //
 
 		var iBuffer:ByteBuffer = BufferUtils.createByteBuffer( stream.length );
-			iBuffer.put( stream, 0, stream.length );
+			iBuffer.put( cast stream, 0, stream.length );
 			iBuffer.flip();
 
 		return iBuffer;
@@ -172,54 +164,32 @@ class Java3DMeshBuffer
 	 */
 	private function createVertexBuffer( data:IMeshData ):FloatBuffer
 	{
-		var typelist:Array<RegisterType> = this.signature.toArray();
+		var stream:Vector<Single> = new Vector<Single>( this.getVertexBufferSize() );
 
-		// -------------- //
-
-		var vertexSize:Int = 0;
-
-		for( type in typelist )
-			vertexSize += type.size;
-
-		// -------------------- //
-
-		var stream:NativeArray<Single> = new NativeArray<Single>( this.signature.numVertices * vertexSize );
-
-		for( v in 0...signature.numVertices )
+		function setStreamData( index:Int, value:Float ):Void
 		{
-			var curTypeSize:Int = 0;
-			var registerIndices:Array<Int> 	= data.getIndicesByVertex( v );
-
-			for( t in 0...typelist.length )
-			{
-				var registerData:Array<Float> = data.getRegisterData( registerIndices[t], typelist[t] );
-
-				for( d in 0...registerData.length )
-				{
-					stream[ (v * vertexSize) + (curTypeSize) + d ] = registerData[ d ];
-				}
-
-				curTypeSize += registerData.length;
-			}
+			stream[index] = value;
 		}
+
+		this.populateVertexStream( data, setStreamData );
 
 		// -------------------- //
 
 		var vBuffer:FloatBuffer = BufferUtils.createFloatBuffer( stream.length );
-			vBuffer.put( stream, 0, stream.length );
+			vBuffer.put( cast stream, 0, stream.length );
 			vBuffer.flip();
 
 		return vBuffer;
 	}
 
-	// ----------------------------------------------------------------------- //
-	// ----------------------------------------------------------------------- //
-	// dispose:
+	// ************************************************************************ //
+	// dispose
+	// ************************************************************************ //
 
 	/**
 	 *
 	 */
-	public function dispose():Void
+	override public function dispose():Void
 	{
 		if ( this.ptr_vertexArray != -1 )
 		{
@@ -238,5 +208,29 @@ class Java3DMeshBuffer
 			GL15.glDeleteBuffers( this.ptr_vertexBuffer );
 			this.ptr_vertexBuffer = -1;
 		}
+
+		// -------------------- //
+
+		super.dispose();
+	}
+
+	// ************************************************************************ //
+	// bind/unbinds
+	// ************************************************************************ //
+
+	/**
+	 * sets the mesh buffer as currently active on the GPU (shader calls will use this allocated mesh then)
+	 */
+	public function bind():Void
+	{
+		return;
+	}
+
+	/**
+	 * sets the mesh buffer as inactive on the GPU (no mesh will be active for shader calls then)
+	 */
+	public function unbind():Void
+	{
+		return;
 	}
 }
