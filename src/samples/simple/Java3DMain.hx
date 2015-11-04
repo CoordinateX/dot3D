@@ -18,7 +18,9 @@ import haxe.at.dotpoint.math.MathUtil;
 import haxe.at.dotpoint.math.vector.IQuaternion;
 import haxe.at.dotpoint.math.vector.IVector3;
 import haxe.at.dotpoint.math.vector.Quaternion;
+import haxe.at.dotpoint.math.vector.Vector3;
 import haxe.at.dotpoint.spatial.transform.ITransform;
+import haxe.at.dotpoint.spatial.transform.Transform;
 import haxe.Int64;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWvidmode;
@@ -31,6 +33,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.BufferUtils;
+
 /**
  * ...
  * @author RK
@@ -38,21 +41,24 @@ import org.lwjgl.BufferUtils;
 class Java3DMain
 {
 
-	private static var instance:Java3DMain;
+	public static var instance:Java3DMain;
 
 	// ---------------- //
 
+	/**
+	 *
+	 */
 	private var keyInputCallback:MyKeyInputCallback;
 
 	/**
 	 *
 	 */
-	private var camera:Stage3DCamera;
+	public var camera:Stage3DCamera;
 
 	/**
 	 *
 	 */
-	private var test:Sprite;
+	public var test:Sprite;
 
 	// ************************************************************************ //
 	// Constructor
@@ -65,6 +71,9 @@ class Java3DMain
 
 	public function new()
 	{
+		if( Java3DMain.instance == null )
+			Java3DMain.instance = this;
+
 		this.initialize();
 	}
 
@@ -137,20 +146,20 @@ class Java3DMain
 		var scene:Stage3DScene = cast Stage3DEngine.instance.getScene();
 			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( Stage3DEngine.instance.getContext().getViewport() ) );
 
-		this.camera.transform.position.z += 0;
-		this.camera.transform.position.y += 0;
+		this.camera.transform.position.z -= 40;
+		this.camera.transform.position.y += 30;
 		this.camera.transform.position.x += 0;
 
 		// --------------- //
 
 		var shader:ShaderSignature 	= new ShaderSignature( "TestShader", 1 );
-		var mesh:IMeshData 			= new CubeMesh( 100.5, 100.5 , 100.5 );
+		var mesh:IMeshData 			= new PlaneMesh( 200, 200 );
 		var material:IMaterial 		= new DiffuseColorMaterial();
 
 		this.test = new Sprite( new ModelRenderData( shader, mesh, material ) );
-		//this.test.transform.position.x -= 0.4;
-		//this.test.transform.position.y -= 0.2;
 		this.test.transform.position.z -= 200.8;
+
+		Quaternion.setAxisAngle( Quaternion.getAxis( this.test.transform.rotation, Axis.X ), 90 * MathUtil.DEG_RAD, this.test.transform.rotation );
 
 		// --------------- //
 
@@ -183,8 +192,8 @@ class Java3DMain
 	 */
 	private function onEnterFrame():Void
 	{
-		this.appendRotation( Axis.X, 1 * MathUtil.DEG_RAD, this.test.transform );
-		this.appendRotation( Axis.Y, 1 * MathUtil.DEG_RAD, this.test.transform );
+		//this.appendRotation( Axis.X, 1 * MathUtil.DEG_RAD, this.test.transform );
+		//this.appendRotation( Axis.Y, 1 * MathUtil.DEG_RAD, this.test.transform );
 
 		Stage3DEngine.instance.getRenderer().render( [this.test] );
 	}
@@ -196,6 +205,13 @@ class Java3DMain
  */
 class MyKeyInputCallback extends GLFWKeyCallback
 {
+
+	private var moveSpeed:Float  = 5;
+	private var rotateSpeed:Float = 1 * MathUtil.DEG_RAD;
+
+	/**
+	 *
+	 */
 	public function new()
 	{
 		super();
@@ -214,5 +230,98 @@ class MyKeyInputCallback extends GLFWKeyCallback
 		{
 			GLFW.glfwSetWindowShouldClose( window, GL11.GL_TRUE ); // We will detect this in our rendering loop
 		}
+
+		if( action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT )
+		{
+			var transform:ITransform = Java3DMain.instance.camera.transform;
+
+			// ---------------------------- //
+			// translation
+
+			if( mods != GLFW.GLFW_MOD_SHIFT )
+			{
+				if( key == GLFW.GLFW_KEY_W )
+					this.appendTranslation( Axis.Z, -this.moveSpeed, transform );
+
+				if( key == GLFW.GLFW_KEY_S )
+					this.appendTranslation( Axis.Z,  this.moveSpeed, transform );
+
+				if( key == GLFW.GLFW_KEY_A )
+					this.appendTranslation( Axis.X, -this.moveSpeed, transform );
+
+				if( key == GLFW.GLFW_KEY_D )
+					this.appendTranslation( Axis.X,  this.moveSpeed, transform );
+
+				if( key == GLFW.GLFW_KEY_R )
+					this.appendTranslation( Axis.Y,  this.moveSpeed, transform );
+
+				if(  key == GLFW.GLFW_KEY_F )
+					this.appendTranslation( Axis.Y, -this.moveSpeed, transform );
+			}
+
+			// ---------------------------- //
+			// rotation
+
+			if( mods == GLFW.GLFW_MOD_SHIFT )
+			{
+				if(  key == GLFW.GLFW_KEY_W )
+					this.appendRotation( Axis.X,  this.rotateSpeed, transform );
+
+				if(  key == GLFW.GLFW_KEY_S )
+					this.appendRotation( Axis.X, -this.rotateSpeed, transform );
+
+				if(  key == GLFW.GLFW_KEY_A )
+					this.appendRotation( Axis.Y, -this.rotateSpeed, transform );
+
+				if(  key == GLFW.GLFW_KEY_D )
+					this.appendRotation( Axis.Y,  this.rotateSpeed, transform );
+
+				if(  key == GLFW.GLFW_KEY_R )
+					this.appendRotation( Axis.Z,  this.rotateSpeed, transform );
+
+				if(  key == GLFW.GLFW_KEY_F )
+					this.appendRotation( Axis.Z, -this.rotateSpeed, transform );
+			}
+
+		}
+	}
+
+	/**
+	 *
+	 * @param	axis
+	 * @param	distance
+	 * @param	transform
+	 */
+	private function appendTranslation( axis:Axis, distance:Float, transform:ITransform ):Void
+	{
+		trace("translate", axis, distance, transform );
+
+		var origin:IQuaternion = transform.rotation;
+
+		var vector:IVector3 = Quaternion.getAxis( origin, axis );
+			vector = Vector3.scale( vector, distance, vector );
+
+		Vector3.add( transform.position, vector, transform.position );
+	}
+
+	/**
+	 *
+	 * @param	axis
+	 * @param	radians
+	 */
+	private function appendRotation( axis:Axis, radians:Float, transform:ITransform ):Void
+	{
+		trace("rotate", axis, radians, transform );
+
+		var origin:IQuaternion = transform.rotation;
+		var vector:IVector3 = Quaternion.getAxis( origin, axis );
+
+		var rotation:Quaternion = Quaternion.setAxisAngle( vector, radians, new Quaternion() );
+			rotation.normalize();
+
+		var new_rotation:Quaternion = Quaternion.multiply( origin, rotation, new Quaternion() );
+			new_rotation.normalize();
+
+		new_rotation.clone( origin );
 	}
 }

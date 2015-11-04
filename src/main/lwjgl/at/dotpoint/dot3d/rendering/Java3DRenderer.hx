@@ -159,11 +159,8 @@ glDepthRange(0.0f, 1.0f);*/
 			var format:Int 				= this.getVertexBufferFormat( register.format );
 			var location:Int 			= this.getVertexAttributeLocation( register );
 
-			trace( location, register, register.size, stride, offset );
-
 			GL20.glEnableVertexAttribArray( location );
 			GL20.glVertexAttribPointer( location, register.size, format, false, stride, offset );
-
 
 			offset += register.size * 4;
 		}

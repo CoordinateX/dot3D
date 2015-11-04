@@ -166,23 +166,28 @@ class Java3DShaderProgram implements IShader
 		{
 			var register:RegisterType = this.signature.getRegisterTypeByIndex( j );
 
-			trace("bind: to location: " + location + " --- " + register );
 			GL20.glBindAttribLocation( program, location, register.ID );
-
 			location += Math.ceil( register.size / 4 );
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function dispose():Void
 	{
 		return;
 	}
 
+	/**
+	 *
+	 * @param	type
+	 * @param	value
+	 * @param	index
+	 */
 	private function setUniformValue( type:RegisterType, value:Array<Float>, index:Int ):Void
 	{
 		var location:Int =  GL20.glGetUniformLocation( this.ptr_program, type.ID );
-
-		trace( "set location: " + location + " --- " + type );
 
 		switch( value.length )
 		{
