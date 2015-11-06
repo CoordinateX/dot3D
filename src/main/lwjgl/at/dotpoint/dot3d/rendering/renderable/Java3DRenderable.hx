@@ -126,6 +126,9 @@ class Java3DRenderable extends ARenderable<IDisplayObject,ModelRenderData> imple
 
 		var camera:IVector3 = Stage3DEngine.instance.getScene().getRegisterData( this.entity, RegisterHelper.W_CAMERA_POSITION );
 		this.shader.setRegisterData( RegisterHelper.W_CAMERA_POSITION, camera );
+
+		var light:IVector3 = Stage3DEngine.instance.getScene().getRegisterData( this.entity, RegisterHelper.W_LIGHT_DIRECTIONAL );
+		this.shader.setRegisterData( RegisterHelper.W_LIGHT_DIRECTIONAL, light );
 	}
 
 }

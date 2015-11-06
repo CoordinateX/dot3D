@@ -27,6 +27,7 @@ class TestShader extends Java3DShaderProgram
 			vertex_program += "#version 330                                	\n";
 			vertex_program += "uniform mat4 E_MODEL2WORLD_TRANSFORM;       	\n";
 			vertex_program += "uniform mat4 W_WORLD2CAMERA_TRANSFORM;      	\n";
+			vertex_program += "uniform vec3 W_LIGHT_DIRECTIONAL;   	      	\n";
 
 			vertex_program += "in vec3 V_POSITION;                         	\n";
 			vertex_program += "in vec2 V_UV_COORDINATES;                   	\n";
@@ -39,7 +40,7 @@ class TestShader extends Java3DShaderProgram
 			vertex_program += "    gl_Position= vec4(V_POSITION,1) * E_MODEL2WORLD_TRANSFORM * W_WORLD2CAMERA_TRANSFORM;        			\n";
 		//	vertex_program += "    vec4 a= vec4(1,1,1,1) * E_MODEL2WORLD_TRANSFORM;        			\n";
 		//	vertex_program += "    gl_Position= vec4(V_POSITION,1) + a;        			\n";
-			vertex_program += "    lpow = max( dot( normalize(vec3(-3.0,2.0,1.0)), normalize(vec4(V_NORMAL,0) * E_MODEL2WORLD_TRANSFORM).xyz ), 0.0 ); 	\n";
+			vertex_program += "    lpow = max( dot( normalize(W_LIGHT_DIRECTIONAL), normalize(vec4(V_NORMAL,0) * E_MODEL2WORLD_TRANSFORM).xyz ), 0.0 ); 	\n";
 		//	vertex_program += "    tuv = V_UV_COORDINATES;        																	\n";
 			vertex_program += "}                                           															\n";
 
@@ -53,7 +54,7 @@ class TestShader extends Java3DShaderProgram
             fragment_program += "out vec3 out_color;                        \n";
 
             fragment_program += "void main(){                               					\n";
-            fragment_program += "    out_color= M_COLOR.xyz * (lpow * 0.8 + 0.2);      				\n";
+            fragment_program += "    out_color= M_COLOR.xyz * (lpow * 0.95 + 0.05);      				\n";
          //   fragment_program += "    out_color= M_COLOR.xyz;      				\n";
          //  fragment_program += "    out_color=vec3(0.8,0.2,0.1);      				\n";
             fragment_program += "}                                          					\n";
@@ -63,33 +64,37 @@ class TestShader extends Java3DShaderProgram
 
 		super( vshader, fshader );
 
-		this.signature = new ShaderSignature( "TestShader", 6 );
+		this.signature = new ShaderSignature( "TestShader", 7 );
 		this.signature.addRegisterType( RegisterHelper.V_POSITION );
 		this.signature.addRegisterType( RegisterHelper.V_UV_COORDINATES );
 		this.signature.addRegisterType( RegisterHelper.V_NORMAL );
 		this.signature.addRegisterType( RegisterHelper.M_COLOR );
 		this.signature.addRegisterType( RegisterHelper.E_MODEL2WORLD_TRANSFORM );
 		this.signature.addRegisterType( RegisterHelper.W_WORLD2CAMERA_TRANSFORM );
+		this.signature.addRegisterType( RegisterHelper.W_LIGHT_DIRECTIONAL );
 	}
 
 	// ************************************************************************ //
 	// Methods
 	// ************************************************************************ //
 
-		/**
+	/**
 	 *
 	 * @param	type
 	 * @param	data
 	 */
 	override public function setRegisterData( type:RegisterType, data:Dynamic ):Void
 	{
-		if( type.ID == RegisterHelper.M_COLOR.ID )
-			this.setUniformValue( type, cast( data, Vector3 ).toArray( true ), 11 );
-
 		if( type.ID == RegisterHelper.E_MODEL2WORLD_TRANSFORM.ID )
-			this.setUniformValue( type, cast( data, Matrix44 ).getArray(), 0 );
+			this.setUniformValue( type, cast( data, Matrix44 ).getArray() );
 
 		if( type.ID == RegisterHelper.W_WORLD2CAMERA_TRANSFORM.ID )
-			this.setUniformValue( type, cast( data, Matrix44 ).getArray(),4 );
+			this.setUniformValue( type, cast( data, Matrix44 ).getArray());
+
+		if( type.ID == RegisterHelper.W_LIGHT_DIRECTIONAL.ID )
+			this.setUniformValue( type, cast( data, Vector3 ).toArray( false ) );
+
+		if( type.ID == RegisterHelper.M_COLOR.ID )
+			this.setUniformValue( type, cast( data, Vector3 ).toArray( true ) );
 	}
 }

@@ -20,6 +20,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.BufferUtils;
 import java.nio.FloatBuffer;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 /**
  * ...
@@ -137,22 +138,20 @@ class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 	 * @param	data
 	 * @return
 	 */
-	private function createIndexBuffer( data:IMeshData ):ByteBuffer
+	private function createIndexBuffer( data:IMeshData ):IntBuffer
 	{
-		var stream:Vector<Int8> = new Vector<Int8>( this.getIndexBufferSize() );
+		var iBuffer:IntBuffer = BufferUtils.createIntBuffer( this.getIndexBufferSize() );
 
 		function setStreamData( index:Int, value:Int ):Void
 		{
-			stream[index] = value;
+			iBuffer.put( value );
 		}
 
 		this.populateIndexStream( data, setStreamData );
 
 		// -------------------- //
 
-		var iBuffer:ByteBuffer = BufferUtils.createByteBuffer( stream.length );
-			iBuffer.put( cast stream, 0, stream.length );
-			iBuffer.flip();
+		iBuffer.flip();
 
 		return iBuffer;
 	}

@@ -17,55 +17,62 @@ class Stage3DScene implements IScene<IDisplayObject>
 {
 
 	/**
-	 * 
+	 *
 	 */
 	public var camera:Stage3DCamera;
-	
+
 	/**
-	 * 
+	 *
+	 */
+	public var light:IVector3;
+
+	/**
+	 *
 	 */
 	private var spatialTree:TreeNode<IDisplayObject>;
-	
+
 	// ************************************************************************ //
 	// Constructor
-	// ************************************************************************ //	
-	
-	public function new() 
+	// ************************************************************************ //
+
+	public function new()
 	{
 		this.spatialTree = new TreeNode<IDisplayObject>( true );
 	}
 
 	// ************************************************************************ //
 	// Methods
-	// ************************************************************************ //	
-	
+	// ************************************************************************ //
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	public function getSpatialTree():TreeNode<IDisplayObject> 
+	public function getSpatialTree():TreeNode<IDisplayObject>
 	{
 		return this.spatialTree;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param	entity
 	 * @param	type
 	 * @return
 	 */
-	public function getRegisterData<T:Dynamic>( entity:IDisplayObject, type:RegisterType ):T 
+	public function getRegisterData<T:Dynamic>( entity:IDisplayObject, type:RegisterType ):T
 	{
 		if( type.ID ==  RegisterHelper.W_WORLD2CAMERA_TRANSFORM.ID )
-			return cast this.camera.getCamera().getProjectionMatrix();		
-		
+			return cast this.camera.getCamera().getProjectionMatrix();
+
 		if( type.ID ==  RegisterHelper.W_CAMERA_POSITION.ID )
 		{
 			var pos:IVector3 = this.camera.transform.position;
-			
-			return cast new Vector3( pos.x, pos.y, pos.z, pos.w );	
+			return cast new Vector3( pos.x, pos.y, pos.z, pos.w );
 		}
-			
+
+		if( type.ID == RegisterHelper.W_LIGHT_DIRECTIONAL.ID )
+			return cast this.light;
+
 		return null;
 	}
 }

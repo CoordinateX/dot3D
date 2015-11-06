@@ -4,6 +4,12 @@ import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import haxe.at.dotpoint.display.material.DiffuseColorMaterial;
 import haxe.at.dotpoint.display.renderable.geometry.material.IMaterial;
 import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.calculations.MeshCalculationTools;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshEditingTools;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshTriangle;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshVertex;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.SharedVertexPolicy;
 import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
 import haxe.at.dotpoint.display.renderable.geometry.Sprite;
 import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
@@ -15,8 +21,10 @@ import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.at.dotpoint.math.Axis;
 import haxe.at.dotpoint.math.MathUtil;
+import haxe.at.dotpoint.math.vector.IMatrix44;
 import haxe.at.dotpoint.math.vector.IQuaternion;
 import haxe.at.dotpoint.math.vector.IVector3;
+import haxe.at.dotpoint.math.vector.Matrix44;
 import haxe.at.dotpoint.math.vector.Quaternion;
 import haxe.at.dotpoint.math.vector.Vector3;
 import haxe.at.dotpoint.spatial.transform.ITransform;
@@ -60,6 +68,11 @@ class Java3DMain
 	 */
 	public var test:Sprite;
 
+	/**
+	 *
+	 */
+	public var time:Float;
+
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
@@ -86,6 +99,8 @@ class Java3DMain
 	 */
 	private function initialize():Void
 	{
+		this.time = 0;
+
 		//Stage2DEngine.instance.initialize( this.onContextComplete );
 		Stage3DEngine.instance.getContext().getViewport().setDimension( 960, 540 );
 		Stage3DEngine.instance.initialize( this.onContextComplete );
@@ -104,7 +119,6 @@ class Java3DMain
 
 		//this.init2D();
 
-
 		 try
 		{
 			this.init3D();
@@ -115,9 +129,7 @@ class Java3DMain
 
 			while( GLFW.glfwWindowShouldClose( Stage3DEngine.instance.getContext().ptr_window ) == GL11.GL_FALSE )
 			{
-				//if( count++ == 0 )
-					this.onEnterFrame();
-
+				this.onEnterFrame();
 				GLFW.glfwPollEvents();
 			}
         }
@@ -145,6 +157,7 @@ class Java3DMain
 	{
 		var scene:Stage3DScene = cast Stage3DEngine.instance.getScene();
 			scene.camera = this.camera = new Stage3DCamera( new PerspectiveLens( Stage3DEngine.instance.getContext().getViewport() ) );
+			scene.light = this.getLight();
 
 		this.camera.transform.position.z -= 40;
 		this.camera.transform.position.y += 30;
@@ -152,18 +165,84 @@ class Java3DMain
 
 		// --------------- //
 
+		var plane:IMeshData = new PlaneMesh( 200, 200, 60, 60 );
+
+		this.gerstner( plane, 0.5 );
+
 		var shader:ShaderSignature 	= new ShaderSignature( "TestShader", 1 );
-		var mesh:IMeshData 			= new PlaneMesh( 200, 200 );
+		var mesh:IMeshData 			= plane; // new MeshData();
 		var material:IMaterial 		= new DiffuseColorMaterial();
 
 		this.test = new Sprite( new ModelRenderData( shader, mesh, material ) );
 		this.test.transform.position.z -= 200.8;
 
-		Quaternion.setAxisAngle( Quaternion.getAxis( this.test.transform.rotation, Axis.X ), 90 * MathUtil.DEG_RAD, this.test.transform.rotation );
+		//Quaternion.setAxisAngle( Quaternion.getAxis( this.test.transform.rotation, Axis.X ), 90 * MathUtil.DEG_RAD, this.test.transform.rotation );
 
 		// --------------- //
 
 		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( this.test.getSpatialNode() );
+	}
+
+	/**
+	 *
+	 * @param	plane
+	 * @param	time
+	 */
+	private function gerstner( plane:IMeshData, time:Float, doUpdate:Bool = true ):Void
+	{
+		var amplitude:Float 	= 2.0;
+		var sharpness:Float 	= 1.8;
+		var frequency:Float 	= 0.6;
+		var wavelength:Float 	= 15.0;
+
+		var direction:Vector3 = new Vector3( 0.3, 0.0, -0.3 );
+
+		//----------------- //
+
+		var vertices:Array<MeshVertex> = MeshEditingTools.getMeshVertexList( plane );
+
+		for( vertex in vertices )
+		{
+			var scalar:Float = Vector3.dot( direction, vertex.position );
+
+			var k:Float 	= 2 * Math.PI / wavelength;
+			var magic:Float = k * scalar - frequency * time;
+
+			var cos:Float = Math.cos( magic );
+			var sin:Float = Math.sin( magic );
+
+			// ------------------ //
+
+			var x:Float = vertex.position.x + sharpness * amplitude * direction.x * cos;
+			var z:Float = vertex.position.z + sharpness * amplitude * direction.z * cos;
+			var y:Float = vertex.position.y + amplitude * sin;
+
+			vertex.position = new Vector3( x, y, z );
+		}
+
+		//----------------- //
+
+		if( !doUpdate )
+			return;
+
+		MeshEditingTools.setMeshVertexList( plane, vertices );
+		MeshCalculationTools.recalculateNormals( plane, SharedVertexPolicy.COMBINE );
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	private function getLight():IVector3
+	{
+		var light:Vector3 = new Vector3( 1.0, 1.0, 0.0, 0 );
+
+		//var rot:Quaternion = Quaternion.setAxisAngle( new Vector3( 0, 1, 1 ), -30 * MathUtil.DEG_RAD );
+		//var rotLight:Vector3 = Quaternion.multiplyVector( rot, light );
+
+		//trace( rotLight );
+
+		return light;
 	}
 
 	/**
@@ -192,8 +271,8 @@ class Java3DMain
 	 */
 	private function onEnterFrame():Void
 	{
-		//this.appendRotation( Axis.X, 1 * MathUtil.DEG_RAD, this.test.transform );
-		//this.appendRotation( Axis.Y, 1 * MathUtil.DEG_RAD, this.test.transform );
+		this.appendRotation( Axis.Y, 0.1 * MathUtil.DEG_RAD, this.test.transform );
+		this.gerstner( this.test.mesh, this.time += 1, false );
 
 		Stage3DEngine.instance.getRenderer().render( [this.test] );
 	}

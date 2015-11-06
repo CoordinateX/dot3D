@@ -185,7 +185,7 @@ class Java3DShaderProgram implements IShader
 	 * @param	value
 	 * @param	index
 	 */
-	private function setUniformValue( type:RegisterType, value:Array<Float>, index:Int ):Void
+	private function setUniformValue( type:RegisterType, value:Array<Float> ):Void
 	{
 		var location:Int =  GL20.glGetUniformLocation( this.ptr_program, type.ID );
 

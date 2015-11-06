@@ -86,7 +86,7 @@ class Java3DRenderer implements IRenderer
 	{
 		//GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, this.currentMesh.signature.numVertices );
 
-		GL11.glDrawElements( GL11.GL_TRIANGLES, this.currentMesh.signature.numTriangles * 3, GL11.GL_UNSIGNED_BYTE, 0);
+		GL11.glDrawElements( GL11.GL_TRIANGLES, this.currentMesh.signature.numTriangles * 3, GL11.GL_UNSIGNED_INT, 0);
 	}
 
 	// ------------------------------------------------------------------------ //
@@ -125,7 +125,7 @@ glDepthRange(0.0f, 1.0f);*/
 	 */
 	public function selectMesh( mesh:IMeshData, buffer:Java3DMeshBuffer ):Void
 	{
-		if(!buffer.isAllocated )
+		if( !buffer.isAllocated )
 			buffer.allocate( mesh );
 
 		if( this.currentMesh != buffer )
