@@ -1,0 +1,37 @@
+-cp src/main
+-cp src/samples/simple
+-cp ../dotCore/src/main
+-cp ../dot2D/src/main
+-cp src/samples/simple
+-cp lib/hxsl
+
+-lib format
+-D dotpoint
+
+-resource ../dot2D/res/main/flash/dshader.pbj@dshader
+--macro allowPackage('sys')
+
+--each
+
+## ################################
+## JAVA
+
+--next
+
+-main Java3DMain
+-debug
+
+-java-lib lib/lwjgl.jar
+-java bin/java
+
+## ################################
+## AS3
+
+--next
+
+-main Main
+-debug
+-D fdb
+
+-swf bin/as3/dot3D.swf
+-swf-version 11

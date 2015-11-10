@@ -1,11 +1,12 @@
 package haxe.at.dotpoint.dot3d;
 
+import haxe.at.dotpoint.display.DisplayEngine;
+
 #if flash
 import flash.at.dotpoint.dot3d.Flash3DEngine;
-#end
-
-import haxe.at.dotpoint.display.DisplayEngine;
+#elseif java
 import lwjgl.at.dotpoint.dot3d.Java3DEngine;
+#end
 
 /**
  * ...

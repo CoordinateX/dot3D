@@ -103,7 +103,7 @@ class Main
 
 	public function new()
 	{
-		this.loader = DataRequest.createFromURL( "../res/main/textures/cardboard.jpg" );
+		this.loader = DataRequest.createFromURL( "../../res/main/textures/cardboard.jpg" );
 		this.loader.load( this.onImageComplete );
 	}
 
