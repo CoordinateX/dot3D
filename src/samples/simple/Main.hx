@@ -3,9 +3,21 @@ package;
 import flash.events.Event;
 import flash.Lib;
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
+import haxe.at.dotpoint.display.material.DiffuseColorMaterial;
 import haxe.at.dotpoint.display.renderable.bitmap.Bitmap;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.calculations.MeshCalculationTools;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshEditingTools;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshVertex;
+import haxe.at.dotpoint.display.renderable.geometry.mesh.util.SharedVertexPolicy;
+import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
+import haxe.at.dotpoint.display.renderable.geometry.Sprite;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.display.renderable.text.TextField;
+import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
+import haxe.at.dotpoint.display.rendering.register.RegisterType;
+import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
 import haxe.at.dotpoint.dot2d.Stage2DEngine;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
 import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
@@ -17,12 +29,14 @@ import haxe.at.dotpoint.dot3d.renderable.Shape;
 import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.at.dotpoint.loader.DataRequest;
+import haxe.at.dotpoint.math.Axis;
 import haxe.at.dotpoint.math.MathUtil;
 import haxe.at.dotpoint.math.vector.IQuaternion;
 import haxe.at.dotpoint.math.vector.IVector3;
 import haxe.at.dotpoint.math.vector.Quaternion;
 import haxe.at.dotpoint.math.vector.Vector3;
 import flash.ModelController;
+import haxe.at.dotpoint.spatial.transform.ITransform;
 
 /**
  * ...
@@ -189,7 +203,7 @@ class Main
 
 		// --------------- //
 
-		this.cubes = new Array<IDisplayObject>();
+		/*this.cubes = new Array<IDisplayObject>();
 
 		for( j in 0...20 )
 		{
@@ -245,6 +259,73 @@ class Main
 		//this.cubes.push( cameraTrident );
 
 		this.trident = cameraTrident;
+		*/
+
+		// --------------- //
+
+		this.plane = new Plane( 5, 5, 30, 30 );
+		this.plane.transform.position.y -= 1;
+
+		this.gerstner( this.plane.mesh, 0.5 );
+
+		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( this.plane.getSpatialNode() );
+	}
+
+	/**
+	 *
+	 * @param	plane
+	 * @param	time
+	 */
+	private function gerstner( plane:IMeshData, time:Float, doUpdate:Bool = true ):Void
+	{
+		var amplitude:Float 	= 2.0;
+		var sharpness:Float 	= 1.8;
+		var frequency:Float 	= 0.6;
+		var wavelength:Float 	= 15.0;
+
+		amplitude  *= 0.035;
+		sharpness  *= 0.035;
+		frequency  *= 0.025;
+		wavelength *= 0.025;
+
+		var direction:Vector3 = new Vector3( 0.3, 0.0, -0.3 );
+
+		//----------------- //
+
+		var vertex:Vector3 = new Vector3();
+		var length:Int = plane.getMeshSignature().numVertices;
+
+		for( j in 0...length )
+		{
+			var data:Array<Float> = plane.getRegisterData( j, RegisterHelper.V_POSITION );
+
+			vertex.x = data[0];
+			vertex.y = data[1];
+			vertex.z = data[2];
+
+			var scalar:Float = Vector3.dot( direction, vertex );
+
+			var k:Float 	= 2 * Math.PI / wavelength;
+			var magic:Float = k * scalar - frequency * time;
+
+			var cos:Float = Math.cos( magic );
+			var sin:Float = Math.sin( magic );
+
+			// ------------------ //
+
+			data[0] = vertex.x + sharpness * amplitude * direction.x * cos;
+			data[2] = vertex.z + sharpness * amplitude * direction.z * cos;
+			data[1]  = amplitude * sin;
+
+			plane.setRegisterIndex( data, RegisterHelper.V_POSITION, j );
+		}
+
+		//----------------- //
+
+		if( !doUpdate )
+			return;
+
+		MeshCalculationTools.recalculateNormals( plane, SharedVertexPolicy.COMBINE );
 	}
 
 
@@ -255,16 +336,31 @@ class Main
 	private function onEnterFrame( event:Event ):Void
 	{
 		this.controller.update( this.camera.transform );
-		//this.controller.update( this.line.transform );
+		//this.appendRotation( Axis.Y, 0.1 * MathUtil.DEG_RAD, this.plane.transform );
 
-		//this.trident.transform.setMatrix( this.camera.transform.getMatrix( Space.WORLD ), Space.WORLD );
-		this.trident.transform.rotation = this.lookAt( this.trident.transform.position, this.camera.transform.position );
+		this.gerstner( this.plane.mesh, this.counter += 3, false );
 
-		this.renderFrustum();
+		Stage3DEngine.instance.getRenderer().render( [this.plane] );
 
-		//Stage2DEngine.instance.getRenderer().render( [this.cube2D,this.text,this.bitmap] );
-		Stage3DEngine.instance.getRenderer().render( this.cubes );
+	}
 
+		/**
+	 *
+	 * @param	axis
+	 * @param	radians
+	 */
+	private function appendRotation( axis:Axis, radians:Float, transform:ITransform ):Void
+	{
+		var origin:IQuaternion = transform.rotation;
+		var vector:IVector3 = Quaternion.getAxis( origin, axis );
+
+		var rotation:Quaternion = Quaternion.setAxisAngle( vector, radians, new Quaternion() );
+			rotation.normalize();
+
+		var new_rotation:Quaternion = Quaternion.multiply( origin, rotation, new Quaternion() );
+			new_rotation.normalize();
+
+		new_rotation.clone( origin );
 	}
 
 	/**

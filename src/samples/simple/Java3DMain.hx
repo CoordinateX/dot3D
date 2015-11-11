@@ -30,6 +30,7 @@ import haxe.at.dotpoint.math.vector.Vector3;
 import haxe.at.dotpoint.spatial.transform.ITransform;
 import haxe.at.dotpoint.spatial.transform.Transform;
 import haxe.Int64;
+import haxe.Timer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -272,7 +273,7 @@ class Java3DMain
 	private function onEnterFrame():Void
 	{
 		this.appendRotation( Axis.Y, 0.1 * MathUtil.DEG_RAD, this.test.transform );
-		this.gerstner( this.test.mesh, this.time += 1, false );
+		//this.gerstner( this.test.mesh, this.time += 1, true );
 
 		Stage3DEngine.instance.getRenderer().render( [this.test] );
 	}

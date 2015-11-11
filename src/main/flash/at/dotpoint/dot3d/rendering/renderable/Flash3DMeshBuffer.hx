@@ -63,7 +63,7 @@ class Flash3DMeshBuffer
 	 */
 	public function allocate( context:Context3D, data:IMeshData ):Void
 	{
-		if ( this.isAllocated )
+		if( this.isAllocated )
 		{
 			Log.warn( "already allocated: " + Log.getCallstack() );
 			this.dispose();

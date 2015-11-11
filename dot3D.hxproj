@@ -27,7 +27,7 @@
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="Java3DMain" />
+    <option mainClass="Test" />
     <option enabledebug="True" />
     <option additional="&#xA;&#xA;&#xA;&#xA;&#xA;" />
   </build>
@@ -40,7 +40,7 @@
     <compile path="unit\TestStandalone.hx" />
     <compile path="src\Main.hx" />
     <compile path="src\main\haxe\Main.hx" />
-    <compile path="src\samples\simple\Java3DMain.hx" />
+    <compile path="src\samples\simple\Test.hx" />
   </compileTargets>
   <!-- Assets to embed into the output SWF -->
   <library>

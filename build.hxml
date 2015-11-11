@@ -14,6 +14,21 @@
 --each
 
 ## ################################
+## AS3
+
+--next
+
+-main Main
+-debug
+-D fdb
+-D advanced-telemetry
+-D default-script-limits 1000 600
+
+-swf-header 1024:768:40
+-swf bin/as3/dot3D.swf
+-swf-version 11
+
+## ################################
 ## JAVA
 
 --next
@@ -23,15 +38,3 @@
 
 -java-lib lib/lwjgl.jar
 -java bin/java
-
-## ################################
-## AS3
-
---next
-
--main Main
--debug
--D fdb
-
--swf bin/as3/dot3D.swf
--swf-version 11
