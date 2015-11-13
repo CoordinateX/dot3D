@@ -2,27 +2,19 @@ package;
 
 import flash.events.Event;
 import flash.Lib;
+import flash.ModelController;
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
-import haxe.at.dotpoint.display.material.DiffuseColorMaterial;
 import haxe.at.dotpoint.display.renderable.bitmap.Bitmap;
 import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
-import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
 import haxe.at.dotpoint.display.renderable.geometry.mesh.util.calculations.MeshCalculationTools;
-import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshEditingTools;
-import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshVertex;
 import haxe.at.dotpoint.display.renderable.geometry.mesh.util.SharedVertexPolicy;
-import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
-import haxe.at.dotpoint.display.renderable.geometry.Sprite;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.display.renderable.text.TextField;
 import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
-import haxe.at.dotpoint.display.rendering.register.RegisterType;
-import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
 import haxe.at.dotpoint.dot2d.Stage2DEngine;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
 import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
 import haxe.at.dotpoint.dot3d.primitives.AxisTrident;
-import haxe.at.dotpoint.dot3d.primitives.Cube;
 import haxe.at.dotpoint.dot3d.primitives.Frustum;
 import haxe.at.dotpoint.dot3d.primitives.Plane;
 import haxe.at.dotpoint.dot3d.renderable.Shape;
@@ -35,7 +27,6 @@ import haxe.at.dotpoint.math.vector.IQuaternion;
 import haxe.at.dotpoint.math.vector.IVector3;
 import haxe.at.dotpoint.math.vector.Quaternion;
 import haxe.at.dotpoint.math.vector.Vector3;
-import flash.ModelController;
 import haxe.at.dotpoint.spatial.transform.ITransform;
 
 /**
@@ -125,6 +116,10 @@ class Main
 	// Methodes
 	// ************************************************************************ //
 
+	/**
+	 *
+	 * @param	event
+	 */
 	private function onImageComplete( event:StatusEvent ):Void
 	{
 		trace( "image complete", this.loader.result );

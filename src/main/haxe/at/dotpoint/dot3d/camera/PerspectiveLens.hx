@@ -1,7 +1,7 @@
 package haxe.at.dotpoint.dot3d.camera;
 
 import haxe.at.dotpoint.core.dispatcher.event.Event;
-import haxe.at.dotpoint.core.lazy.LazyStatus;
+import haxe.at.dotpoint.core.dispatcher.lazy.LazyStatus;
 import haxe.at.dotpoint.display.camera.CameraLens;
 import haxe.at.dotpoint.display.camera.ICameraFrustum;
 import haxe.at.dotpoint.display.event.DisplayEvent;

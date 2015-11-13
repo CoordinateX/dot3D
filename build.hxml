@@ -3,6 +3,7 @@
 -cp ../dotCore/src/main
 -cp ../dot2D/src/main
 -cp src/samples/simple
+-cp src/samples/waves
 -cp lib/hxsl
 
 -lib format
@@ -18,7 +19,7 @@
 
 --next
 
--main Main
+-main MainGerstner
 -debug
 -D fdb
 -D advanced-telemetry
@@ -33,7 +34,7 @@
 
 --next
 
--main Java3DMain
+-main MainGerstner
 -debug
 
 -java-lib lib/lwjgl.jar

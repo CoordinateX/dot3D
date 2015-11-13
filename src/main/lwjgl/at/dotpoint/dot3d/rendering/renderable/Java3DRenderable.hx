@@ -1,5 +1,5 @@
 package lwjgl.at.dotpoint.dot3d.rendering.renderable;
-import haxe.at.dotpoint.core.lazy.LazyStatus;
+import haxe.at.dotpoint.core.dispatcher.lazy.LazyStatus;
 import haxe.at.dotpoint.display.renderable.geometry.material.IMaterial;
 import haxe.at.dotpoint.display.renderable.geometry.material.MaterialSignature;
 import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;

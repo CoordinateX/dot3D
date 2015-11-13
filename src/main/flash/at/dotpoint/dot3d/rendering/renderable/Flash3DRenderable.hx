@@ -2,7 +2,7 @@ package flash.at.dotpoint.dot3d.rendering.renderable;
 
 import flash.at.dotpoint.dot3d.rendering.Flash3DRenderer;
 import flash.at.dotpoint.dot3d.rendering.shader.Flash3DShader;
-import haxe.at.dotpoint.core.lazy.LazyStatus;
+import haxe.at.dotpoint.core.dispatcher.lazy.LazyStatus;
 import haxe.at.dotpoint.display.DisplayEngine;
 import haxe.at.dotpoint.display.renderable.geometry.material.IMaterial;
 import haxe.at.dotpoint.display.renderable.geometry.material.MaterialSignature;
@@ -25,109 +25,109 @@ import haxe.at.dotpoint.math.vector.IVector3;
 //
 class Flash3DRenderable extends ARenderable<IDisplayObject,ModelRenderData> implements IEntityRenderer<IDisplayObject>
 {
-	
+
 	/**
-	 * 
+	 *
 	 */
-	public var shader:Flash3DShader;	
-	
+	public var shader:Flash3DShader;
+
 	/**
-	 * 
+	 *
 	 */
-	public var mesh:Flash3DMeshBuffer;	
-	
+	public var mesh:Flash3DMeshBuffer;
+
 	// ************************************************************************ //
 	// Constructor
-	// ************************************************************************ //	
-	
-	public function new( shader:Flash3DShader, mesh:Flash3DMeshBuffer ) 
+	// ************************************************************************ //
+
+	public function new( shader:Flash3DShader, mesh:Flash3DMeshBuffer )
 	{
 		super();
-		
+
 		this.shader 	= shader;
-		this.mesh 		= mesh;		
+		this.mesh 		= mesh;
 	}
-	
+
 	// ************************************************************************ //
 	// Render
-	// ************************************************************************ //		
-	
+	// ************************************************************************ //
+
 	/**
-	 * 
+	 *
 	 * @param	entity
 	 */
 	public function render():Void
 	{
 		if( this.shader == null || this.mesh == null )
 			throw "Renderable not setup correctly";
-		
+
 		// --------------- //
-		
+
 		this.applyShaderInput();
-		
-		var renderer:Flash3DRenderer = Stage3DEngine.instance.getRenderer();		
-			renderer.selectShader( this.shader );			
+
+		var renderer:Flash3DRenderer = Stage3DEngine.instance.getRenderer();
+			renderer.selectShader( this.shader );
 			renderer.selectShaderContext( this.shader.contextSetting );
-			renderer.selectMesh( this.model.mesh, this.mesh );		
-		
+			renderer.selectMesh( this.model.mesh, this.mesh );
+
 		renderer.getContext3D().drawTriangles( this.mesh.indexBuffer );
 	}
-	
+
 	// ************************************************************************ //
 	// Helper
-	// ************************************************************************ //	
-	
+	// ************************************************************************ //
+
 	/**
-	 * 
+	 *
 	 */
 	private function applyShaderInput():Void
 	{
 		if( this.model.material.lazy.status == LazyStatus.INVALID )
 			this.applyMaterialInput();
-		
-		if( this.statusTransform == LazyStatus.INVALID )	
+
+		if( this.statusTransform == LazyStatus.INVALID )
 			this.applyEntityInput();
-		
+
 		this.applySceneInput();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
-	private function applyMaterialInput():Void 
+	private function applyMaterialInput():Void
 	{
 		var material:IMaterial = this.model.material;
 		var signature:MaterialSignature = material.getMaterialSignature();
-		
+
 		for( register in signature )
 		{
 			this.shader.setRegisterData( register, material.getRegisterData( register ) );
 		}
-		
+
 		this.model.material.lazy.validate();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
-	private function applyEntityInput():Void 
+	private function applyEntityInput():Void
 	{
-		var transform:IMatrix44 = this.entity.transform.getMatrix( null, Space.WORLD );			
-		this.shader.setRegisterData( RegisterHelper.E_MODEL2WORLD_TRANSFORM, transform );	
-		
+		var transform:IMatrix44 = this.entity.transform.getMatrix( null, Space.WORLD );
+		this.shader.setRegisterData( RegisterHelper.E_MODEL2WORLD_TRANSFORM, transform );
+
 		this.statusTransform = LazyStatus.VALID;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
-	private function applySceneInput():Void 
+	private function applySceneInput():Void
 	{
-		var projection:IMatrix44 = Stage3DEngine.instance.getScene().getRegisterData( this.entity, RegisterHelper.W_WORLD2CAMERA_TRANSFORM );		
-		this.shader.setRegisterData( RegisterHelper.W_WORLD2CAMERA_TRANSFORM, projection );		
-		
-		var camera:IVector3 = Stage3DEngine.instance.getScene().getRegisterData( this.entity, RegisterHelper.W_CAMERA_POSITION );		
-		this.shader.setRegisterData( RegisterHelper.W_CAMERA_POSITION, camera );		
+		var projection:IMatrix44 = Stage3DEngine.instance.getScene().getRegisterData( this.entity, RegisterHelper.W_WORLD2CAMERA_TRANSFORM );
+		this.shader.setRegisterData( RegisterHelper.W_WORLD2CAMERA_TRANSFORM, projection );
+
+		var camera:IVector3 = Stage3DEngine.instance.getScene().getRegisterData( this.entity, RegisterHelper.W_CAMERA_POSITION );
+		this.shader.setRegisterData( RegisterHelper.W_CAMERA_POSITION, camera );
 	}
-	
+
 }

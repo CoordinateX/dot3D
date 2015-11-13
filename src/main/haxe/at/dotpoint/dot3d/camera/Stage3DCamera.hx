@@ -23,9 +23,12 @@ class Stage3DCamera extends SpatialEntity implements ICameraEntity<SpatialEntity
 	// Constructor
 	// ************************************************************************ //
 
-	public function new( lens:ICameraLens )
+	public function new( ?lens:ICameraLens )
 	{
 		super( 4 );
+
+		if( lens == null )
+			lens = new PerspectiveLens( Stage3DEngine.instance.getContext().getViewport() );
 
 		this.camera = new CameraComponent<SpatialEntity>( lens );
 		this.addComponent( this.camera );

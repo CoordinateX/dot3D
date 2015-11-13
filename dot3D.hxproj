@@ -21,13 +21,14 @@
     <class path="..\dot2D\src\main" />
     <class path="src\main" />
     <class path="src\samples\simple" />
+    <class path="src\samples\waves" />
   </classpaths>
   <!-- Build options -->
   <build>
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="Test" />
+    <option mainClass="MainGerstner" />
     <option enabledebug="True" />
     <option additional="&#xA;&#xA;&#xA;&#xA;&#xA;" />
   </build>
@@ -40,7 +41,7 @@
     <compile path="unit\TestStandalone.hx" />
     <compile path="src\Main.hx" />
     <compile path="src\main\haxe\Main.hx" />
-    <compile path="src\samples\simple\Test.hx" />
+    <compile path="src\samples\waves\MainGerstner.hx" />
   </compileTargets>
   <!-- Assets to embed into the output SWF -->
   <library>
@@ -57,8 +58,8 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Custom" />
-    <option testMovieCommand="D:\Projects\Dotpoint\dot3D\bin\java\run.bat" />
+    <option testMovie="OpenDocument" />
+    <option testMovieCommand="D:\Projects\Dotpoint\dot3D\bin\as3\dot3D.swf" />
   </options>
   <!-- Plugin storage -->
   <storage />
