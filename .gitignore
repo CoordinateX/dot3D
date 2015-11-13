@@ -16,3 +16,7 @@
 /build/src
 /build/res
 /build
+/res/main/*.max
+/res/main/textures/viewcube.uvw
+/res/main/textures/template.png
+/diagram.ump
