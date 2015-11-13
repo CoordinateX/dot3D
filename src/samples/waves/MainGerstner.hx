@@ -2,6 +2,7 @@ package;
 
 import haxe.at.dotpoint.bootstrapper.Bootstrapper;
 import haxe.at.dotpoint.bootstrapper.loader.BootstrapperConfigRequest;
+import haxe.at.dotpoint.controls.keyboard.IKeyboardInput;
 import haxe.at.dotpoint.core.application.ApplicationInfo;
 import haxe.at.dotpoint.core.dispatcher.event.Event;
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
@@ -45,7 +46,7 @@ class MainGerstner
 			MainGerstner.instance= this;
 
 		this.boostrapper = new Bootstrapper();
-		this.boostrapper.processRequest( new BootstrapperConfigRequest( new URLRequest( "../../res/main/bootstrapper.cfg" ) ), this.initialize );
+		this.boostrapper.processRequest( new BootstrapperConfigRequest( new URLRequest( "res/main/bootstrapper.cfg" ) ), this.initialize );
 	}
 
 	// ************************************************************************ //
@@ -92,5 +93,15 @@ class MainGerstner
 	private function initController():Void
 	{
 		//this.controller = new ModelController();
+
+		#if java
+		var test:IKeyboardInput = new lwjgl.at.dotpoint.controls.keyboard.KeyboardInput();
+
+		while( org.lwjgl.glfw.GLFW.glfwWindowShouldClose( Stage3DEngine.instance.getContext().ptr_window ) == org.lwjgl.opengl.GL11.GL_FALSE )
+		{
+
+			org.lwjgl.glfw.GLFW.glfwPollEvents();
+		}
+		#end
 	}
 }
