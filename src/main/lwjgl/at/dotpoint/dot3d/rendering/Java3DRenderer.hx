@@ -84,8 +84,6 @@ class Java3DRenderer implements IRenderer
 	 */
 	public function drawTriangles():Void
 	{
-		//GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, this.currentMesh.signature.numVertices );
-
 		GL11.glDrawElements( GL11.GL_TRIANGLES, this.currentMesh.signature.numTriangles * 3, GL11.GL_UNSIGNED_INT, 0);
 	}
 
@@ -108,15 +106,20 @@ class Java3DRenderer implements IRenderer
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function selectShaderContext():Void
 	{
-	/*	glEnable(GL_CULL_FACE);
-glCullFace(GL_BACK);
-glFrontFace(GL_CW);
-glEnable(GL_DEPTH_TEST);
-glDepthMask(true);
-glDepthFunc(GL_LEQUAL);
-glDepthRange(0.0f, 1.0f);*/
+		/*
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CW);
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(true);
+		glDepthFunc(GL_LEQUAL);
+		glDepthRange(0.0f, 1.0f);
+		*/
 	}
 
 	/**
@@ -125,85 +128,24 @@ glDepthRange(0.0f, 1.0f);*/
 	 */
 	public function selectMesh( mesh:IMeshData, buffer:Java3DMeshBuffer ):Void
 	{
-		if( !buffer.isAllocated )
-			buffer.allocate( mesh );
-
 		if( this.currentMesh != buffer )
 		{
-			GL30.glBindVertexArray( buffer.ptr_vertexArray );
-			GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, buffer.ptr_vertexBuffer );
-
-			this.setVertexAttributes( buffer );
-
-			GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer.ptr_indexBuffer );
-
-			// --------- //
+			if( this.currentMesh != null && this.currentMesh.isBound )
+				this.currentMesh.unbind();
 
 			this.currentMesh = buffer;
 		}
+
+		// -------------- //
+
+		this.currentMesh.dispose();
+
+		if(!this.currentMesh.isAllocated )
+			this.currentMesh.allocate( mesh );
+
+		if(!this.currentMesh.isBound )
+			this.currentMesh.bind( this.currentShader );
 	}
 
-
-	/**
-	 *
-	 * @param	data
-	 */
-	private function setVertexAttributes( buffer:Java3DMeshBuffer ):Void
-	{
-		var stride:Int = RegisterHelper.getSignatureSize( buffer.signature ) * 4; // in effing bytes
-		var offset:Int = 0;
-
-		for ( t in 0...buffer.signature.numRegisters )
-		{
-			var register:RegisterType 	= buffer.signature.getRegisterTypeByIndex( t );
-			var format:Int 				= this.getVertexBufferFormat( register.format );
-			var location:Int 			= this.getVertexAttributeLocation( register );
-
-			GL20.glEnableVertexAttribArray( location );
-			GL20.glVertexAttribPointer( location, register.size, format, false, stride, offset );
-
-			offset += register.size * 4;
-		}
-	}
-
-	/**
-	 *
-	 * @param	format
-	 */
-	private function getVertexBufferFormat( format:RegisterFormat ):Int
-	{
-		switch( format )
-		{
-			case RegisterFormat.TFLOAT_1: 	return GL11.GL_FLOAT;
-			case RegisterFormat.TFLOAT_2: 	return GL11.GL_FLOAT;
-			case RegisterFormat.TFLOAT_3: 	return GL11.GL_FLOAT;
-			case RegisterFormat.TFLOAT_4: 	return GL11.GL_FLOAT;
-			case RegisterFormat.TINT: 		return GL11.GL_INT;
-
-			default:
-				throw "not a vertexbuffer format";
-		}
-
-		return GL11.GL_FLOAT;
-	}
-
-	public function getVertexAttributeLocation( register:RegisterType ):Int
-	{
-		var location:Int = 0;
-
-		for( j in 0...this.currentShader.getShaderSignature().numRegisters )
-		{
-			var sregister:RegisterType = this.currentShader.getShaderSignature().getRegisterTypeByIndex( j );
-
-			if( sregister.ID == register.ID )
-				return location;
-
-			location += Math.ceil( sregister.size / 4 );
-		}
-
-		throw "could not find vertex attrib location";
-
-		return -1;
-	}
 
 }

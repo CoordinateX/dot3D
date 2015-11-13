@@ -12,6 +12,7 @@ import haxe.at.dotpoint.display.renderable.geometry.mesh.util.editing.MeshVertex
 import haxe.at.dotpoint.display.renderable.geometry.mesh.util.SharedVertexPolicy;
 import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
 import haxe.at.dotpoint.display.renderable.geometry.Sprite;
+import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
 import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
 import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
@@ -200,11 +201,18 @@ class Java3DMain
 
 		//----------------- //
 
-		var vertices:Array<MeshVertex> = MeshEditingTools.getMeshVertexList( plane );
+		var vertex:Vector3 = new Vector3();
+		var length:Int = plane.getMeshSignature().numVertices;
 
-		for( vertex in vertices )
+		for( j in 0...length )
 		{
-			var scalar:Float = Vector3.dot( direction, vertex.position );
+			var data:Array<Float> = plane.getRegisterData( j, RegisterHelper.V_POSITION );
+
+			vertex.x = data[0];
+			vertex.y = data[1];
+			vertex.z = data[2];
+
+			var scalar:Float = Vector3.dot( direction, vertex );
 
 			var k:Float 	= 2 * Math.PI / wavelength;
 			var magic:Float = k * scalar - frequency * time;
@@ -214,11 +222,11 @@ class Java3DMain
 
 			// ------------------ //
 
-			var x:Float = vertex.position.x + sharpness * amplitude * direction.x * cos;
-			var z:Float = vertex.position.z + sharpness * amplitude * direction.z * cos;
-			var y:Float = vertex.position.y + amplitude * sin;
+			data[0] = vertex.x + sharpness * amplitude * direction.x * cos;
+			data[2] = vertex.z + sharpness * amplitude * direction.z * cos;
+			data[1]  = amplitude * sin;
 
-			vertex.position = new Vector3( x, y, z );
+			plane.setRegisterIndex( data, RegisterHelper.V_POSITION, j );
 		}
 
 		//----------------- //
@@ -226,7 +234,6 @@ class Java3DMain
 		if( !doUpdate )
 			return;
 
-		MeshEditingTools.setMeshVertexList( plane, vertices );
 		MeshCalculationTools.recalculateNormals( plane, SharedVertexPolicy.COMBINE );
 	}
 
@@ -272,8 +279,8 @@ class Java3DMain
 	 */
 	private function onEnterFrame():Void
 	{
-		this.appendRotation( Axis.Y, 0.1 * MathUtil.DEG_RAD, this.test.transform );
-		//this.gerstner( this.test.mesh, this.time += 1, true );
+		//this.appendRotation( Axis.Y, 0.1 * MathUtil.DEG_RAD, this.test.transform );
+		this.gerstner( this.test.mesh, this.time += 1, true );
 
 		Stage3DEngine.instance.getRenderer().render( [this.test] );
 	}

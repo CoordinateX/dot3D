@@ -1,26 +1,21 @@
 package lwjgl.at.dotpoint.dot3d.rendering.renderable;
 
 import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
-import haxe.at.dotpoint.display.renderable.geometry.mesh.MeshSignature;
 import haxe.at.dotpoint.display.rendering.register.RegisterFormat;
 import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
 import haxe.at.dotpoint.display.rendering.register.RegisterType;
 import haxe.at.dotpoint.display.rendering.renderable.AMeshBuffer;
 import haxe.at.dotpoint.display.rendering.renderable.IMeshBuffer;
 import haxe.at.dotpoint.display.rendering.renderable.MeshBufferType;
-import haxe.at.dotpoint.logger.Log;
+import haxe.at.dotpoint.display.rendering.shader.IShader;
 import haxe.ds.Vector;
-import java.NativeArray;
-import java.types.Int16;
-import java.types.Int8;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.BufferUtils;
-import java.nio.FloatBuffer;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 /**
  * ...
@@ -33,7 +28,7 @@ class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 	/**
 	 * true if the mesh buffer is currently active on the GPU (shader calls use this mesh right now)
 	 */
-	public var isBound(get, null):Bool;
+	public var isBound(default, null):Bool;
 
 	/**
 	 *
@@ -61,15 +56,8 @@ class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 		this.ptr_vertexArray  = -1;
 		this.ptr_indexBuffer  = -1;
 		this.ptr_vertexBuffer = -1;
-	}
 
-	// ************************************************************************ //
-	// getter / setter
-	// ************************************************************************ //
-
-	private function get_isBound():Bool
-	{
-		return false;
+		this.isBound = false;
 	}
 
 	// ************************************************************************ //
@@ -83,20 +71,20 @@ class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 	 */
 	override public function allocate( data:IMeshData ):Void
 	{
+		if( this.isBound )
+			this.unbind();
+
 		super.allocate( data );
 
 		// -------------------- //
 
 		this.allocateVertexArray();
 		this.allocateVertexBuffer( data );
-
-		GL30.glBindVertexArray( 0 );
-
 		this.allocateIndexBuffer( data );
-
-		GL15.glBindBuffer( GL15.GL_ELEMENT_ARRAY_BUFFER, 0 );
-		GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, 0 );
 	}
+
+	// ------------------------------------------------------------------------ //
+	// ------------------------------------------------------------------------ //
 
 	/**
 	 *
@@ -132,6 +120,9 @@ class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 
 		GL15.glBindBuffer( GL15.GL_ELEMENT_ARRAY_BUFFER, 0 );
 	}
+
+	// ------------------------------------------------------------------------ //
+	// ------------------------------------------------------------------------ //
 
 	/**
 	 *
@@ -190,6 +181,9 @@ class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 	 */
 	override public function dispose():Void
 	{
+		if( this.isBound )
+			this.unbind();
+
 		if ( this.ptr_vertexArray != -1 )
 		{
 			GL15.glDeleteBuffers( this.ptr_vertexArray );
@@ -220,9 +214,22 @@ class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 	/**
 	 * sets the mesh buffer as currently active on the GPU (shader calls will use this allocated mesh then)
 	 */
-	public function bind():Void
+	public function bind( shader:IShader ):Void
 	{
-		return;
+		if( !this.isAllocated )
+			throw "must be allocated first";
+
+		if( this.isBound )
+			this.unbind();
+
+		GL30.glBindVertexArray( this.ptr_vertexArray );
+		GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, this.ptr_vertexBuffer );
+
+		this.setVertexAttributes( shader );
+
+		GL15.glBindBuffer( GL15.GL_ELEMENT_ARRAY_BUFFER, this.ptr_indexBuffer );
+
+		this.isBound = true;
 	}
 
 	/**
@@ -230,6 +237,80 @@ class Java3DMeshBuffer extends AMeshBuffer implements IMeshBuffer
 	 */
 	public function unbind():Void
 	{
-		return;
+		GL30.glBindVertexArray( 0 );
+		GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, 0 );
+		GL15.glBindBuffer( GL15.GL_ELEMENT_ARRAY_BUFFER, 0 );
+
+		this.isBound = false;
 	}
+
+	// ------------------------------------------------------------------------ //
+	// ------------------------------------------------------------------------ //
+
+	/**
+	 *
+	 * @param	data
+	 */
+	private function setVertexAttributes( shader:IShader ):Void
+	{
+		var stride:Int = RegisterHelper.getSignatureSize( this.signature ) * 4; // in effing bytes
+		var offset:Int = 0;
+
+		for ( t in 0...this.signature.numRegisters )
+		{
+			var register:RegisterType 	= this.signature.getRegisterTypeByIndex( t );
+			var format:Int 				= this.getVertexBufferFormat( register.format );
+			var location:Int 			= this.getVertexAttributeLocation( shader, register );
+
+			GL20.glEnableVertexAttribArray( location );
+			GL20.glVertexAttribPointer( location, register.size, format, false, stride, offset );
+
+			offset += register.size * 4;
+		}
+	}
+
+	/**
+	 *
+	 * @param	format
+	 */
+	private function getVertexBufferFormat( format:RegisterFormat ):Int
+	{
+		switch( format )
+		{
+			case RegisterFormat.TFLOAT_1: 	return GL11.GL_FLOAT;
+			case RegisterFormat.TFLOAT_2: 	return GL11.GL_FLOAT;
+			case RegisterFormat.TFLOAT_3: 	return GL11.GL_FLOAT;
+			case RegisterFormat.TFLOAT_4: 	return GL11.GL_FLOAT;
+			case RegisterFormat.TINT: 		return GL11.GL_INT;
+
+			default:
+				throw "not a vertexbuffer format";
+		}
+
+		return GL11.GL_FLOAT;
+	}
+
+	/**
+	 *
+	 * @param	register
+	 * @return
+	 */
+	private function getVertexAttributeLocation( shader:IShader, register:RegisterType ):Int
+	{
+		var location:Int = 0;
+
+		for( j in 0...shader.getShaderSignature().numRegisters )
+		{
+			var sregister:RegisterType = shader.getShaderSignature().getRegisterTypeByIndex( j );
+
+			if( sregister.ID == register.ID )
+				return location;
+
+			location += Math.ceil( sregister.size / 4 );
+		}
+
+		throw "could not find vertex attrib location";
+		return -1;
+	}
+
 }
