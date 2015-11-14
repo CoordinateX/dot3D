@@ -28,7 +28,7 @@
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="MainGerstner" />
+    <option mainClass="Simple3DMain" />
     <option enabledebug="True" />
     <option additional="-java-lib lib/lwjgl.jar&#xA;&#xA;&#xA;&#xA;&#xA;" />
   </build>
@@ -42,6 +42,8 @@
     <compile path="src\Main.hx" />
     <compile path="src\main\haxe\Main.hx" />
     <compile path="src\samples\waves\MainGerstner.hx" />
+    <compile path="src\samples\simple\MainGerstner.hx" />
+    <compile path="src\samples\simple\Simple3DMain.hx" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>

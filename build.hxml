@@ -26,7 +26,15 @@
 -D advanced-telemetry
 -D default-script-limits 1000 600
 
--swf-header 1024:768:40
+-swf-header 960:540:40:0C0C0C
+-swf bin/as3/dot3D-Debug.swf
+-swf-version 11
+
+--next
+
+-main MainGerstner
+
+-swf-header 960:540:40:0C0C0C
 -swf bin/as3/dot3D.swf
 -swf-version 11
 

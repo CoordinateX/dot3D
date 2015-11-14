@@ -43,7 +43,6 @@ class Plane extends Sprite
  */
 class PlaneMesh extends MeshData
 {
-
 	/**
 	 *
 	 * @param	w

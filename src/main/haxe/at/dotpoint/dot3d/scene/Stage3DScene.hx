@@ -38,6 +38,7 @@ class Stage3DScene implements IScene<IDisplayObject>
 	public function new()
 	{
 		this.spatialTree = new TreeNode<IDisplayObject>( true );
+		this.light = new Vector3( 1.0, 1.0, 0.0, 0 );
 	}
 
 	// ************************************************************************ //

@@ -13,13 +13,51 @@ import haxe.at.dotpoint.math.vector.Vector3;
 class WaveGeneratorGerstner
 {
 
+	/**
+	 *
+	 */
+	public var amplitude:Float;
+
+	/**
+	 *
+	 */
+	public var sharpness:Float;
+
+	/**
+	 *
+	 */
+	public var frequency:Float;
+
+	/**
+	 *
+	 */
+	public var wavelength:Float;
+
+	/**
+	 *
+	 */
+	public var direction:Vector3;
+
+	// ----------- //
+
+	public var segmentsX:Int;
+	public var segmentsY:Int;
+
+	public var w:Float;
+	public var h:Float;
+
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
 
 	public function new()
 	{
+		this.amplitude 	= 2.0  * 0.02;
+		this.sharpness 	= 1.8  * 0.02;
+		this.frequency 	= 0.6  * 0.02;
+		this.wavelength = 15.0 * 0.02;
 
+		this.direction 	= new Vector3( 0.3, 0.0, 0.3 );
 	}
 
 	// ************************************************************************ //
@@ -31,43 +69,51 @@ class WaveGeneratorGerstner
 	 * @param	plane
 	 * @param	time
 	 */
-	private function update( plane:IMeshData, time:Float ):Void
+	public function update( plane:IMeshData, time:Float ):Void
 	{
-		var amplitude:Float 	= 2.0;
-		var sharpness:Float 	= 1.8;
-		var frequency:Float 	= 0.6;
-		var wavelength:Float 	= 15.0;
+		var vertex:Vector3 = new Vector3();
 
-		var direction:Vector3 = new Vector3( 0.3, 0.0, -0.3 );
+		var xfactor:Float = w / segmentsX;
+		var yfactor:Float = h / segmentsY;
+
+		var xscale:Int = segmentsX + 1;
+		var yscale:Int = segmentsY + 1;
 
 		//----------------- //
 
-		var vertex:Vector3 = new Vector3();
-		var length:Int = plane.getMeshSignature().numVertices;
-
-		for( j in 0...length )
+		for( xs in 0...xscale )
 		{
-			var data:Array<Float> = plane.getRegisterData( j, RegisterHelper.V_POSITION );
+			for( ys in 0...yscale )
+			{
+				var index:Int = ys + xs * yscale;
 
-			vertex.x = data[0];
-			vertex.y = data[1];
-			vertex.z = data[2];
+				var x:Float = -w * 0.5 + xs * xfactor;
+				var z:Float = -h * 0.5 + ys * yfactor;
 
-			var scalar:Float = Vector3.dot( direction, vertex );
+				// -------------------- //
 
-			var k:Float 	= 2 * Math.PI / wavelength;
-			var magic:Float = k * scalar - frequency * time;
+				var data:Array<Float> = plane.getRegisterData( index, RegisterHelper.V_POSITION );
 
-			var cos:Float = Math.cos( magic );
-			var sin:Float = Math.sin( magic );
+				vertex.x = data[0];
+				vertex.y = data[1];
+				vertex.z = data[2];
 
-			// ------------------ //
+				var scalar:Float = Vector3.dot( this.direction, vertex );
 
-			data[0] = vertex.x + sharpness * amplitude * direction.x * cos;
-			data[2] = vertex.z + sharpness * amplitude * direction.z * cos;
-			data[1]  = amplitude * sin;
+				var k:Float 	= 2 * Math.PI / this.wavelength;
+				var magic:Float = k * scalar - this.frequency * time;
 
-			plane.setRegisterIndex( data, RegisterHelper.V_POSITION, j );
+				var cos:Float = Math.cos( magic );
+				var sin:Float = Math.sin( magic );
+
+				// ------------------ //
+
+				data[0] = x + this.sharpness * this.amplitude * this.direction.x * cos;
+				data[2] = z + this.sharpness * this.amplitude * this.direction.z * cos;
+				data[1] = this.amplitude * sin;
+
+				plane.setRegisterIndex( data, RegisterHelper.V_POSITION, index );
+			}
 		}
 
 		//----------------- //

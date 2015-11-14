@@ -92,7 +92,12 @@ class TestShader extends Java3DShaderProgram
 			this.setUniformValue( type, cast( data, Matrix44 ).getArray());
 
 		if( type.ID == RegisterHelper.W_LIGHT_DIRECTIONAL.ID )
+		{
+			if( data == null )
+				data = new Vector3();
+
 			this.setUniformValue( type, cast( data, Vector3 ).toArray( false ) );
+		}
 
 		if( type.ID == RegisterHelper.M_COLOR.ID )
 			this.setUniformValue( type, cast( data, Vector3 ).toArray( true ) );
