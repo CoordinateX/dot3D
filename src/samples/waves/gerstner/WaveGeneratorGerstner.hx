@@ -1,4 +1,4 @@
-package;
+package gerstner;
 
 import haxe.at.dotpoint.display.renderable.geometry.mesh.IMeshData;
 import haxe.at.dotpoint.display.renderable.geometry.mesh.util.calculations.MeshCalculationTools;

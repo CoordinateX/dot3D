@@ -10,6 +10,7 @@
 -D dotpoint
 -D lwjgl
 
+-main fourier.MainFourier
 -resource ../dot2D/res/main/flash/dshader.pbj@dshader
 --macro allowPackage('sys')
 
@@ -20,7 +21,6 @@
 
 --next
 
--main MainGerstner
 -debug
 -D fdb
 -D advanced-telemetry
@@ -30,20 +30,11 @@
 -swf bin/as3/dot3D-Debug.swf
 -swf-version 11
 
---next
-
--main MainGerstner
-
--swf-header 960:540:40:0C0C0C
--swf bin/as3/dot3D.swf
--swf-version 11
-
 ## ################################
 ## JAVA
 
 --next
 
--main MainGerstner
 -debug
 
 -java-lib lib/lwjgl.jar

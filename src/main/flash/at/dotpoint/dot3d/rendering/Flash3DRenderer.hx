@@ -213,7 +213,9 @@ class Flash3DRenderer implements IRenderer
 	 */
 	public function selectMesh( mesh:IMeshData, buffer:Flash3DMeshBuffer ):Void
 	{
-		//if(!buffer.isAllocated )
+		buffer.dispose();
+
+		if(!buffer.isAllocated )
 			buffer.allocate( this.getContext3D(), mesh );
 
 		this.setVertexBuffer( buffer );

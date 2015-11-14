@@ -1,4 +1,4 @@
-package;
+package gerstner;
 import haxe.at.dotpoint.dot3d.primitives.Cube;
 import haxe.at.dotpoint.dot3d.primitives.Plane;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
@@ -26,7 +26,7 @@ class MainGerstner extends Simple3DMain
 	/**
 	 *
 	 */
-	private var waves:WaveGeneratorGerstner;
+	private var waves:gerstner.WaveGeneratorGerstner;
 
 	/**
 	 *
@@ -70,7 +70,7 @@ class MainGerstner extends Simple3DMain
 		var sx:Int = 20;
 		var sy:Int = 20;
 
-		this.waves = new WaveGeneratorGerstner();
+		this.waves = new gerstner.WaveGeneratorGerstner();
 		this.waves.segmentsX = sx;
 		this.waves.segmentsY = sy;
 		this.waves.w = w;
@@ -87,6 +87,8 @@ class MainGerstner extends Simple3DMain
 	override function onTick():Void
 	{
 		this.transformControl.update( Stage3DEngine.instance.getScene().camera.transform );
+
+		this.ocean.getRenderer().
 		this.waves.update( this.ocean.mesh, this.counter++ );
 
 		super.onTick();
