@@ -1,11 +1,17 @@
 package;
 
 import haxe.at.dotpoint.bootstrapper.Bootstrapper;
+import haxe.at.dotpoint.bootstrapper.loader.BootstrapperConfigParser.DefaultBootstrapperFactory;
 import haxe.at.dotpoint.bootstrapper.loader.BootstrapperConfigRequest;
+import haxe.at.dotpoint.controls.InputControlSystem;
+import haxe.at.dotpoint.controls.InputRequest;
+import haxe.at.dotpoint.controls.InputType;
 import haxe.at.dotpoint.controls.keyboard.IKeyboardInput;
+import haxe.at.dotpoint.controls.keyboard.KeyboardMap;
 import haxe.at.dotpoint.core.application.ApplicationInfo;
 import haxe.at.dotpoint.core.dispatcher.event.Event;
 import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
+import haxe.at.dotpoint.core.processor.ITaskFactory;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
 import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
 import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
@@ -45,8 +51,13 @@ class MainGerstner
 		if( MainGerstner.instance == null )
 			MainGerstner.instance= this;
 
+		// ----------------------- //
+
+		var factory:ITaskFactory = new DefaultBootstrapperFactory();
+		var request:BootstrapperConfigRequest = new BootstrapperConfigRequest( new URLRequest( "res/main/bootstrapper.cfg" ), factory );
+
 		this.boostrapper = new Bootstrapper();
-		this.boostrapper.processRequest( new BootstrapperConfigRequest( new URLRequest( "res/main/bootstrapper.cfg" ) ), this.initialize );
+		this.boostrapper.processRequest( request, this.initialize );
 	}
 
 	// ************************************************************************ //
@@ -92,14 +103,16 @@ class MainGerstner
 	 */
 	private function initController():Void
 	{
-		//this.controller = new ModelController();
+		InputControlSystem.instance.initialize();
+
+
+		var request:InputRequest = InputControlSystem.instance.getInputRequest( "forward" );
 
 		#if java
-		var test:IKeyboardInput = new lwjgl.at.dotpoint.controls.keyboard.KeyboardInput();
-
 		while( org.lwjgl.glfw.GLFW.glfwWindowShouldClose( Stage3DEngine.instance.getContext().ptr_window ) == org.lwjgl.opengl.GL11.GL_FALSE )
 		{
 
+			trace( InputControlSystem.instance.getInputValue( request ) );
 			org.lwjgl.glfw.GLFW.glfwPollEvents();
 		}
 		#end

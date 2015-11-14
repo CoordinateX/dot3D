@@ -8,6 +8,7 @@
 
 -lib format
 -D dotpoint
+-D lwjgl
 
 -resource ../dot2D/res/main/flash/dshader.pbj@dshader
 --macro allowPackage('sys')
