@@ -14,6 +14,7 @@ import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
 import haxe.at.dotpoint.core.processor.ITaskFactory;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
 import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
+import haxe.at.dotpoint.dot3d.controls.TransformInputControl;
 import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
 import haxe.at.dotpoint.dot3d.Stage3DEngine;
 import haxe.at.dotpoint.loader.URLRequest;
@@ -36,6 +37,11 @@ class MainGerstner
 	 *
 	 */
 	private var boostrapper:Bootstrapper;
+
+	/**
+	 *
+	 */
+	private var transformControl:TransformInputControl;
 
 	// ************************************************************************ //
 	// Constructor
@@ -105,14 +111,12 @@ class MainGerstner
 	{
 		InputControlSystem.instance.initialize();
 
-
-		var request:InputRequest = InputControlSystem.instance.getInputRequest( "forward" );
+		this.transformControl = new TransformInputControl();
 
 		#if java
 		while( org.lwjgl.glfw.GLFW.glfwWindowShouldClose( Stage3DEngine.instance.getContext().ptr_window ) == org.lwjgl.opengl.GL11.GL_FALSE )
 		{
-
-			trace( InputControlSystem.instance.getInputValue( request ) );
+			this.transformControl.update( Stage3DEngine.instance.getScene().camera.transform );
 			org.lwjgl.glfw.GLFW.glfwPollEvents();
 		}
 		#end
