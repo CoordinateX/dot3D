@@ -32,6 +32,8 @@ class OceanDispertion
 
 		for( j in 0...this.settings.N + 1 )
 			this.dispertion[j] = new Vector<Float>( this.settings.N + 1 );
+
+		this.update();
 	}
 
 	// ************************************************************************ //
@@ -85,7 +87,7 @@ class OceanDispertion
 		var X:Float = this.settings.getDepth( n, m ) * k1;
 
 		var EX1:Float = Math.exp( X);
-		var EX2:Float = Math.exp( -X);
+		var EX2:Float = Math.exp(-X);
 
 		return (EX1 - EX2) / (EX1 + EX2);
 	}

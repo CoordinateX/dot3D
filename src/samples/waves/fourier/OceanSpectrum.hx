@@ -60,9 +60,9 @@ class OceanSpectrum
 		var k_norm:IVector2;
 		var k_conj:IVector2;
 
-		for( n in 0...this.settings.N + 1 )
+		for( n in 0...(this.settings.N + 1) )
 		{
-			for( m in 0...this.settings.N + 1 )
+			for( m in 0...(this.settings.N + 1) )
 			{
 				k_norm = this.settings.getKVector(  n,  m, new Vector2() ); // h0
 				k_conj = this.settings.getKVector( -n, -m, new Vector2() ); // conjungat of complex h0
@@ -147,9 +147,9 @@ class OceanSpectrum
 
 			w = r.x * r.x + r.y * r.y;
 		}
-		while( w >= 1.0 )
+		while( w >= 1.0 );
 
-		w = Math.sqrt( ( 2.0 - Math.log(w) ) / w );
+		w = Math.sqrt( ( -2.0 * Math.log(w) ) / w );
 
 		r.x *= w;
 		r.y *= w;

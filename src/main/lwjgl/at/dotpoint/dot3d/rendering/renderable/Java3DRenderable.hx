@@ -80,10 +80,10 @@ class Java3DRenderable extends ARenderable<IDisplayObject,ModelRenderData> imple
 	 */
 	private function applyShaderInput():Void
 	{
-		if( this.model.material.lazy.status == LazyStatus.INVALID )
+		//if( this.model.material.lazy.status == LazyStatus.INVALID )
 			this.applyMaterialInput();
 
-		if( this.statusTransform == LazyStatus.INVALID )
+		//if( this.statusTransform == LazyStatus.INVALID )
 			this.applyEntityInput();
 
 		this.applySceneInput();

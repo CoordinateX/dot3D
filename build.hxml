@@ -30,6 +30,12 @@
 -swf bin/as3/dot3D-Debug.swf
 -swf-version 11
 
+--next
+
+-swf-header 960:540:40:0C0C0C
+-swf bin/as3/dot3D-Release.swf
+-swf-version 11
+
 ## ################################
 ## JAVA
 

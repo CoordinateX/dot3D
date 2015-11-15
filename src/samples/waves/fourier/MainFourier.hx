@@ -21,7 +21,20 @@ class MainFourier extends Simple3DMain
 	 *
 	 */
 	private var ocean:OceanGrid;
+
+	/**
+	 *
+	 */
 	private var settings:OceanParams;
+
+	/**
+	 *
+	 */
+	private var generator:OceanGenerator;
+
+	// --------- //
+
+	private var counter:Float;
 
 	// ************************************************************************ //
 	// Constructor
@@ -51,10 +64,18 @@ class MainFourier extends Simple3DMain
 	{
 		super.initScene();
 
+		Stage3DEngine.instance.getScene().camera.transform.position.z += 90;
+		Stage3DEngine.instance.getScene().camera.transform.position.y += 20;
+
 		// ---------- //
 
-		this.settings = new OceanParams();
-		this.ocean = new OceanGrid( this.settings, 1, 1 );
+		this.counter = 0;
+
+		this.settings 	= new OceanParams();
+		this.ocean 		= new OceanGrid( this.settings, 2, 2 );
+
+		this.generator = new OceanGenerator( this.settings, this.ocean );
+		this.generator.initialize();
 
 		for( patch in this.ocean.patches )
 			this.addDisplayObjectToScene( patch );
@@ -65,7 +86,12 @@ class MainFourier extends Simple3DMain
 	 */
 	override function onTick():Void
 	{
+		this.transformControl.speedTranslation = 0.6;
 		this.transformControl.update( Stage3DEngine.instance.getScene().camera.transform );
+
+		this.generator.update( this.counter );
+		this.counter += 0.025;
+
 		super.onTick();
 	}
 }

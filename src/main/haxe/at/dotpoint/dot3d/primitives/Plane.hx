@@ -124,7 +124,7 @@ class PlaneMesh extends MeshData
 				var x3:Int = (x+1) * yscale + (y+1);
 
 				var t0:Int = MeshEditingTools.addTriangleByVertexIndices( this, [x2,x2,x2, x0,x0,x0, x1,x1,x1] );
-				var t1:Int = MeshEditingTools.addTriangleByVertexIndices( this, [x1, x1, x1, x3, x3, x3, x2, x2, x2] );
+				var t1:Int = MeshEditingTools.addTriangleByVertexIndices( this, [x1,x1,x1, x3,x3,x3, x2,x2,x2] );
 			}
 		}
 	}

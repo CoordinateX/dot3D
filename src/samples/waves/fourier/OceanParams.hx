@@ -44,13 +44,29 @@ class OceanParams
 
 	public function new()
 	{
+		#if flash
 		this.N = 32;
 		this.L = 32;
 
-		this.frequency = 800.0;
+		this.frequency = 400;
+		this.amplitude = 0.002;
+		#else
+		this.N = 64;
+		this.L = 64;
+
+		this.frequency = 800;
+		this.amplitude = 0.0002;
+		#end
+
+
 
 		this.wind = new Vector2( 32.3, 0.0 );
-		this.amplitude = 0.0002;
+
+		// ---------- //
+
+		this.isDimensionDirty = true;
+		this.isDispertionDirty = true;
+		this.isSpectrumDirty = true;
 	}
 
 	// ************************************************************************ //

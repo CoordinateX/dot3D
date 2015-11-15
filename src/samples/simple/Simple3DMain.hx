@@ -57,13 +57,7 @@ class Simple3DMain
 	public function new( ?url:String )
 	{
 		if( url == null )
-		{
-			#if flash
-			url = "../../res/main/bootstrapper.cfg";
-			#else
 			url = "res/main/bootstrapper.cfg";
-			#end
-		}
 
 		this.setupBootstrapper( url );
 	}
