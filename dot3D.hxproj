@@ -4,7 +4,7 @@
   <output>
     <movie outputType="CustomBuild" />
     <movie input="" />
-    <movie path="bin\java" />
+    <movie path="bin\as3\dot3D-Debug.swf" />
     <movie fps="200" />
     <movie width="960" />
     <movie height="540" />
@@ -22,13 +22,15 @@
     <class path="src\main" />
     <class path="src\samples\simple" />
     <class path="src\samples\waves" />
+    <class path="src\samples\isometric" />
+    <class path="src\samples\tmp" />
   </classpaths>
   <!-- Build options -->
   <build>
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="Simple3DMain" />
+    <option mainClass="TmpMain" />
     <option enabledebug="True" />
     <option additional="-java-lib lib/lwjgl.jar&#xA;&#xA;&#xA;&#xA;&#xA;" />
   </build>
@@ -43,7 +45,7 @@
     <compile path="src\main\haxe\Main.hx" />
     <compile path="src\samples\waves\MainGerstner.hx" />
     <compile path="src\samples\simple\MainGerstner.hx" />
-    <compile path="src\samples\simple\Simple3DMain.hx" />
+    <compile path="src\samples\tmp\TmpMain.hx" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
@@ -56,7 +58,7 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Custom" />
+    <option testMovie="OpenDocument" />
     <option testMovieCommand="D:\Projects\Dotpoint\dot3D\bin\java\run.bat" />
   </options>
   <!-- Plugin storage -->

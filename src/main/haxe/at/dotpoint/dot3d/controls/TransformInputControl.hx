@@ -1,5 +1,5 @@
 package haxe.at.dotpoint.dot3d.controls;
-import haxe.at.dotpoint.controls.InputControlSystem;
+import haxe.at.dotpoint.controls.IInputControlSystem;
 import haxe.at.dotpoint.controls.InputRequest;
 import haxe.at.dotpoint.math.Axis;
 import haxe.at.dotpoint.math.MathUtil;
@@ -15,6 +15,10 @@ import haxe.at.dotpoint.spatial.transform.ITransform;
  */
 class TransformInputControl
 {
+
+	private var inputController:IInputControlSystem;
+
+	// ---------------- //
 
 	/**
 	 *
@@ -53,15 +57,17 @@ class TransformInputControl
 	// Constructor
 	// ************************************************************************ //
 
-	public function new()
+	public function new( controller:IInputControlSystem )
 	{
-		this.inputFront 	= InputControlSystem.instance.getInputRequest( "forward" );
-		this.inputBack 		= InputControlSystem.instance.getInputRequest( "backward" );
-		this.inputLeft 		= InputControlSystem.instance.getInputRequest( "left" );
-		this.inputRight 	= InputControlSystem.instance.getInputRequest( "right" );
-		this.inputUp 		= InputControlSystem.instance.getInputRequest( "up" );
-		this.inputDown 		= InputControlSystem.instance.getInputRequest( "down" );
-		this.inputRotation 	= InputControlSystem.instance.getInputRequest( "rotation" );
+		this.inputController = controller;
+
+		this.inputFront 	= this.inputController.getInputRequest( "forward" );
+		this.inputBack 		= this.inputController.getInputRequest( "backward" );
+		this.inputLeft 		= this.inputController.getInputRequest( "left" );
+		this.inputRight 	= this.inputController.getInputRequest( "right" );
+		this.inputUp 		= this.inputController.getInputRequest( "up" );
+		this.inputDown 		= this.inputController.getInputRequest( "down" );
+		this.inputRotation 	= this.inputController.getInputRequest( "rotation" );
 	}
 
 	// ************************************************************************ //
@@ -76,48 +82,48 @@ class TransformInputControl
 		// ---------------------------- //
 		// translation
 
-		if ( InputControlSystem.instance.getInputValue( this.inputRotation ) <= 0 )
+		if ( this.inputController.getInputValue( this.inputRotation ) <= 0 )
 		{
-			if ( InputControlSystem.instance.getInputValue( this.inputFront ) > 0 )
+			if ( this.inputController.getInputValue( this.inputFront ) > 0 )
 				this.appendTranslation( Axis.Z, -this.speedTranslation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputBack ) > 0 )
+			if ( this.inputController.getInputValue( this.inputBack ) > 0 )
 				this.appendTranslation( Axis.Z,  this.speedTranslation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputLeft ) > 0 )
+			if ( this.inputController.getInputValue( this.inputLeft ) > 0 )
 				this.appendTranslation( Axis.X, -this.speedTranslation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputRight ) > 0 )
+			if ( this.inputController.getInputValue( this.inputRight ) > 0 )
 				this.appendTranslation( Axis.X,  this.speedTranslation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputUp ) > 0 )
+			if ( this.inputController.getInputValue( this.inputUp ) > 0 )
 				this.appendTranslation( Axis.Y,  this.speedTranslation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputDown ) > 0 )
+			if ( this.inputController.getInputValue( this.inputDown ) > 0 )
 				this.appendTranslation( Axis.Y, -this.speedTranslation, transform );
 		}
 
 		// ---------------------------- //
 		// rotation
 
-		if ( InputControlSystem.instance.getInputValue( this.inputRotation ) > 0 )
+		if ( this.inputController.getInputValue( this.inputRotation ) > 0 )
 		{
-			if ( InputControlSystem.instance.getInputValue( this.inputFront ) > 0 )
+			if ( this.inputController.getInputValue( this.inputFront ) > 0 )
 				this.appendRotation( Axis.X, -this.speedRotation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputBack ) > 0 )
+			if ( this.inputController.getInputValue( this.inputBack ) > 0 )
 				this.appendRotation( Axis.X,  this.speedRotation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputLeft ) > 0 )
+			if ( this.inputController.getInputValue( this.inputLeft ) > 0 )
 				this.appendRotation( Axis.Y, -this.speedRotation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputRight ) > 0 )
+			if ( this.inputController.getInputValue( this.inputRight ) > 0 )
 				this.appendRotation( Axis.Y,  this.speedRotation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputUp ) > 0 )
+			if ( this.inputController.getInputValue( this.inputUp ) > 0 )
 				this.appendRotation( Axis.Z,  this.speedRotation, transform );
 
-			if ( InputControlSystem.instance.getInputValue( this.inputDown ) > 0 )
+			if ( this.inputController.getInputValue( this.inputDown ) > 0 )
 				this.appendRotation( Axis.Z, -this.speedRotation, transform );
 		}
 	}

@@ -1,6 +1,7 @@
 package;
+
 import haxe.at.dotpoint.core.dispatcher.event.Event;
-import haxe.at.dotpoint.dot3d.Stage3DEngine;
+import haxe.at.dotpoint.display.IDisplayEngine;
 
 /**
  * ...
@@ -29,28 +30,37 @@ class SimpleGameLoop
 	 *
 	 * @param	onTick
 	 */
-	public function start( onTick:Void->Void ):Void
+	public function start( engine:IDisplayEngine, onTick:Void->Void ):Void
 	{
 		if( this.callback != null )
 			throw "already running";
 
 		this.callback = onTick;
+		this.startLoop( engine );
+	}
 
-		// ----------- //
+	#if (java && lwjgl)
+	//
+	private function startLoop( engine:IDisplayEngine ):Void
+	{
+		var context:lwjgl.at.dotpoint.dot3d.rendering.RenderContext = cast engine.getContext();
 
-		#if flash
+		while( org.lwjgl.glfw.GLFW.glfwWindowShouldClose( context.ptr_window ) == org.lwjgl.opengl.GL11.GL_FALSE )
+		{
+			this.callback();
+			org.lwjgl.glfw.GLFW.glfwPollEvents();
+		}
+	}
+	#elseif flash
+	//
+	private function startLoop( engine:IDisplayEngine ):Void
+	{
 		function onEnterFrame( event:flash.events.Event ):Void
 		{
 			this.callback();
 		}
 
 		flash.Lib.current.addEventListener( flash.events.Event.ENTER_FRAME, onEnterFrame );
-		#elseif (java && lwjgl)
-		while( org.lwjgl.glfw.GLFW.glfwWindowShouldClose( Stage3DEngine.instance.getContext().ptr_window ) == org.lwjgl.opengl.GL11.GL_FALSE )
-		{
-			this.callback();
-			org.lwjgl.glfw.GLFW.glfwPollEvents();
-		}
-		#end
 	}
+	#end
 }

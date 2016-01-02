@@ -9,7 +9,7 @@ import haxe.at.dotpoint.display.renderable.geometry.ModelRenderData;
 import haxe.at.dotpoint.display.renderable.geometry.Sprite;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
 import haxe.at.dotpoint.display.rendering.register.RegisterHelper;
-import haxe.at.dotpoint.display.rendering.register.RegisterType;
+import haxe.at.dotpoint.display.renderable.register.type.RegisterType;
 import haxe.at.dotpoint.display.rendering.shader.ShaderSignature;
 import haxe.at.dotpoint.dot3d.primitives.Plane;
 import haxe.at.dotpoint.math.color.ColorUtil;

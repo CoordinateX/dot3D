@@ -1,107 +1,80 @@
 package;
 
-import haxe.at.dotpoint.bootstrapper.Bootstrapper;
-import haxe.at.dotpoint.bootstrapper.loader.BootstrapperConfigParser.DefaultBootstrapperFactory;
 import haxe.at.dotpoint.bootstrapper.loader.BootstrapperConfigRequest;
 import haxe.at.dotpoint.controls.InputControlSystem;
-import haxe.at.dotpoint.controls.InputRequest;
-import haxe.at.dotpoint.controls.InputType;
-import haxe.at.dotpoint.controls.keyboard.IKeyboardInput;
-import haxe.at.dotpoint.controls.keyboard.KeyboardMap;
-import haxe.at.dotpoint.core.application.ApplicationInfo;
 import haxe.at.dotpoint.core.dispatcher.event.Event;
-import haxe.at.dotpoint.core.dispatcher.event.generic.StatusEvent;
-import haxe.at.dotpoint.core.processor.ITaskFactory;
+import haxe.at.dotpoint.display.IDisplayEngine;
 import haxe.at.dotpoint.display.renderable.IDisplayObject;
+import haxe.at.dotpoint.display.renderable.IRenderable;
+import haxe.at.dotpoint.dot3d.bootstrapper.AMainApplication;
+import haxe.at.dotpoint.dot3d.bootstrapper.IMainApplication;
+import haxe.at.dotpoint.dot3d.camera.Camera;
 import haxe.at.dotpoint.dot3d.camera.PerspectiveLens;
-import haxe.at.dotpoint.dot3d.camera.Stage3DCamera;
-import haxe.at.dotpoint.dot3d.controls.TransformInputControl;
-import haxe.at.dotpoint.dot3d.scene.Stage3DScene;
-import haxe.at.dotpoint.dot3d.Stage3DEngine;
-import haxe.at.dotpoint.loader.URLRequest;
-import SimpleGameLoop;
+import haxe.at.dotpoint.dot3d.renderable.input.DefaultRenderInput;
+import haxe.at.dotpoint.math.geom.Space;
+import haxe.at.dotpoint.math.vector.Vector3;
+
+#if(java && lwjgl)
+typedef AMain3D = lwjgl.at.dotpoint.dot3d.bootstrapper.MainApplication;
+#else
+typedef AMain3D = AMainApplication<IDisplayEngine,InputControlSystem>;
+#end
 
 /**
  * ...
  * @author RK
  */
-class Simple3DMain
+class Simple3DMain extends AMain3D implements IMainApplication
 {
-
-	/**
-	 *
-	 */
-	private var boostrapper:Bootstrapper;
-
-	/**
-	 *
-	 */
-	private var transformControl:TransformInputControl;
 
 	/**
 	 *
 	 */
 	private var gameLoop:SimpleGameLoop;
 
-	// ---------------- //
-
 	/**
 	 *
 	 */
 	private var renderList:Array<IDisplayObject>;
 
+	/**
+	 *
+	 */
+	private var camera:Camera;
+
 	// ************************************************************************ //
 	// Constructor
 	// ************************************************************************ //
 
-	public function new( ?url:String )
-	{
-		if( url == null )
-			url = "res/main/bootstrapper.cfg";
-
-		this.setupBootstrapper( url );
-	}
-
-	// ************************************************************************ //
-	// Methods
-	// ************************************************************************ //
-
 	/**
 	 *
 	 */
-	private function setupBootstrapper( url:String ):Void
+	public function new( ?request:BootstrapperConfigRequest )
 	{
-		var factory:ITaskFactory = new DefaultBootstrapperFactory();
-		var request:BootstrapperConfigRequest = new BootstrapperConfigRequest( new URLRequest( url ), factory );
-
-		this.boostrapper = new Bootstrapper();
-		this.boostrapper.processRequest( request, this.initialize );
+		super( request );
 	}
 
-	/**
-	 *
-	 */
-	private function initialize( event:Event ):Void
-	{
-		trace( ApplicationInfo.instance );
-
-		Stage3DEngine.instance.getContext().getViewport().setDimension( 960, 540 );
-		Stage3DEngine.instance.initialize( this.onContextComplete );
-	}
+	// ************************************************************************ //
+	// Init
+	// ************************************************************************ //
 
 	/**
 	 *
 	 * @param	event
 	 */
-	private function onContextComplete( event:StatusEvent ):Void
+	override function onBootstrapperComplete( event:Event ):Void
 	{
+		super.onBootstrapperComplete( event );
+
+		// -------- //
+
 		this.initScene();
-		this.initController();
 		this.initGameLoop();
 	}
 
 	// ------------------------------------------------------------------------ //
 	// ------------------------------------------------------------------------ //
+	// SCENE:
 
 	/**
 	 *
@@ -110,22 +83,15 @@ class Simple3DMain
 	{
 		this.renderList = new Array<IDisplayObject>();
 
-		var scene:Stage3DScene = Stage3DEngine.instance.getScene();
-			scene.camera = new Stage3DCamera();
-
-		scene.camera.transform.position.z += 3.5;
-		scene.camera.transform.position.y += 1;
-		scene.camera.transform.position.x += 0;
+		this.camera = new Camera( new PerspectiveLens( this.displayEngine.getContext().getViewport() ) );
+		this.camera.transform.position.z += 2.5;
+		this.camera.transform.position.y += 0;
+		this.camera.transform.position.x += 0;
 	}
 
-	/**
-	 *
-	 */
-	private function initController():Void
-	{
-		InputControlSystem.instance.initialize();
-		this.transformControl = new TransformInputControl();
-	}
+	// ------------------------------------------------------------------------ //
+	// ------------------------------------------------------------------------ //
+	// Game-Loop:
 
 	/**
 	 *
@@ -133,18 +99,32 @@ class Simple3DMain
 	private function initGameLoop():Void
 	{
 		this.gameLoop = new SimpleGameLoop();
-		this.gameLoop.start( this.onTick );
+		this.gameLoop.start( this.displayEngine, this.onTick );
 	}
 
-	// ------------------------------------------------------------------------ //
-	// ------------------------------------------------------------------------ //
+	// ************************************************************************ //
+	// Rendering
+	// ************************************************************************ //
 
 	/**
 	 *
 	 */
 	private function onTick():Void
 	{
-		Stage3DEngine.instance.getRenderer().render( this.renderList );
+		var renderables:Array<IRenderable> = new Array<IRenderable>();
+
+		for( obj in this.renderList )
+		{
+			var input:DefaultRenderInput = new DefaultRenderInput();
+				input.E_MODEL2WORLD_TRANSFORM  	= obj.transform.getMatrix( null, Space.WORLD );
+				input.W_WORLD2CAMERA_TRANSFORM 	= this.camera.getProjectionMatrix();
+				input.W_LIGHT_DIRECTIONAL 		= new Vector3( 1, 0, 1 );
+
+			obj.renderable.input = input;
+			renderables.push( obj.renderable );
+		}
+
+		this.displayEngine.getRenderer().render( renderables );
 	}
 
 	/**
@@ -153,6 +133,7 @@ class Simple3DMain
 	private function addDisplayObjectToScene( obj:IDisplayObject ):Void
 	{
 		this.renderList.push( obj );
-		Stage3DEngine.instance.getScene().getSpatialTree().addChildNode( obj.getSpatialNode() );
+		this.displayEngine.getScene().getSpatialTree().addChildNode( obj.getSpatialNode() );
 	}
+
 }
