@@ -8,9 +8,9 @@
     <movie fps="200" />
     <movie width="960" />
     <movie height="540" />
-    <movie version="0" />
+    <movie version="18" />
     <movie minorVersion="0" />
-    <movie platform="Java" />
+    <movie platform="Flash Player" />
     <movie background="#323232" />
     <movie preferredSDK="Haxe 3.3.0;3.3.0;" />
   </output>
@@ -47,6 +47,10 @@
     <compile path="src\samples\simple\MainGerstner.hx" />
     <compile path="src\samples\tmp\TmpMain.hx" />
   </compileTargets>
+  <!-- Assets to embed into the output SWF -->
+  <library>
+    <!-- example: <asset path="..." id="..." update="..." glyphs="..." mode="..." place="..." sharepoint="..." /> -->
+  </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
     <hidden path="obj" />
@@ -58,7 +62,7 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="OpenDocument" />
+    <option testMovie="Default" />
     <option testMovieCommand="D:\Projects\Dotpoint\dot3D\bin\java\run.bat" />
   </options>
   <!-- Plugin storage -->

@@ -42,9 +42,8 @@ class DefaultShaderData extends AShaderData
 	 */
 	override private function calculateSignature():ShaderSignature
 	{
-		var signature:ShaderSignature = new ShaderSignature( 7 );
+		var signature:ShaderSignature = new ShaderSignature( 6 );
 			signature.addRegisterType( RegisterHelper.V_POSITION );
-			signature.addRegisterType( RegisterHelper.V_UV_COORDINATES );
 			signature.addRegisterType( RegisterHelper.V_NORMAL );
 			signature.addRegisterType( RegisterHelper.M_COLOR );
 			signature.addRegisterType( RegisterHelper.E_MODEL2WORLD_TRANSFORM );

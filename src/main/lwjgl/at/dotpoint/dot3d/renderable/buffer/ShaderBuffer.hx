@@ -100,8 +100,6 @@ class ShaderBuffer extends AShaderBuffer
 	{
 		this.dispose( data );
 
-		trace( "allocate shader: " + data.name );
-
 		// ------------- //
 
 		this.compileGLShader();
@@ -177,8 +175,6 @@ class ShaderBuffer extends AShaderBuffer
 	 */
 	override public function dispose( data:IShaderData ):Void
 	{
-		trace( "dispose shader: " + data.name );
-
 		if( this.vertexShader != null && this.vertexShader.ptr_shader != -1 )
 			GL20.glDetachShader( this.ptr_program, this.vertexShader.ptr_shader );
 

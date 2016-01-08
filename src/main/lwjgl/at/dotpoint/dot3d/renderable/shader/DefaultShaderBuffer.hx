@@ -33,18 +33,13 @@ private class VertexShader extends GLShader
 			source += "uniform vec3 W_LIGHT_DIRECTIONAL;   	      	\n";
 
 			source += "in vec3 V_POSITION;                         	\n";
-			source += "in vec2 V_UV_COORDINATES;                   	\n";
 			source += "in vec3 V_NORMAL;                         	\n";
 
-		//	source += "out vec2 tuv;                         		\n";
 			source += "out float lpow;                         		\n";
 
 			source += "void main(){                                																					\n";
 			source += "    gl_Position = vec4(V_POSITION,1) * E_MODEL2WORLD_TRANSFORM * W_WORLD2CAMERA_TRANSFORM;        							\n";
-		//	source += "    vec4 a= vec4(1,1,1,1) * E_MODEL2WORLD_TRANSFORM;        																	\n";
-		//	source += "    gl_Position= vec4(V_POSITION,1) + a;        																				\n";
 			source += "    lpow = max( dot( normalize(W_LIGHT_DIRECTIONAL), normalize(vec4(V_NORMAL,0) * E_MODEL2WORLD_TRANSFORM).xyz ), 0.0 ); 	\n";
-		//	source += "    tuv = V_UV_COORDINATES;        																							\n";
 			source += "}                                           																					\n";
 
 		super( source, GLShaderType.VERTEX_SHADER );
@@ -64,15 +59,12 @@ private class FragmentShader extends GLShader
 			source += "#version 330									\n";
 			source += "uniform vec4 M_COLOR;						\n";
 
-		//	source += "in vec2 tuv;									\n";
 			source += "in float lpow;								\n";
 
             source += "out vec3 out_color;							\n";
 
             source += "void main(){														\n";
         	source += "    out_color = M_COLOR.xyz * (lpow * 0.85 + 0.15);      		\n";
-		//	source += "    out_color = M_COLOR.xyz;										\n";
-        //  source += "    out_color = vec3(0.8,0.2,0.1);								\n";
             source += "}																\n";
 
 		super( source, GLShaderType.FRAGMENT_SHADER );

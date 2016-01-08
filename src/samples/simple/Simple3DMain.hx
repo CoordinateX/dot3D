@@ -16,6 +16,8 @@ import haxe.at.dotpoint.math.vector.Vector3;
 
 #if(java && lwjgl)
 typedef AMain3D = lwjgl.at.dotpoint.dot3d.bootstrapper.MainApplication;
+#elseif flash
+typedef AMain3D = flash.at.dotpoint.dot3d.bootstrapper.MainApplication;
 #else
 typedef AMain3D = AMainApplication<IDisplayEngine,InputControlSystem>;
 #end
