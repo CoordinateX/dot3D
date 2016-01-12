@@ -61,12 +61,24 @@ class TmpMain extends Simple3DMain
 
 		// ------------------ //
 
-		var renderable:Renderable = new Renderable( null, null );
-			renderable.mesh 	= new CubeMesh();
-			renderable.material = new DiffuseColorMaterial();
-			renderable.shader 	= new DefaultShader();
+		var mesh:CubeMesh = new CubeMesh( 0.15, 0.15, 0.15 );
+		var mate:DiffuseColorMaterial = new DiffuseColorMaterial();
+		var shad:DefaultShader = new DefaultShader();
 
-		this.addDisplayObjectToScene( new DisplayObject( renderable ) );
+		for( i in 0...200 )
+		{
+			var renderable:Renderable = new Renderable( null, null );
+				renderable.mesh 	= mesh;
+				renderable.material = mate;
+				renderable.shader 	= shad;
+
+			var disp:DisplayObject = new DisplayObject( renderable );
+				disp.transform.position.x = -2 + Math.random() * 4;
+				disp.transform.position.y = -2 + Math.random() * 4;
+				disp.transform.position.z = -2 + Math.random() * 4;
+
+			this.addDisplayObjectToScene( disp );
+		}
 	}
 
 	/**

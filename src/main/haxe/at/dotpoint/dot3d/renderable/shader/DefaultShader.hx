@@ -1,5 +1,6 @@
 package haxe.at.dotpoint.dot3d.renderable.shader;
 
+import haxe.at.dotpoint.core.dispatcher.lazy.LazyStatus;
 import haxe.at.dotpoint.display.renderable.register.RegisterHelper;
 import haxe.at.dotpoint.display.renderable.shader.AShader;
 import haxe.at.dotpoint.display.renderable.shader.buffer.IShaderBuffer;
@@ -42,6 +43,8 @@ class DefaultShaderData extends AShaderData
 	 */
 	override private function calculateSignature():ShaderSignature
 	{
+		this.lazyStatus = LazyStatus.VALID;
+
 		var signature:ShaderSignature = new ShaderSignature( 6 );
 			signature.addRegisterType( RegisterHelper.V_POSITION );
 			signature.addRegisterType( RegisterHelper.V_NORMAL );

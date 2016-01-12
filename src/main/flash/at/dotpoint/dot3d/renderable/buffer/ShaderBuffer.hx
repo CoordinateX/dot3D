@@ -100,10 +100,10 @@ class ShaderBuffer<TShader:Shader> extends AShaderBuffer
 	 */
 	override public function bind( data:IShaderData, input:IRenderInput ):Void
 	{
+		this.setRegisterInputData( data, input );
+
 		this.context.setProgramConstantsFromVector( Context3DProgramType.VERTEX,   0, this.shader.getInstance().vertexVars.toData()   );
 		this.context.setProgramConstantsFromVector( Context3DProgramType.FRAGMENT, 0, this.shader.getInstance().fragmentVars.toData() );
-
-		this.setRegisterInputData( data, input );
 	}
 
 	/**

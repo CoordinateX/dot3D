@@ -117,10 +117,14 @@ class Simple3DMain extends AMain3D implements IMainApplication
 
 		for( obj in this.renderList )
 		{
-			var input:DefaultRenderInput = new DefaultRenderInput();
-				input.E_MODEL2WORLD_TRANSFORM  	= obj.transform.getMatrix( null, Space.WORLD );
-				input.W_WORLD2CAMERA_TRANSFORM 	= this.camera.getProjectionMatrix();
-				input.W_LIGHT_DIRECTIONAL 		= new Vector3( 1, 0, 1 );
+			var input:DefaultRenderInput = cast obj.renderable.input;
+
+			if( input == null )
+				input = new DefaultRenderInput();
+
+			input.E_MODEL2WORLD_TRANSFORM  	= obj.transform.getMatrix( null, Space.WORLD );
+			input.W_WORLD2CAMERA_TRANSFORM 	= this.camera.getProjectionMatrix();
+			input.W_LIGHT_DIRECTIONAL 		= new Vector3( 1, 0, 1 );
 
 			obj.renderable.input = input;
 			renderables.push( obj.renderable );
